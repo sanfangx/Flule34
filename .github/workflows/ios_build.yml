@@ -35,11 +35,31 @@ jobs:
 
       - name: Package unsigned IPA
         run: |
+          brew install ldid
           cd build/ios/iphoneos
           mkdir Payload
           mv Runner.app Payload/
+          
+          cat <<EOF > entitlements.plist
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>application-identifier</key>
+              <string>com.hanestl.flule34</string>
+              <key>keychain-access-groups</key>
+              <array>
+                  <string>com.hanestl.flule34</string>
+              </array>
+          </dict>
+          </plist>
+          EOF
+          
+          ldid -Sentitlements.plist Payload/Runner.app/Runner
+          find Payload/Runner.app/Frameworks -type d -name "*.framework" -exec ldid -S {} \;
+          
           zip -qq -r -9 Flule34_unsigned.ipa Payload
-          rm -rf Payload
+          rm -rf Payload entitlements.plist
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
