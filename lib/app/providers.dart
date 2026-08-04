@@ -15,6 +15,7 @@ import '../core/services/screen_wake_lock_service.dart';
 import '../core/services/share_service.dart';
 import '../core/services/subscription_activity_index.dart';
 import '../core/services/video_preview_service.dart';
+import '../core/services/tag_translator_service.dart';
 import '../shared/scroll_to_top_overlay.dart';
 import '../features/downloads/data/background_download_platform_service.dart';
 import '../features/downloads/data/download_repository.dart';
@@ -187,9 +188,16 @@ final searchHistoryRepositoryProvider = Provider<SearchHistoryRepository>((
   );
 });
 
+final tagTranslatorServiceProvider = Provider<TagTranslatorService>((ref) {
+  final service = TagTranslatorService();
+  ref.onDispose(service.dispose);
+  return service;
+});
+
 final appInitializationProvider = FutureProvider<void>((ref) async {
   await ref.read(appSettingsRepositoryProvider).load();
   await ref.read(curatedLibrarySeederProvider).seedIfNeeded();
+  await ref.read(tagTranslatorServiceProvider).init();
   final sessionStore = ref.read(sessionStoreProvider);
   await sessionStore.load();
   await ref.read(rule34VideoApiProvider).restoreSession();

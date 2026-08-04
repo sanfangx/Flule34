@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../app/providers.dart';
 
 import '../../app/router/route_names.dart';
 import '../../core/api/rule34video_api.dart';
@@ -13,7 +16,7 @@ import '../../shared/video_feed.dart';
 import 'data/search_history_repository.dart';
 import 'video_filter_sheet.dart';
 
-class SearchPage extends StatefulWidget {
+class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({
     super.key,
     required this.api,
@@ -26,10 +29,10 @@ class SearchPage extends StatefulWidget {
   final PredictivePrefetchService prefetchService;
 
   @override
-  State<SearchPage> createState() => _SearchPageState();
+  ConsumerState<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _SearchPageState extends ConsumerState<SearchPage> {
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
   Timer? _debounce;
@@ -361,7 +364,7 @@ class _SearchPageState extends State<SearchPage> {
       chips.add(
         InputChip(
           avatar: Icon(_suggestionIcon(suggestion.kind), size: 18),
-          label: Text(suggestion.title),
+          label: Text(ref.read(tagTranslatorServiceProvider).translate(suggestion.title)),
           onDeleted: () => _removeSuggestion(suggestion),
         ),
       );
@@ -374,7 +377,7 @@ class _SearchPageState extends State<SearchPage> {
       chips.add(
         InputChip(
           avatar: Icon(_suggestionIcon(suggestion.kind), size: 18),
-          label: Text('排除：${suggestion.title}'),
+          label: Text('排除：${ref.read(tagTranslatorServiceProvider).translate(suggestion.title)}'),
           onDeleted: () => _removeSuggestion(suggestion, excluded: true),
         ),
       );
@@ -473,7 +476,7 @@ class _SearchPageState extends State<SearchPage> {
               children: snapshot.requireData
                   .map(
                     (item) => ActionChip(
-                      label: Text(item.title),
+                      label: Text(ref.watch(tagTranslatorServiceProvider).translate(item.title)),
                       onPressed: () => _openCollectionItem(item),
                     ),
                   )
@@ -605,7 +608,7 @@ class _SearchPageState extends State<SearchPage> {
         return Card(
           child: ListTile(
             leading: Icon(_suggestionIcon(kind)),
-            title: Text(item.title),
+            title: Text(ref.watch(tagTranslatorServiceProvider).translate(item.title)),
             subtitle: Text('${formatCount(item.total)} 个视频'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _openSuggestionCollection(item),
@@ -723,7 +726,7 @@ class _SearchPageState extends State<SearchPage> {
   };
 }
 
-class _SuggestionRow extends StatelessWidget {
+class _SuggestionRow extends ConsumerWidget {
   const _SuggestionRow({
     required this.kind,
     required this.suggestions,
@@ -735,7 +738,7 @@ class _SuggestionRow extends StatelessWidget {
   final ValueChanged<SearchSuggestion> onSelected;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -757,7 +760,7 @@ class _SuggestionRow extends StatelessWidget {
                         padding: const EdgeInsets.only(right: 8),
                         child: ActionChip(
                           label: Text(
-                            '${item.title} · ${formatCount(item.total)}',
+                            '${ref.watch(tagTranslatorServiceProvider).translate(item.title)} · ${formatCount(item.total)}',
                           ),
                           onPressed: () => onSelected(item),
                         ),

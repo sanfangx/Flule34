@@ -84,6 +84,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/curated_libraries/v1.json
+    - assets/tags/rule34video_tags_zh.csv
 
   # To add assets to your application, add an assets section, like this:
   # assets:

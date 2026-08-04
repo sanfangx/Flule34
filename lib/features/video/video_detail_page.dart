@@ -12,6 +12,7 @@ import '../../core/api/rule34video_api.dart';
 import '../../core/models/video_models.dart';
 import '../../core/services/share_service.dart';
 import '../../core/services/predictive_prefetch_service.dart';
+import '../../core/services/tag_translator_service.dart';
 import '../../shared/video_card.dart';
 import '../../shared/video_collection_layout.dart';
 import '../../shared/site_avatar.dart';
@@ -785,7 +786,7 @@ class _StatChip extends StatelessWidget {
   }
 }
 
-class _MetadataSection extends StatelessWidget {
+class _MetadataSection extends ConsumerWidget {
   const _MetadataSection({
     required this.title,
     required this.items,
@@ -803,7 +804,8 @@ class _MetadataSection extends StatelessWidget {
   final ValueChanged<VideoMetadataItem> onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final translator = ref.watch(tagTranslatorServiceProvider);
     if (items.isEmpty && fallbackValues.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -820,7 +822,7 @@ class _MetadataSection extends StatelessWidget {
             children: items.isEmpty
                 ? fallbackValues
                       .take(40)
-                      .map((value) => Chip(label: Text(value)))
+                      .map((value) => Chip(label: Text(translator.translate(value))))
                       .toList(growable: false)
                 : items
                       .take(40)
@@ -836,7 +838,7 @@ class _MetadataSection extends StatelessWidget {
                             subscribed: subscribed,
                             busy: busy,
                           ),
-                          label: Text(_metadataLabel(item)),
+                          label: Text(_metadataLabel(item, translator)),
                           onPressed: busy ? null : () => onTap(item),
                         );
                       })
@@ -901,10 +903,11 @@ class _MetadataSection extends StatelessWidget {
     );
   }
 
-  String _metadataLabel(VideoMetadataItem item) {
+  String _metadataLabel(VideoMetadataItem item, TagTranslatorService translator) {
+    final translatedTitle = translator.translate(item.title);
     if (item.upScore == 0 && item.downScore == 0) {
-      return item.title;
+      return translatedTitle;
     }
-    return '${item.title} · ↑${item.upScore} ↓${item.downScore}';
+    return '$translatedTitle · ↑${item.upScore} ↓${item.downScore}';
   }
 }
