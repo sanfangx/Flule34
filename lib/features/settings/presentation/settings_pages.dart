@@ -79,6 +79,28 @@ class AppearanceSettingsPage extends ConsumerWidget {
             );
           },
         ),
+        const SizedBox(height: 16),
+        Text('列表加载模式', style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 12),
+        SegmentedButton<ListPaginationMode>(
+          segments: ListPaginationMode.values
+              .map(
+                (value) => ButtonSegment<ListPaginationMode>(
+                  value: value,
+                  label: Text(value.label),
+                ),
+              )
+              .toList(growable: false),
+          selected: {settings.listPaginationMode},
+          onSelectionChanged: (selection) {
+            unawaited(
+              _save(
+                context,
+                repository.setListPaginationMode(selection.single),
+              ),
+            );
+          },
+        ),
       ],
     );
   }

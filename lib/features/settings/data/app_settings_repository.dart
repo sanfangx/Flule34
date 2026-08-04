@@ -34,6 +34,7 @@ final class AppSettingsRepository extends ChangeNotifier {
   static const _videoLayoutKey = 'flule34.settings.video_layout';
   static const _legacyHomeVideoLayoutKey = 'flule34.settings.home_video_layout';
   static const _subscriptionLayoutKey = 'flule34.settings.subscription_layout';
+  static const _listPaginationModeKey = 'flule34.settings.list_pagination_mode';
 
   final AppSettingsStore _store;
   AppSettings _settings = AppSettings.defaults;
@@ -68,6 +69,7 @@ final class AppSettingsRepository extends ChangeNotifier {
       _readString(_legacyHomeVideoLayoutKey),
       _readString(_subscriptionLayoutKey),
       _readBool(_videoPreviewEnabledKey),
+      _readString(_listPaginationModeKey),
     ]);
     _settings = AppSettings(
       theme: _themeValue(values[0] as String?),
@@ -130,6 +132,11 @@ final class AppSettingsRepository extends ChangeNotifier {
         ContentLayout.values,
         values[19] as String?,
         AppSettings.defaults.subscriptionLayout,
+      ),
+      listPaginationMode: _enumValue(
+        ListPaginationMode.values,
+        values[21] as String?,
+        AppSettings.defaults.listPaginationMode,
       ),
     );
     final legacyVideoLayout = values[18] as String?;
@@ -258,6 +265,11 @@ final class AppSettingsRepository extends ChangeNotifier {
   Future<void> setSubscriptionLayout(ContentLayout value) async {
     await _store.writeString(_subscriptionLayoutKey, value.name);
     _update(_settings.copyWith(subscriptionLayout: value));
+  }
+
+  Future<void> setListPaginationMode(ListPaginationMode value) async {
+    await _store.writeString(_listPaginationModeKey, value.name);
+    _update(_settings.copyWith(listPaginationMode: value));
   }
 
   void _update(AppSettings value) {

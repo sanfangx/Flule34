@@ -85,13 +85,26 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
   }
 
   void _onScroll() {
+    final mode =
+        ref.read(appSettingsRepositoryProvider).settings.listPaginationMode;
+    if (mode == ListPaginationMode.manualPagination) {
+      return;
+    }
     if (_scrollController.position.extentAfter < 800) {
       _load(reset: false);
     }
   }
 
-  Future<void> _load({required bool reset, bool forceRefresh = false}) async {
-    if (_loading || (!reset && !_hasMore)) {
+  Future<void> _load({
+    required bool reset,
+    bool forceRefresh = false,
+    int? targetPage,
+  }) async {
+    final mode =
+        ref.read(appSettingsRepositoryProvider).settings.listPaginationMode;
+    final isManual = mode == ListPaginationMode.manualPagination;
+
+    if (_loading || (!reset && !_hasMore && targetPage == null)) {
       return;
     }
     setState(() {
@@ -101,27 +114,35 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
         _page = 1;
         _hasMore = true;
       }
+      if (targetPage != null) {
+        _page = targetPage;
+        _hasMore = true;
+      }
     });
     try {
       var attempts = 0;
       do {
         final firstResetPage = reset && attempts == 0;
+        final isReplacing = isManual || firstResetPage;
         final page =
-            await (firstResetPage && forceRefresh && widget.refreshPage != null
+            await (isReplacing && forceRefresh && widget.refreshPage != null
                 ? widget.refreshPage!(_page)
                 : widget.loadPage(_page));
         if (!mounted) {
           return;
         }
-        final existingIds = firstResetPage
+        final existingIds = isReplacing
             ? <String>{}
             : _videos.map((item) => item.id).toSet();
         final newItems = page
             .where((item) => existingIds.add(item.id))
             .toList(growable: false);
         setState(() {
-          if (firstResetPage) {
+          if (isReplacing) {
             _videos.clear();
+            if (!firstResetPage && _scrollController.hasClients) {
+              _scrollController.jumpTo(0);
+            }
           }
           _videos.addAll(newItems);
           _page += 1;
@@ -131,7 +152,7 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
         });
         widget.onItemsLoaded?.call(List.unmodifiable(_videos));
         attempts += 1;
-      } while (_hasMore && attempts < 3 && _visibleVideos().length < 8);
+      } while (_hasMore && attempts < 3 && _visibleVideos().length < 8 && !isManual);
     } catch (error) {
       if (!mounted) {
         return;
@@ -291,6 +312,40 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
                   : _load(reset: false),
               icon: const Icon(Icons.refresh),
               label: Text(_page == 1 ? '重试刷新' : '重试加载下一页'),
+            ),
+          ],
+        ),
+      );
+    }
+    final mode =
+        ref.watch(appSettingsRepositoryProvider).settings.listPaginationMode;
+    if (mode == ListPaginationMode.manualPagination) {
+      final currentPage = _page - 1;
+      return Padding(
+        padding: const EdgeInsets.all(20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            OutlinedButton.icon(
+              onPressed:
+                  currentPage > 1
+                      ? () => _load(reset: false, targetPage: currentPage - 1)
+                      : null,
+              icon: const Icon(Icons.chevron_left),
+              label: const Text('上一页'),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text('第 $currentPage 页'),
+            ),
+            OutlinedButton.icon(
+              iconAlignment: IconAlignment.end,
+              onPressed:
+                  _hasMore
+                      ? () => _load(reset: false, targetPage: currentPage + 1)
+                      : null,
+              icon: const Icon(Icons.chevron_right),
+              label: const Text('下一页'),
             ),
           ],
         ),

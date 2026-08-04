@@ -19,6 +19,15 @@ enum ContentLayout {
   final String label;
 }
 
+enum ListPaginationMode {
+  infiniteScroll('无限滚动'),
+  manualPagination('手动翻页');
+
+  const ListPaginationMode(this.label);
+
+  final String label;
+}
+
 enum VideoQualityPreference {
   highest('最高可用'),
   p2160('2160p / 4K'),
@@ -92,6 +101,7 @@ final class AppSettings {
     required this.updateChannel,
     required this.videoLayout,
     required this.subscriptionLayout,
+    required this.listPaginationMode,
   });
 
   static const defaults = AppSettings(
@@ -115,6 +125,7 @@ final class AppSettings {
     updateChannel: UpdateChannel.stable,
     videoLayout: ContentLayout.singleColumn,
     subscriptionLayout: ContentLayout.doubleColumn,
+    listPaginationMode: ListPaginationMode.infiniteScroll,
   );
 
   final AppThemePreference theme;
@@ -137,6 +148,7 @@ final class AppSettings {
   final UpdateChannel updateChannel;
   final ContentLayout videoLayout;
   final ContentLayout subscriptionLayout;
+  final ListPaginationMode listPaginationMode;
 
   AppSettings copyWith({
     AppThemePreference? theme,
@@ -159,6 +171,7 @@ final class AppSettings {
     UpdateChannel? updateChannel,
     ContentLayout? videoLayout,
     ContentLayout? subscriptionLayout,
+    ListPaginationMode? listPaginationMode,
   }) {
     return AppSettings(
       theme: theme ?? this.theme,
@@ -185,6 +198,7 @@ final class AppSettings {
       updateChannel: updateChannel ?? this.updateChannel,
       videoLayout: videoLayout ?? this.videoLayout,
       subscriptionLayout: subscriptionLayout ?? this.subscriptionLayout,
+      listPaginationMode: listPaginationMode ?? this.listPaginationMode,
     );
   }
 }
