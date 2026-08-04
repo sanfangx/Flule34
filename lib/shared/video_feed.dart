@@ -137,6 +137,19 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
         final newItems = page
             .where((item) => existingIds.add(item.id))
             .toList(growable: false);
+
+        if (isReplacing && !firstResetPage && newItems.isEmpty) {
+          setState(() {
+            _hasMore = false;
+          });
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('该页没有内容，已经是最后一页了')),
+            );
+          }
+          break;
+        }
+
         setState(() {
           if (isReplacing) {
             _videos.clear();
@@ -334,9 +347,10 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
               icon: const Icon(Icons.chevron_left),
               label: const Text('上一页'),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text('第 $currentPage 页'),
+            ActionChip(
+              label: Text('第 $currentPage 页'),
+              tooltip: '跳转页码',
+              onPressed: () => _showJumpDialog(context, currentPage),
             ),
             OutlinedButton.icon(
               iconAlignment: IconAlignment.end,
@@ -391,6 +405,50 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
     setState(() => _filters = selected);
     if (_visibleVideos().length < 8) {
       unawaited(_load(reset: false));
+    }
+  }
+
+  Future<void> _showJumpDialog(BuildContext context, int currentPage) async {
+    final controller = TextEditingController(text: currentPage.toString());
+    final target = await showDialog<int>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('跳转到页码'),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            labelText: '页码',
+            hintText: '请输入目标页码',
+          ),
+          autofocus: true,
+          onSubmitted: (value) {
+            final page = int.tryParse(value);
+            if (page != null && page > 0) {
+              Navigator.of(context).pop(page);
+            }
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('取消'),
+          ),
+          TextButton(
+            onPressed: () {
+              final page = int.tryParse(controller.text);
+              if (page != null && page > 0) {
+                Navigator.of(context).pop(page);
+              }
+            },
+            child: const Text('确定'),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+    if (target != null && target != currentPage && mounted) {
+      unawaited(_load(reset: false, targetPage: target));
     }
   }
 }
