@@ -638,14 +638,17 @@ class Rule34VideoApi {
     CancelToken? cancelToken,
   }) async {
     _requireLogin();
-    final path = page > 1
-        ? '/my/favourites/videos/$page/'
-        : '/my/favourites/videos/';
+    final path = '/my/favourites/videos/';
+    final query = page > 1 ? {'from_my_fav_videos': page.toString()} : null;
     final items = await _cachedVideoPage(
       key: _videoPageCacheKey('favorites', page),
       force: force,
-      loader: () =>
-          _paginatedVideoList(path, page: page, cancelToken: cancelToken),
+      loader: () => _paginatedVideoList(
+        path,
+        page: page,
+        query: query,
+        cancelToken: cancelToken,
+      ),
     );
     _syncFavoriteCache();
     for (final item in items) {
