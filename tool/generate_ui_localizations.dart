@@ -322,6 +322,7 @@ Future<void> _writeArbFiles(List<Map<String, Object?>> catalog) async {
 Future<void> _writeRuntimeLookup(List<Map<String, Object?>> catalog) async {
   final buffer = StringBuffer()
     ..writeln('// GENERATED CODE - DO NOT MODIFY BY HAND.')
+    ..writeln('// dart format off')
     ..writeln()
     ..writeln('const uiTranslations = <String, Map<String, String>>{');
   for (final item in catalog) {
@@ -333,7 +334,9 @@ Future<void> _writeRuntimeLookup(List<Map<String, Object?>> catalog) async {
       ..writeln("    'ko': ${jsonEncode(item['ko'])},")
       ..writeln('  },');
   }
-  buffer.writeln('};');
+  buffer
+    ..writeln('};')
+    ..writeln('// dart format on');
   final file = File(_generatedLookupPath);
   await file.parent.create(recursive: true);
   await file.writeAsString(buffer.toString());

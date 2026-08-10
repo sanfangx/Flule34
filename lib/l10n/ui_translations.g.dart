@@ -1,4 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND.
+// dart format off
 
 const uiTranslations = <String, Map<String, String>>{
   "20–60 分钟": <String, String>{
@@ -3217,3 +3218,4 @@ const uiTranslations = <String, Map<String, String>>{
     'ko': "(추천)",
   },
 };
+// dart format on
