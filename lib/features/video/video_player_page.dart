@@ -4,6 +4,7 @@ import 'package:better_player_plus/better_player_plus.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,6 +15,7 @@ import '../../core/security/error_redaction.dart';
 import '../../core/services/network_status_service.dart';
 import '../../shared/scroll_to_top_overlay.dart';
 import '../../shared/localized_translation_text.dart';
+import '../../shared/transient_focus.dart';
 import '../../core/services/media_volume_service.dart';
 import '../../core/services/screen_wake_lock_service.dart';
 import '../../core/services/translation_service.dart';
@@ -1074,7 +1076,7 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
                       const CircularProgressIndicator(color: Colors.white),
                       if (_refreshingSource) ...[
                         const SizedBox(height: 12),
-                        const Text(
+                        const AppText(
                           '正在刷新视频地址…',
                           style: TextStyle(color: Colors.white),
                         ),
@@ -1682,7 +1684,7 @@ class _FluleVideoControlsState extends State<_FluleVideoControls>
               alignment: Alignment.centerLeft,
               child: SafeArea(
                 child: IconButton.filledTonal(
-                  tooltip: _locked ? '解锁控件' : '锁定控件',
+                  tooltip: context.uiText(_locked ? '解锁控件' : '锁定控件'),
                   onPressed: _toggleLock,
                   icon: Icon(_locked ? Icons.lock : Icons.lock_open),
                 ),
@@ -1761,7 +1763,7 @@ class _FluleVideoControlsState extends State<_FluleVideoControls>
         child: Row(
           children: [
             IconButton(
-              tooltip: '退出全屏',
+              tooltip: context.uiText('退出全屏'),
               onPressed: () => unawaited(_exitFullScreen()),
               icon: const Icon(
                 Icons.arrow_back,
@@ -1826,7 +1828,7 @@ class _FluleVideoControlsState extends State<_FluleVideoControls>
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _CompactIconButton(
-                  tooltip: value.isPlaying ? '暂停' : '播放',
+                  tooltip: context.uiText(value.isPlaying ? '暂停' : '播放'),
                   onPressed: _togglePlayback,
                   icon: value.isPlaying ? Icons.pause : Icons.play_arrow,
                 ),
@@ -1842,7 +1844,7 @@ class _FluleVideoControlsState extends State<_FluleVideoControls>
                 ),
                 const SizedBox(width: 2),
                 _CompactPopup<VideoSource>(
-                  tooltip: '清晰度',
+                  tooltip: context.uiText('清晰度'),
                   label: widget.selectedSource.label,
                   values: widget.sources,
                   selected: widget.selectedSource,
@@ -1851,7 +1853,7 @@ class _FluleVideoControlsState extends State<_FluleVideoControls>
                   onInteraction: _showControls,
                 ),
                 _CompactPopup<double>(
-                  tooltip: '播放速度',
+                  tooltip: context.uiText('播放速度'),
                   label: '${value.speed}x',
                   values: _speeds,
                   selected: value.speed,
@@ -1862,7 +1864,7 @@ class _FluleVideoControlsState extends State<_FluleVideoControls>
                 ),
                 if (!isFullScreen)
                   _CompactIconButton(
-                    tooltip: '全屏',
+                    tooltip: context.uiText('全屏'),
                     onPressed: _enterFullScreen,
                     icon: Icons.fullscreen,
                   ),
@@ -1952,9 +1954,13 @@ class _CompactPopup<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return PopupMenuButton<T>(
+      requestFocus: false,
       tooltip: tooltip,
       initialValue: selected,
-      onOpened: onInteraction,
+      onOpened: () {
+        dismissInputFocus();
+        onInteraction();
+      },
       onCanceled: onInteraction,
       onSelected: (value) {
         onSelected(value);
@@ -2175,7 +2181,10 @@ class _PlayerError extends StatelessWidget {
                 style: const TextStyle(color: Colors.white),
               ),
               const SizedBox(height: 16),
-              FilledButton.tonal(onPressed: onRetry, child: const Text('重试')),
+              FilledButton.tonal(
+                onPressed: onRetry,
+                child: const AppText('重试'),
+              ),
             ],
           ),
         ),

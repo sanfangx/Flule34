@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 
 import '../../core/api/rule34video_api.dart';
 import '../../core/models/account_models.dart';
@@ -78,7 +79,7 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('账号与安全')),
+      appBar: AppBar(title: const AppText('账号与安全')),
       body: AnimatedBuilder(
         animation: widget.api.sessionStore,
         builder: (context, _) {
@@ -150,7 +151,7 @@ class _AccountPageState extends State<AccountPage> {
                 FilledButton.tonalIcon(
                   onPressed: () => _confirmLogout(context, widget.api),
                   icon: const Icon(Icons.logout),
-                  label: const Text('退出登录'),
+                  label: const AppText('退出登录'),
                 ),
               ],
             ),
@@ -190,12 +191,15 @@ class _ProfileCard extends StatelessWidget {
               fallbackIcon: Icons.person,
             ),
             const SizedBox(height: 14),
-            Text(
-              profile?.displayName ?? 'Rule34Video 账号',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            if (profile?.displayName case final displayName?)
+              Text(displayName, style: Theme.of(context).textTheme.titleLarge)
+            else
+              AppText(
+                'Rule34Video 账号',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
             const SizedBox(height: 6),
-            SelectableText('用户 ID：$userId'),
+            SelectableText(context.uiText('用户 ID：$userId')),
             if (profile?.subscribersLabel case final subscribers?) ...[
               const SizedBox(height: 4),
               Text(subscribers, style: Theme.of(context).textTheme.bodySmall),
@@ -209,7 +213,7 @@ class _ProfileCard extends StatelessWidget {
               TextButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh),
-                label: const Text('资料加载失败，重试'),
+                label: const AppText('资料加载失败，重试'),
               ),
             ],
           ],
@@ -238,8 +242,8 @@ class _WebsiteTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
         leading: Icon(icon),
-        title: Text(title),
-        subtitle: Text(subtitle),
+        title: AppText(title),
+        subtitle: AppText(subtitle),
         trailing: const Icon(Icons.open_in_new),
         onTap: () => _openExternal(context, uri),
       ),
@@ -268,9 +272,9 @@ class _CenteredMessage extends StatelessWidget {
           children: [
             Icon(icon, size: 52),
             const SizedBox(height: 16),
-            Text(title, style: Theme.of(context).textTheme.titleLarge),
+            AppText(title, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 8),
-            Text(message, textAlign: TextAlign.center),
+            AppText(message, textAlign: TextAlign.center),
           ],
         ),
       ),
@@ -285,7 +289,7 @@ Future<void> _openExternal(BuildContext context, Uri uri) async {
     if (context.mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(error.toString())));
+      ).showSnackBar(SnackBar(content: AppText(error.toString())));
     }
   }
 }
@@ -294,16 +298,16 @@ Future<void> _confirmLogout(BuildContext context, Rule34VideoApi api) async {
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('退出登录？'),
-      content: const Text('将删除本机保存的账号、密码和登录会话；设备下载与本地分类库不会受影响。'),
+      title: const AppText('退出登录？'),
+      content: const AppText('将删除本机保存的账号、密码和登录会话；设备下载与本地分类库不会受影响。'),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('取消'),
+          child: const AppText('取消'),
         ),
         FilledButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('退出'),
+          child: const AppText('退出'),
         ),
       ],
     ),
@@ -323,7 +327,7 @@ Future<void> _confirmLogout(BuildContext context, Rule34VideoApi api) async {
   if (logoutError != null) {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text('网站退出请求失败，但本地登录状态已经清除。')));
+    ).showSnackBar(const SnackBar(content: AppText('网站退出请求失败，但本地登录状态已经清除。')));
   }
   if (Navigator.of(context).canPop()) {
     Navigator.of(context).pop();

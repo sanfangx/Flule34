@@ -1,0 +1,2213 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for English (`en`).
+class AppLocalizationsEn extends AppLocalizations {
+  AppLocalizationsEn([String locale = 'en']) : super(locale);
+
+  @override
+  String get ui0aedf15f => '20–60 minutes';
+
+  @override
+  String get ui4ebe1e15 => 'Within 5 minutes';
+
+  @override
+  String get ui594005ec => '5–20 minutes';
+
+  @override
+  String get ui0be8a2c8 => '60+ minutes';
+
+  @override
+  String get ui6e93de1b => '===== Logs from the Last 7 Days =====';
+
+  @override
+  String get ui2e77e7e1 => '===== Diagnostic information =====';
+
+  @override
+  String get ui186386f2 => 'App Settings';
+
+  @override
+  String get ui14d5d228 => 'DeepL Plans and Endpoints';
+
+  @override
+  String get ui5532d8d0 => 'Flule34 Local Diagnostic Logs';
+
+  @override
+  String get ui514d16fd => 'Flule34 translation library';
+
+  @override
+  String get ui57e4db6c => 'Git commit';
+
+  @override
+  String get ui4554eb7e =>
+      'GitHub temporarily rejected the update request. Try again later or switch networks.';
+
+  @override
+  String get ui1bcd541a => 'GitHub source code';
+
+  @override
+  String get ui103930a8 =>
+      'Adding an email address can increase MyMemory\'s free quota.';
+
+  @override
+  String get ui2c98e3c6 => 'Rule34Video Account';
+
+  @override
+  String get ui45943bf3 =>
+      'Use the default quality on Wi-Fi; up to 480p on mobile data';
+
+  @override
+  String get ui34eda443 => 'Up to 720p on Wi-Fi; up to 360p on mobile data';
+
+  @override
+  String ui3bebb943(String p0) {
+    return '$p0 · Downloaded';
+  }
+
+  @override
+  String ui152a8991(String p0) {
+    return '$p0 · Expired';
+  }
+
+  @override
+  String ui409b192f(String p0) {
+    return '$p0 · Verifying';
+  }
+
+  @override
+  String ui1e263a03(String p0) {
+    return '$p0 · Active';
+  }
+
+  @override
+  String ui167ae392(String p0) {
+    return '$p0 videos';
+  }
+
+  @override
+  String ui4e278fff(String p0) {
+    return '$p0 was added to the download queue.';
+  }
+
+  @override
+  String ui5e77ec72(String p0) {
+    return '$p0 is already in Downloads.';
+  }
+
+  @override
+  String ui67c16b0b(String p0) {
+    return '$p0 views';
+  }
+
+  @override
+  String ui3455223c(String p0) {
+    return 'Adding $p0 to the download queue.';
+  }
+
+  @override
+  String ui7025b0dd(String p0) {
+    return '$p0 votes';
+  }
+
+  @override
+  String ui69ba5039(String p0) {
+    return '$p0 connected';
+  }
+
+  @override
+  String ui44f14c54(String p0, String p1) {
+    return '$p0% · $p1 votes';
+  }
+
+  @override
+  String ui278d8aed(String p0, String p1, String p2, String p3) {
+    return '$p0$p1; translation: $p2$p3';
+  }
+
+  @override
+  String ui581b1dd5(String p0) {
+    return '$p0 (added by built-in update';
+  }
+
+  @override
+  String ui5ab8d170(String p0, String p1) {
+    return '$p0 (added by built-in update v$p1)';
+  }
+
+  @override
+  String ui13d9e100(String p0, String p1) {
+    return '$p0 (curated $p1)';
+  }
+
+  @override
+  String get ui2046553b => 'One column';
+
+  @override
+  String get ui0b8ef7e3 => 'Previous';
+
+  @override
+  String get ui5e2af7ea => 'Uploader';
+
+  @override
+  String ui772dc31b(String p0) {
+    return 'Failed to load uploader data: $p0';
+  }
+
+  @override
+  String get ui58a06980 => 'Next';
+
+  @override
+  String get ui175900a0 => 'Download';
+
+  @override
+  String get ui564d53e4 =>
+      'The download was interrupted by the system. Try again.';
+
+  @override
+  String get ui5cfc38c2 =>
+      'The download was interrupted by the system. Try again.';
+
+  @override
+  String get ui16f20943 => 'Download failed';
+
+  @override
+  String get ui07298d42 =>
+      'Downloads are stored on this device. Logging out will not cancel them or delete files from the public folder.';
+
+  @override
+  String get ui29e8ad9e => 'Download file';
+
+  @override
+  String get ui5ecf7c24 => 'The downloaded file and its record were deleted.';
+
+  @override
+  String get ui7fc5cfeb =>
+      'The downloaded file is no longer available, or no app can play this MP4.';
+
+  @override
+  String get ui180a6fbf => 'Download quality';
+
+  @override
+  String get ui3187db03 => 'Download record deleted.';
+
+  @override
+  String get ui49483396 => 'Download settings';
+
+  @override
+  String get ui350fa41c =>
+      'Downloaded videos or account data will not be deleted.';
+
+  @override
+  String get ui10ebf8e5 => 'Does not exist';
+
+  @override
+  String get ui34e49ede => 'No limit';
+
+  @override
+  String get ui6c2ca0b8 => 'No time limit';
+
+  @override
+  String get ui733128eb => 'No time limit';
+
+  @override
+  String get ui7447788f => 'Two columns';
+
+  @override
+  String get ui557a9537 => 'Theme';
+
+  @override
+  String get ui7b7ae9f2 => 'Theme mode';
+
+  @override
+  String get ui11b84182 => 'Download over Wi-Fi only';
+
+  @override
+  String get ui3d863311 => 'Download over Wi-Fi only';
+
+  @override
+  String ui49859040(String p0) {
+    return 'Stored only on this device, automatically redacted, and retained for 7 days.\n$p0';
+  }
+
+  @override
+  String get ui3bf7470b => 'Delete record only';
+
+  @override
+  String get ui730f65d7 =>
+      'Only applies while a video is playing. Normal speed is restored when paused or after leaving the page.';
+
+  @override
+  String get ui709d26fa => 'Show only verified uploaders';
+
+  @override
+  String get ui51418311 =>
+      'Saved per account after login. When disabled, new searches are no longer recorded.';
+
+  @override
+  String get ui44ac200e => 'Play continuously from the start';
+
+  @override
+  String get ui4a42f091 =>
+      'You can delete only the download record and keep the video, or also delete the video from the public folder.';
+
+  @override
+  String get ui566537cc => 'Use translation service';
+
+  @override
+  String get ui65962099 => 'For example: Favorite animations, To organize';
+
+  @override
+  String get ui29629697 => 'Save';
+
+  @override
+  String get ui76444c7d => 'Save search history';
+
+  @override
+  String ui4dc6233e(String p0) {
+    return 'Failed to save update channel: $p0';
+  }
+
+  @override
+  String ui69df41e4(String p0) {
+    return 'Failed to save translation: $p0';
+  }
+
+  @override
+  String ui696410b7(String p0) {
+    return 'Failed to save translation service: $p0';
+  }
+
+  @override
+  String ui3e44bdb9(String p0) {
+    return 'Failed to save settings: $p0';
+  }
+
+  @override
+  String get ui65d91d2b => 'Keep current device orientation';
+
+  @override
+  String get ui4f586a83 => 'Keep videos downloaded to the public folder';
+
+  @override
+  String get ui30350f33 => 'Change password';
+
+  @override
+  String get ui043de786 => 'Change email address';
+
+  @override
+  String get ui4fcf2a14 => 'Full screen';
+
+  @override
+  String get ui784e54fd => 'Full-screen orientation';
+
+  @override
+  String get ui0e1cd927 => 'All';
+
+  @override
+  String get ui2a504352 => 'Clear all';
+
+  @override
+  String ui78d96dee(String p0, String p1, String p2) {
+    return '$p0 tasks · $p1 completed · About $p2 used';
+  }
+
+  @override
+  String ui3b4a622d(String p0, String p1, String p2, String p3) {
+    return 'Total $p0 items · Built-in $p1 · API $p2 · User $p3';
+  }
+
+  @override
+  String get ui166298c5 => 'About Flule34';
+
+  @override
+  String get ui13bc9fa5 => 'Follow';
+
+  @override
+  String get ui54d03562 =>
+      'The categories, artists, or users you follow have no videos to show right now.';
+
+  @override
+  String get ui47de51e1 =>
+      'The Following feed brings together categories, artists, users, and playlists you subscribe to on the website.';
+
+  @override
+  String get ui29c40c72 =>
+      'Turning this off will clear all playback progress stored on this device.';
+
+  @override
+  String get ui02e95068 => 'Turn off and clear';
+
+  @override
+  String get ui08354b81 => 'Turn off resume playback?';
+
+  @override
+  String get ui2bbc0423 => 'Content preference';
+
+  @override
+  String get ui4804490f => 'Content settings';
+
+  @override
+  String get ui38d59e4d => 'Built-in';
+
+  @override
+  String get ui2f5fd7d1 => 'Share';
+
+  @override
+  String get ui55599ffb => 'Category';
+
+  @override
+  String get ui38fe9b1d => 'Repeat list';
+
+  @override
+  String get ui309e167e => 'List order';
+
+  @override
+  String get ui0c2c660a =>
+      'Create a local library, then use the “Local libraries” button on any video to save it here.';
+
+  @override
+  String get ui1ae0ab8e => 'Delete';
+
+  @override
+  String get ui1cb9a6d7 => 'Delete API translations';
+
+  @override
+  String ui2d23933f(String p0) {
+    return 'Delete \"$p0\"?';
+  }
+
+  @override
+  String get ui3913a7a5 => 'Delete download?';
+
+  @override
+  String get ui6beb71f2 => 'Delete all download records';
+
+  @override
+  String get ui4e3e94a5 => 'Delete all download records and associated videos';
+
+  @override
+  String get ui32521bda =>
+      'Delete all download records and any matching videos still in the public folder. Records are kept when their files cannot be deleted.';
+
+  @override
+  String get ui499f4bf1 => 'Delete all invalid download records';
+
+  @override
+  String get ui7622d7c4 =>
+      'Delete every download record whose exact file can no longer be found. External files are not modified.';
+
+  @override
+  String get ui42079bac => 'Delete selected API translations?';
+
+  @override
+  String get ui6882566e => 'Delete file and record';
+
+  @override
+  String ui13dbc37c(String p0) {
+    return 'Failed to delete translation service: $p0';
+  }
+
+  @override
+  String get ui377546a6 => 'Delete translation service?';
+
+  @override
+  String get ui58aa0fc9 => 'Delete custom translation';
+
+  @override
+  String get ui59ee6b29 => 'Delete all app logs from this device.';
+
+  @override
+  String get ui057a59bf => 'Refresh';
+
+  @override
+  String get ui1a88cf99 =>
+      'No playable video source was found after refreshing.';
+
+  @override
+  String ui30d8aa7b(String p0) {
+    return 'The $p0 download source is no longer available after refreshing.';
+  }
+
+  @override
+  String ui1adad0d8(String p0) {
+    return 'The $p0 download source is no longer available after refreshing. Select another quality.';
+  }
+
+  @override
+  String ui1b5c10c1(String p0) {
+    return 'Failed to refresh video URL: $p0';
+  }
+
+  @override
+  String ui7050fd74(String p0) {
+    return 'Failed to load next video: $p0';
+  }
+
+  @override
+  String get ui11255e4d => 'Failed to load video.';
+
+  @override
+  String get ui2fbeba49 =>
+      'Select the content types to translate automatically. A request is sent only when no local translation exists and an available translation service is configured. All types are off by default.';
+
+  @override
+  String get ui3caea101 => 'Package name';
+
+  @override
+  String ui3c554cab(String p0) {
+    return 'Matching translation: $p0';
+  }
+
+  @override
+  String get ui71c021b7 => 'Repeat one video';
+
+  @override
+  String get ui1a330a72 => 'History';
+
+  @override
+  String get ui51fa37c2 => 'All-time highest-rated artist';
+
+  @override
+  String get ui6ffe0a80 => 'Original';
+
+  @override
+  String get ui54ec6c15 => 'Original + translation';
+
+  @override
+  String get ui2e2d0cb3 => 'Published';
+
+  @override
+  String get ui0ccf8adf => 'Discover';
+
+  @override
+  String ui0e705d18(String p0) {
+    return 'New version $p0 found.';
+  }
+
+  @override
+  String ui07cfc2d2(String p0) {
+    return 'Content preference: $p0';
+  }
+
+  @override
+  String get ui1cdb9be3 => 'Cancel';
+
+  @override
+  String get ui0d684dfd => 'Remove from favorites';
+
+  @override
+  String get ui5eb70fab => 'Unsubscribe';
+
+  @override
+  String get ui78c52651 => 'Deselect';
+
+  @override
+  String ui072ad981(String p0) {
+    return 'There are also $p0 built-in translations used only for auditing,';
+  }
+
+  @override
+  String get ui62d7fea9 =>
+      'Only the search history of the current account on this device will be deleted. This action cannot be undone.';
+
+  @override
+  String get ui35027352 =>
+      'Only the search history of the current account on this device will be cleared.';
+
+  @override
+  String get ui73b35752 =>
+      'Delete all download records from the app while keeping videos saved in Download/Flule34. Active tasks are canceled first.';
+
+  @override
+  String get ui5a6e7dac =>
+      'Only local library records are deleted. Website favorites, history, and downloaded videos are not affected.';
+
+  @override
+  String get ui4f2368e4 =>
+      'Remove only records whose files can no longer be found';
+
+  @override
+  String get ui713b1fb0 =>
+      'You can remove only the record from the app, or also try to delete the external file it references.';
+
+  @override
+  String get ui76ae23ba =>
+      'It can follow the interface language or be specified separately; translations in different target languages will be saved separately.';
+
+  @override
+  String get ui19e0d4bf => 'Same-sex';
+
+  @override
+  String get ui2b2e17e5 => 'Number of simultaneous download tasks';
+
+  @override
+  String get ui09e67cd1 => 'Also delete matching videos from the public folder';
+
+  @override
+  String get ui3898538c =>
+      'All conditions are combined with AND. You can select up to five options of each type.';
+
+  @override
+  String get ui73f2614f => 'Name';
+
+  @override
+  String get ui3a38a6d4 => 'Background task in progress';
+
+  @override
+  String get ui7f54b07b => 'Background playback';
+
+  @override
+  String get ui4763b5c2 => 'No';
+
+  @override
+  String get ui63f37124 => 'Videos matching any exclusion condition are hidden';
+
+  @override
+  String get ui3791c2b8 => 'Back to top';
+
+  @override
+  String get ui03a2a222 => 'Image cache cleared.';
+
+  @override
+  String get ui796e3b4c =>
+      'Stored on this device, independent of the signed-in account';
+
+  @override
+  String get ui12562321 =>
+      'Change your avatar, name, and public profile on the website';
+
+  @override
+  String get ui304779ae => 'Manage uploaded videos on the website';
+
+  @override
+  String get ui1f55def5 => 'Base URL';
+
+  @override
+  String get ui6bdfd846 => 'Basic filters';
+
+  @override
+  String get ui461541d8 => 'Copy';
+
+  @override
+  String get ui5dd6981a =>
+      'Copy a summary of the version, device, and settings. Cookies and passwords are excluded.';
+
+  @override
+  String ui61570e3e(String p0) {
+    return 'Failed to duplicate translation service: $p0';
+  }
+
+  @override
+  String get ui0ca5a4ba => 'Copy diagnostic information';
+
+  @override
+  String get ui2a4866c9 => 'The external file size has changed.';
+
+  @override
+  String get ui46887217 => 'The external file no longer exists.';
+
+  @override
+  String get ui510839e9 => 'The external file has been renamed.';
+
+  @override
+  String get ui3be928a0 => 'The external file cannot currently be read.';
+
+  @override
+  String get ui158640ea => 'Always use the default quality';
+
+  @override
+  String get ui17588e00 => 'Library';
+
+  @override
+  String get ui344971fc => 'Exists';
+
+  @override
+  String get ui60514b78 => 'Merge safely';
+
+  @override
+  String get ui5baf4155 => 'Password';
+
+  @override
+  String ui65cceef6(String p0) {
+    return 'Import failed: $p0';
+  }
+
+  @override
+  String get ui4181e94a => 'Import and export';
+
+  @override
+  String get ui347e69e0 => 'Prefer imported file';
+
+  @override
+  String get ui7b8b8627 =>
+      'They will be ignored during import. Choose how to handle conflicts.';
+
+  @override
+  String get ui3447243f => 'Import translation library';
+
+  @override
+  String get ui29108110 => 'Export logs';
+
+  @override
+  String get ui561390c3 => 'Failed to export logs. Try again later.';
+
+  @override
+  String ui4bddfd15(String p0) {
+    return 'Exported at: $p0';
+  }
+
+  @override
+  String get ui1a3a31c6 => 'Export translation library';
+
+  @override
+  String get ui2d28ccb0 => 'Failed to export translation library.';
+
+  @override
+  String ui0d4b5d1d(String p0) {
+    return '“$p0” and its locally stored key will be deleted.';
+  }
+
+  @override
+  String get ui5116cc17 =>
+      'Accounts, passwords, and login sessions saved on this device will be deleted. Downloads and local libraries are not affected.';
+
+  @override
+  String get ui206e15fd =>
+      'All diagnostic logs on this device will be deleted and cannot be undone.';
+
+  @override
+  String ui61998fc7(String p0) {
+    return '$p0 API translations will be permanently deleted. Manually entered and built-in translations will be kept.';
+  }
+
+  @override
+  String get ui2d851aa0 => 'Not signed in';
+
+  @override
+  String ui5a665aac(String p0) {
+    return '$p0 has not been selected yet';
+  }
+
+  @override
+  String get ui7d437796 =>
+      'No translation service is configured. The built-in dictionary and manually entered translations are still available.';
+
+  @override
+  String get ui0543d520 => 'Downloaded';
+
+  @override
+  String ui4c1b3a95(String p0) {
+    return 'Removed from “$p0”.';
+  }
+
+  @override
+  String ui228152d7(String p0) {
+    return 'Removed from playlist \"$p0\".';
+  }
+
+  @override
+  String get ui1fa11a46 => 'Removed from playlist.';
+
+  @override
+  String get ui64769355 => 'Removed from local library.';
+
+  @override
+  String get ui55781737 => 'Off';
+
+  @override
+  String ui69dc1173(String p0) {
+    return '$p0 download records have been deleted.';
+  }
+
+  @override
+  String ui5ed2011c(String p0, String p1) {
+    return '$p0 items have been deleted, $p1 items could not be deleted.';
+  }
+
+  @override
+  String ui5846e503(String p0) {
+    return 'Added to “$p0”.';
+  }
+
+  @override
+  String ui6b12697d(String p0) {
+    return 'Added to playlist \"$p0\".';
+  }
+
+  @override
+  String get ui670889d8 => 'Added to favorites.';
+
+  @override
+  String get ui37453e63 => 'Canceled';
+
+  @override
+  String get ui7bbd0e24 => 'Removed from favorites.';
+
+  @override
+  String get ui34a0e3be => 'Unsubscribed.';
+
+  @override
+  String ui1db0bde1(String p0) {
+    return 'Learned title · $p0';
+  }
+
+  @override
+  String ui7a8ce229(String p0) {
+    return 'Imported $p0 translation layers';
+  }
+
+  @override
+  String get ui0de2ecda => 'On';
+
+  @override
+  String get ui0077d937 => 'Favorited';
+
+  @override
+  String ui2ce07361(String p0) {
+    return 'Created and added to playlist \"$p0\".';
+  }
+
+  @override
+  String get ui1a7827b1 => 'Paused';
+
+  @override
+  String get ui49531ef1 => 'You\'ve reached the end';
+
+  @override
+  String get ui15a96bf1 => 'A local library with the same name already exists.';
+
+  @override
+  String get ui69288ef8 => 'Already the last video in the playlist.';
+
+  @override
+  String get ui24d4c17d => 'Subscribed';
+
+  @override
+  String get ui426dc524 => 'Subscribed.';
+
+  @override
+  String get ui59a2ec21 => 'Subscribed to uploader.';
+
+  @override
+  String ui21a8fcc4(String p0) {
+    return '$p0 items selected';
+  }
+
+  @override
+  String get ui538facf2 => 'Added back to the download queue.';
+
+  @override
+  String get ui1d982807 => 'Verified uploader';
+
+  @override
+  String get ui563d1236 => 'Help and feedback';
+
+  @override
+  String get ui62a81a58 => 'Platform';
+
+  @override
+  String get ui70131201 => 'Library name';
+
+  @override
+  String get ui14bf4ac7 => 'Library name cannot be empty.';
+
+  @override
+  String get ui643b8cff => 'Apply';
+
+  @override
+  String ui7be16f02(String p0) {
+    return 'Apply $p0 filters';
+  }
+
+  @override
+  String get ui103ff6bd => 'App initialization complete.';
+
+  @override
+  String get ui75af3770 => 'App logs';
+
+  @override
+  String get ui38f27f7a => 'App logs cleared.';
+
+  @override
+  String get ui390d6cf3 => 'Apply (no limit)';
+
+  @override
+  String get ui0a663237 =>
+      'When enabled, audio keeps playing after switching apps or turning off the screen.';
+
+  @override
+  String get ui13034753 => 'Open source license';
+
+  @override
+  String get ui1fbbcc39 => 'Opposite-sex';
+
+  @override
+  String get ui573acdd9 =>
+      'The active task is canceled first. You can delete only its record or also remove the incomplete file.';
+
+  @override
+  String get ui3c131161 =>
+      'There are no matches for the currently loaded content.';
+
+  @override
+  String get ui73c532ff => 'You\'re up to date.';
+
+  @override
+  String get ui34a6f44b =>
+      'The current development build does not have an update source configured';
+
+  @override
+  String get ui2c29265e =>
+      'The current development build does not have an update source configured.';
+
+  @override
+  String get ui309047a5 => 'Not currently logged in';
+
+  @override
+  String get ui5cc85dd9 => 'No repository URL is configured for this build';
+
+  @override
+  String ui34dcc5aa(String p0) {
+    return 'Current version: $p0';
+  }
+
+  @override
+  String get ui1ef7e413 => 'Current account ID';
+
+  @override
+  String get ui4f25fec3 => 'Repeat playback';
+
+  @override
+  String get ui761f6d4f => 'Include all';
+
+  @override
+  String get ui5362cf1f => 'Forgot password';
+
+  @override
+  String ui13e52148(String p0) {
+    return 'Skip $p0 built-in translations.';
+  }
+
+  @override
+  String get ui1f9121af => 'Restore built-in translations';
+
+  @override
+  String get ui608e380c => 'Restore learned translations';
+
+  @override
+  String get ui67d3b06d => 'Profile';
+
+  @override
+  String get ui1065acd3 => 'My uploads';
+
+  @override
+  String get ui3ae6be59 => 'Use the quality selected above on all networks';
+
+  @override
+  String get ui2274fd3b => 'The selected local library no longer exists.';
+
+  @override
+  String get ui6fa5a093 => 'Open the GitHub releases page';
+
+  @override
+  String ui6ae92059(String p0) {
+    return 'Open the $p0 collection';
+  }
+
+  @override
+  String ui580f715d(String p0) {
+    return 'Failed to open download: $p0';
+  }
+
+  @override
+  String get ui02a64714 => 'Open official website';
+
+  @override
+  String get ui0d472be2 => 'Open website feedback form';
+
+  @override
+  String get ui0fb6d05e => 'Open the website message center';
+
+  @override
+  String get ui5c30a6ab => 'Futanari';
+
+  @override
+  String get ui52437893 => 'Batch delete';
+
+  @override
+  String ui41bd594d(String p0) {
+    return 'Number of votes ≥ $p0';
+  }
+
+  @override
+  String get ui7069486d =>
+      'The report excludes cookies, passwords, email addresses, user ID values, and Android device identifiers. Review it before sending anyway.';
+
+  @override
+  String get ui7d6a579d => 'Fetch model list';
+
+  @override
+  String get ui65af3a45 => 'Sort by original text';
+
+  @override
+  String get ui55e84e41 => 'By name';
+
+  @override
+  String get ui384e319d => 'Sort by most recently updated';
+
+  @override
+  String get ui7ab117f8 => 'Sort by source';
+
+  @override
+  String get ui70c4de19 => 'Explore by tags and topics';
+
+  @override
+  String get ui0db93df0 => 'Browse popular content by view count';
+
+  @override
+  String get ui05f1a141 => 'Sort by translation';
+
+  @override
+  String get ui4f8317d3 => 'Sort';
+
+  @override
+  String ui702bc146(String p0) {
+    return 'Sort: $p0';
+  }
+
+  @override
+  String get ui6b955ece => 'Rankings';
+
+  @override
+  String get ui077c6159 => 'Exclude';
+
+  @override
+  String get ui20d42365 => 'Exclude content';
+
+  @override
+  String get ui549d6c00 => 'Exclude:';
+
+  @override
+  String get ui3cca6594 => 'Explore content';
+
+  @override
+  String get ui6ec4c172 => 'API format';
+
+  @override
+  String get ui7daaecfb =>
+      'The API format or server has changed. Re-enter the API key.';
+
+  @override
+  String get ui4aa4bf66 => 'Description (optional)';
+
+  @override
+  String ui0c0bc8f8(String p0) {
+    return 'Failed to submit background download task: $p0';
+  }
+
+  @override
+  String get ui48d043db =>
+      'Tip: Touch and hold a title, category, or tag to add or edit its translation.';
+
+  @override
+  String get ui7365d58c => 'Search';
+
+  @override
+  String ui0726d620(String p0) {
+    return 'Search $p0';
+  }
+
+  @override
+  String ui35022cd6(String p0) {
+    return 'Search all $p0';
+  }
+
+  @override
+  String get ui72dba787 => 'Search history';
+
+  @override
+  String get ui60e69fcd => 'Search history cleared.';
+
+  @override
+  String get ui7dd406e9 => 'Failed to clear search history. Try again later.';
+
+  @override
+  String get ui358b0b68 =>
+      'Search originals, translations, or translation services';
+
+  @override
+  String get ui6e169d07 => 'Search loaded videos';
+
+  @override
+  String get ui66473d1e =>
+      'The search was successful, but the history save failed.';
+
+  @override
+  String get ui7f749006 => 'Search playlist';
+
+  @override
+  String get ui6d63717d => 'Search for videos in a playlist';
+
+  @override
+  String get ui105d8758 => 'Search favorite videos';
+
+  @override
+  String get ui7d976e17 => 'Search local libraries';
+
+  @override
+  String get ui342ff046 => 'Search videos in this library';
+
+  @override
+  String get ui6cb88a74 => 'Search videos in this subscription';
+
+  @override
+  String get ui35231688 => 'Search watch history';
+
+  @override
+  String get ui0e1e2e67 => 'Search videos, tags, categories, or artists';
+
+  @override
+  String get ui49f810e0 => 'Search subscriptions';
+
+  @override
+  String get ui761a4e53 => 'Failed to delete search history. Try again later.';
+
+  @override
+  String get ui645e5e1c => 'Undo customization';
+
+  @override
+  String get ui73d23748 => 'Play';
+
+  @override
+  String get ui16f3ad93 => 'Playlist';
+
+  @override
+  String ui2189de41(String p0) {
+    return 'Playlist $p0';
+  }
+
+  @override
+  String get ui264bb7d8 =>
+      'The playlist will be deleted from the website account.';
+
+  @override
+  String get ui1f1bcb06 => 'Playlist created.';
+
+  @override
+  String get ui32c513bd =>
+      'The playlist was created, but the new list could not be read.';
+
+  @override
+  String get ui080bbabb => 'Playlist deleted.';
+
+  @override
+  String get ui49fa8b9b => 'Playlist updated.';
+
+  @override
+  String get ui5ba71ce6 => 'Invalid playlist playback parameters.';
+
+  @override
+  String get ui7e8be483 =>
+      'The player did not report the video duration after initialization.';
+
+  @override
+  String get ui206c2436 => 'Play file';
+
+  @override
+  String get ui46f59caf => 'Keep the screen on during playback';
+
+  @override
+  String get ui1c97d427 => 'Playback quality';
+
+  @override
+  String get ui3940d7b7 =>
+      'If a playback source expires, the app requests the video details again. If playback still fails, copy the diagnostic information and include the video link and selected quality in your report.';
+
+  @override
+  String get ui03f9adce => 'Playback settings';
+
+  @override
+  String get ui5caccc11 => 'Playback speed';
+
+  @override
+  String get ui21658def => 'Playback issues';
+
+  @override
+  String get ui31d7af87 =>
+      'The operation could not be completed. Try again later.';
+
+  @override
+  String get ui0d933ab7 => 'Favorites';
+
+  @override
+  String get ui60768862 => 'There are no videos in favorites yet.';
+
+  @override
+  String get ui00b01c4f => 'Failed to load favorite status. Tap to retry';
+
+  @override
+  String get ui053602da => 'Database structure';
+
+  @override
+  String get ui1ce03cf7 => 'File does not exist';
+
+  @override
+  String ui37efec5c(String p0) {
+    return 'The file contains $p0 API translations,';
+  }
+
+  @override
+  String get ui17e77337 => 'New';
+
+  @override
+  String get ui1b46740e =>
+      'New tasks wait for a network that meets these conditions. Existing tasks are not changed retroactively.';
+
+  @override
+  String get ui1062b8a1 => 'Create playlist';
+
+  @override
+  String get ui264c8716 => 'Create local library';
+
+  @override
+  String get ui742da263 => 'Create translation service';
+
+  @override
+  String get ui3180d36c => 'Unable to save the video to Download/Flule34.';
+
+  @override
+  String ui180bd386(String p0) {
+    return 'Unable to open share panel: $p0';
+  }
+
+  @override
+  String ui3a33698e(String p0) {
+    return 'Unable to play this video source: $p0';
+  }
+
+  @override
+  String ui310db05f(String p0) {
+    return 'Unable to generate diagnostic information: $p0';
+  }
+
+  @override
+  String get ui0b6ddbbb =>
+      'Unable to connect to GitHub. Check your network and try again.';
+
+  @override
+  String get ui005f5ce7 => 'Japanese';
+
+  @override
+  String get ui60361df0 => 'Legacy custom endpoint';
+
+  @override
+  String get ui3754e1ab => 'Duration';
+
+  @override
+  String get ui194644ca => 'Longest duration';
+
+  @override
+  String get ui16b646f4 => 'Yes';
+
+  @override
+  String get ui6a379702 => 'Show password';
+
+  @override
+  String get ui5e0f4440 => 'Display settings';
+
+  @override
+  String get ui7b1cd931 => 'Pause';
+
+  @override
+  String get ui585c23ff =>
+      'Unable to check for updates right now. Try again later.';
+
+  @override
+  String get ui47bde52d => 'Preview is temporarily unavailable';
+
+  @override
+  String get ui2effb403 => 'There are currently no popular tags to display.';
+
+  @override
+  String get ui38e45090 => 'More options';
+
+  @override
+  String get ui2ec2c481 => 'Update check completed.';
+
+  @override
+  String get ui17e1bbfa => 'Update source';
+
+  @override
+  String get ui0beabc18 =>
+      'No Android release is available from the update source.';
+
+  @override
+  String ui55d54121(String p0) {
+    return 'Update source: $p0';
+  }
+
+  @override
+  String get ui1d030a86 => 'Update channel';
+
+  @override
+  String get ui69112ae8 => 'Minimum number of votes';
+
+  @override
+  String get ui65f28853 => 'Minimum like ratio';
+
+  @override
+  String get ui51a023ab => 'Minimum number of votes';
+
+  @override
+  String get ui2b705f61 => 'Most viewed';
+
+  @override
+  String get ui347c998f => 'Latest';
+
+  @override
+  String get ui222ba90b => 'Newest created';
+
+  @override
+  String get ui368db057 => 'Most recently subscribed';
+
+  @override
+  String get ui23dfffd1 => 'Recently modified';
+
+  @override
+  String get ui6da2840c => 'Recently updated';
+
+  @override
+  String get ui5891390e => 'Recently added';
+
+  @override
+  String get ui3f66748c => 'Longest';
+
+  @override
+  String get ui72d8c6d5 => 'Best available';
+
+  @override
+  String get ui646cc4af => 'Highest rated';
+
+  @override
+  String get ui7ee4b38a => 'Service name';
+
+  @override
+  String ui5801f5b9(String p0, String p1) {
+    return 'Unhandled asynchronous error: $p0\n$p1';
+  }
+
+  @override
+  String ui1d2649c7(String p0) {
+    return 'No $p0 excluded';
+  }
+
+  @override
+  String get ui73b71caa => 'Not configured';
+
+  @override
+  String get ui593a76ae => 'Local libraries';
+
+  @override
+  String get ui7afe5844 =>
+      'Local libraries do not require an account. Sign in to also access website favorites, history, and subscriptions.';
+
+  @override
+  String get ui0760582c => 'Local library';
+
+  @override
+  String get ui5af2b9c7 => 'Local diagnostic log';
+
+  @override
+  String get ui609a0e8a => 'Downloads on this device';
+
+  @override
+  String get ui010aee81 => 'Download records on this device';
+
+  @override
+  String get ui21a44385 => 'Source';
+
+  @override
+  String get ui458ff22a => 'Build time';
+
+  @override
+  String get ui06231f4e => 'Build mode';
+
+  @override
+  String get ui3a3a5f44 => 'Find artist page';
+
+  @override
+  String get ui32e834c8 =>
+      'View licenses for Flule34 and third-party Flutter dependencies';
+
+  @override
+  String get ui3c5ed424 => 'View public profile, uploads, and public favorites';
+
+  @override
+  String get ui682b70e0 =>
+      'View and copy a runtime summary with credentials excluded';
+
+  @override
+  String get ui37042e79 => 'View diagnostic information';
+
+  @override
+  String get ui3d8dc836 => 'Tag';
+
+  @override
+  String get ui669643c5 => 'Title';
+
+  @override
+  String get ui04e99c7b =>
+      'Choose Original, Translation, or Both separately for titles, categories, and tags.';
+
+  @override
+  String get ui308c78ab => 'Check for updates';
+
+  @override
+  String ui5822474f(String p0) {
+    return 'Check for updates failed: $p0';
+  }
+
+  @override
+  String get ui3535d913 => 'The update check timed out. Try again later.';
+
+  @override
+  String ui35ec3fa1(String p0) {
+    return 'Model list pull failed: $p0';
+  }
+
+  @override
+  String get ui703ce28e => 'Model name';
+
+  @override
+  String get ui1375925f => 'Blur video thumbnails';
+
+  @override
+  String get ui43f69efd => 'Downloading';
+
+  @override
+  String ui210fbca4(String p0) {
+    return 'Downloading · $p0';
+  }
+
+  @override
+  String get ui34d9a170 => 'Refreshing video URL…';
+
+  @override
+  String get ui57036f5e => 'Processing';
+
+  @override
+  String get ui1e85b6dc => 'Playing media';
+
+  @override
+  String ui01c66e0e(String p0, String p1) {
+    return 'Organizing followed content $p0/$p1';
+  }
+
+  @override
+  String get ui37674019 => 'Loading all videos…';
+
+  @override
+  String get ui5323d64f => 'Loading available qualities…';
+
+  @override
+  String get ui334203a0 => 'Loading favorite status';
+
+  @override
+  String get ui0c3a23f3 => 'Reading log information...';
+
+  @override
+  String get ui6b2b15cb => 'Loading recent updates…';
+
+  @override
+  String ui40cc44ec(String p0, String p1) {
+    return 'Loading recent updates ($p0/$p1)';
+  }
+
+  @override
+  String get ui3016a852 => 'Loading version…';
+
+  @override
+  String get ui3de0c840 => 'Connecting';
+
+  @override
+  String get ui108cc700 =>
+      'This build does not have a GitHub Releases update source configured.';
+
+  @override
+  String get ui3a0a0c97 => 'This video has no directly playable MP4 source.';
+
+  @override
+  String get ui02c5ad74 =>
+      'There is no downloadable MP4 source for this video.';
+
+  @override
+  String get ui7cb7a0c5 =>
+      'This video source is still unavailable. Try refreshing the video URL again.';
+
+  @override
+  String get ui62dcc4bc => 'Load a new batch of random videos each time';
+
+  @override
+  String get ui51c846f1 => 'Ask every time';
+
+  @override
+  String get ui68fbffba => 'No location is available for the completed file.';
+
+  @override
+  String get ui13ed4ac5 => 'No matching loaded content.';
+
+  @override
+  String get ui5198af87 => 'There are no logs to export.\n';
+
+  @override
+  String ui61fe8d4a(String p0, String p1) {
+    return 'No matching $p1 found for \"$p0\".';
+  }
+
+  @override
+  String ui02a64c6e(String p0) {
+    return 'No matching $p0 found.';
+  }
+
+  @override
+  String get ui6143fb85 => 'No videos match all of these conditions.';
+
+  @override
+  String get ui2aa03638 =>
+      'No matching local tag translation or learned title translation was found.';
+
+  @override
+  String ui394bbe87(String p0) {
+    return 'No related $p0 found.';
+  }
+
+  @override
+  String get ui335a4697 => 'No matching videos were found.';
+
+  @override
+  String get ui3c55278f => 'No videos found.';
+
+  @override
+  String get ui2855d008 => 'No videos matched the search and filter criteria.';
+
+  @override
+  String get ui1cbeb77a => 'There are no matching download records.';
+
+  @override
+  String get ui3f6214e2 => 'There are no matching playlists.';
+
+  @override
+  String get ui5bcb2c9b => 'No local libraries match the filters.';
+
+  @override
+  String get ui3288b748 => 'No subscriptions match the filters.';
+
+  @override
+  String get ui1408d9d3 => 'There are no matching translations.';
+
+  @override
+  String get ui0e0207cc => 'Register an account';
+
+  @override
+  String get ui34dc8c2e => 'Registered email address';
+
+  @override
+  String get ui4782703e => 'Light';
+
+  @override
+  String get ui06cf3f13 => 'Test connection';
+
+  @override
+  String get ui2bce8045 => 'Browse site content categories';
+
+  @override
+  String get ui1bdcacb9 => 'Browse the site\'s highest-rated videos';
+
+  @override
+  String get ui4e94fd7c => 'Dark';
+
+  @override
+  String get ui68aa72b8 => 'Add';
+
+  @override
+  String get ui28b4fe80 => 'Quality';
+
+  @override
+  String get ui1226aec8 => 'Clear';
+
+  @override
+  String get ui66d1872a => 'Clear search history?';
+
+  @override
+  String get ui3c5a0f54 => 'Clear';
+
+  @override
+  String get ui1e1dc2c5 => 'Clear image cache';
+
+  @override
+  String ui198292d1(String p0) {
+    return 'Failed to clear image cache: $p0';
+  }
+
+  @override
+  String get ui2b78b9a7 => 'Clear app logs?';
+
+  @override
+  String get ui62aa01c1 => 'Clear current account search history';
+
+  @override
+  String get ui04093a21 => 'Clear search';
+
+  @override
+  String ui21987264(String p0) {
+    return 'Failed to clear search history: $p0';
+  }
+
+  @override
+  String get ui03f9bc1e => 'Clear search history?';
+
+  @override
+  String ui0e4abc92(String p0) {
+    return 'Failed to clear playback progress: $p0';
+  }
+
+  @override
+  String get ui2b43d71b => 'Clear logs';
+
+  @override
+  String get ui1f517bea => 'Failed to clear logs. Try again later.';
+
+  @override
+  String get ui47882249 => 'Clear filters';
+
+  @override
+  String get ui21697b99 => 'Tap to return to the app';
+
+  @override
+  String ui26b5101f(String p0) {
+    return 'Like rate ≥ $p0%';
+  }
+
+  @override
+  String get ui1894e352 =>
+      'Consider the vote count together with the like ratio to avoid inflated results from only a few votes.';
+
+  @override
+  String get ui71e94df2 => 'Popular';
+
+  @override
+  String get ui41d23f81 => 'Popular tags';
+
+  @override
+  String get ui0e7f13ac => 'Popular tags are temporarily unavailable.';
+
+  @override
+  String get ui795ab7fb => 'Popular videos';
+
+  @override
+  String get ui5137980d =>
+      'Popular videos, top-rated videos, and artist rankings';
+
+  @override
+  String ui326c0193(String p0, String p1) {
+    return 'Version $p0+$p1';
+  }
+
+  @override
+  String ui3d81628e(String p0) {
+    return 'Version: $p0';
+  }
+
+  @override
+  String get ui4627f6e6 =>
+      'Create a text file containing diagnostic information and recent logs.';
+
+  @override
+  String get ui1be4cbb9 => 'User';
+
+  @override
+  String ui2ff2035d(String p0) {
+    return 'User ID: $p0';
+  }
+
+  @override
+  String ui07df625b(String p0) {
+    return 'User translations: $p0.\n\n';
+  }
+
+  @override
+  String get ui02ac0fa7 =>
+      'Identity verification and email changes are handled on the website';
+
+  @override
+  String get ui766b8c5d =>
+      'Identity verification and password changes are handled on the website';
+
+  @override
+  String get ui6f51d88d => 'Interface language';
+
+  @override
+  String get ui673b9a23 => 'Leave blank to keep the original key';
+
+  @override
+  String get ui3ad2af27 => 'Login';
+
+  @override
+  String get ui6ddcc3eb =>
+      'Sign in to sync website favorites, history, and subscriptions.';
+
+  @override
+  String get ui03ac75d2 => 'Log in to view content you follow';
+
+  @override
+  String get ui4bd42f4c =>
+      'After signing in, search history is stored securely for each account.';
+
+  @override
+  String get ui257d2512 => 'Target language';
+
+  @override
+  String get ui564ade2f => 'Relevance';
+
+  @override
+  String get ui5e5057d9 => 'Related videos';
+
+  @override
+  String get ui271e4b44 => 'OK';
+
+  @override
+  String ui5731dc83(String p0) {
+    return 'Unsubscribe from “$p0”?';
+  }
+
+  @override
+  String get ui10bfd59a => 'Confirm deletion';
+
+  @override
+  String get ui23a1a099 => 'Confirm batch deletion?';
+
+  @override
+  String get ui22d867a3 => 'votes';
+
+  @override
+  String get ui3e2a2939 => 'Most votes';
+
+  @override
+  String get ui07f3e573 => 'Remove from this library';
+
+  @override
+  String get ui332d29c7 => 'Remove from this playlist';
+
+  @override
+  String get ui3890123e => 'Remove invalid records';
+
+  @override
+  String get ui43f4c9b6 => 'Remove invalid records?';
+
+  @override
+  String get ui3250d80e => 'Stable version';
+
+  @override
+  String get ui68bc4e82 => 'Site messages';
+
+  @override
+  String get ui2ced8087 => 'Waiting for download';
+
+  @override
+  String get ui106c1db7 => 'Waiting for retry';
+
+  @override
+  String get ui373ece32 => 'Filter';
+
+  @override
+  String get ui65b9a0f6 => 'Filter and sort';
+
+  @override
+  String get ui0ea0c5c7 =>
+      'Filters apply only to loaded content. Keep scrolling to load more.';
+
+  @override
+  String ui354b30cc(String p0) {
+    return 'Filter loaded $p0';
+  }
+
+  @override
+  String get ui269190a8 => 'Filter playlist';
+
+  @override
+  String get ui72e0eba7 => 'Filter this library';
+
+  @override
+  String get ui2fe9e03b => 'Filter videos';
+
+  @override
+  String get ui78a24072 => 'Description';
+
+  @override
+  String get ui36e4a35c => 'Simplified Chinese';
+
+  @override
+  String get ui7aa38d36 => 'Type';
+
+  @override
+  String ui0dbe3ac7(String p0) {
+    return 'Curated library $p0 contains duplicate videos.';
+  }
+
+  @override
+  String get ui3ae9eef9 => 'Invalid curated library entry format.';
+
+  @override
+  String get ui6d95458c =>
+      'A curated library entry is missing required fields.';
+
+  @override
+  String get ui082a7d52 =>
+      'The curated library manifest contains duplicate identifiers.';
+
+  @override
+  String get ui05f173f7 => 'Invalid curated library manifest format.';
+
+  @override
+  String get ui48c2347b =>
+      'The curated library manifest is missing a version or library list.';
+
+  @override
+  String get ui45724236 => 'Invalid curated video entry format.';
+
+  @override
+  String get ui3c28fff7 => 'A curated video entry is missing required fields.';
+
+  @override
+  String get ui058d6015 =>
+      '系统中断|网络连接中断|connection reset|socketexception|timed?\\s*out|broken pipe';
+
+  @override
+  String get ui05a078da =>
+      'The system has not granted write access to the public download folder.';
+
+  @override
+  String get ui21f76d12 =>
+      'The system failed to add the task to the download queue.';
+
+  @override
+  String get ui111afc5c =>
+      'The system could not add the download back to the queue.';
+
+  @override
+  String get ui5cb65115 => 'Continue';
+
+  @override
+  String get ui0487b957 => 'Keep loading and searching';
+
+  @override
+  String get ui16709544 => 'Keep scrolling down';
+
+  @override
+  String get ui75e19e47 => 'Scroll down to load more';
+
+  @override
+  String get ui4a3ada55 => 'Continue entering manually';
+
+  @override
+  String get ui0e97bdd4 => 'Overall';
+
+  @override
+  String get ui49512531 => 'Edit';
+
+  @override
+  String get ui07922887 => 'Edit playlist';
+
+  @override
+  String get ui1d6b067d => 'Edit translation service';
+
+  @override
+  String get ui0faaeb98 => 'Edit translation';
+
+  @override
+  String get ui7d44f8fd => 'Edit profile';
+
+  @override
+  String get ui59c1fe85 => 'Profile on website';
+
+  @override
+  String get ui166970fa =>
+      'Website favorites, history, and subscriptions belong to the signed-in account. Local libraries are stored on the device and are independent of the account.';
+
+  @override
+  String get ui6d8a839a =>
+      'The website requires a verification code, so submission is completed in the system browser';
+
+  @override
+  String get ui52d40a61 => 'Website watch history is still empty.';
+
+  @override
+  String get ui49712caa =>
+      'The website sign-out request failed, but the local session was cleared.';
+
+  @override
+  String get ui22be6add => 'Website order';
+
+  @override
+  String get ui5c5b8e6e => 'Network playback policy';
+
+  @override
+  String get ui5d909650 =>
+      'The network connection was interrupted. Check your network and try again.';
+
+  @override
+  String ui4c8d7732(String p0) {
+    return 'Translation failed: $p0';
+  }
+
+  @override
+  String get ui20251330 => 'Translation library';
+
+  @override
+  String get ui0e144c39 => 'Translation services';
+
+  @override
+  String get ui4e721b57 => 'Translation target language';
+
+  @override
+  String get ui7312260a => 'Translation settings';
+
+  @override
+  String get ui42682f0b => 'Automatic';
+
+  @override
+  String get ui3a3ee33c =>
+      'Each automatic or manual request sends only the current title, tag, or category. Services are tried in order, with the next one used automatically after a failure. AI translation is recommended because it is usually more natural and accurate.';
+
+  @override
+  String get ui4e37cc82 => 'Automatic translation';
+
+  @override
+  String get ui1d2c54c2 => 'Artist';
+
+  @override
+  String get ui273d81af => 'Artist rankings';
+
+  @override
+  String get ui296bcd5e => 'Save data';
+
+  @override
+  String get ui7f179fc8 => 'Video';
+
+  @override
+  String get ui4fbae4c2 => 'Video save location: Download/Flule34';
+
+  @override
+  String get ui276089b3 =>
+      'The video URL is still unavailable after refreshing. Try again later.';
+
+  @override
+  String get ui538cdd02 =>
+      'The video URL was refreshed several times, but playback still failed. Try again manually later.';
+
+  @override
+  String get ui6ad9c53c => 'Video layout';
+
+  @override
+  String get ui37bdf9f3 => 'Video actions';
+
+  @override
+  String get ui604372e8 => 'Number of videos';
+
+  @override
+  String get ui7b794d8a => 'Video duration';
+
+  @override
+  String get ui63929b8d => 'Video source cannot be empty';
+
+  @override
+  String get ui6b6d2d3c =>
+      'Videos are written directly to the selected public folder. The default is Downloads/Flule34. Open Profile → Downloads and use the button in the top-right corner to change it.';
+
+  @override
+  String get ui3c64ae15 => 'Video details';
+
+  @override
+  String get ui6fbc2348 => 'Video preview';
+
+  @override
+  String get ui7b8f2379 => 'Unlock controls';
+
+  @override
+  String get ui6e7502fd => 'Subscribe';
+
+  @override
+  String get ui4c54789e => 'Subscriptions page layout';
+
+  @override
+  String get ui3c79fc19 => 'Remember playback position';
+
+  @override
+  String get ui5ab2c3c2 => 'Make private';
+
+  @override
+  String get ui592e7edb => 'Device';
+
+  @override
+  String get ui11313487 => 'Top rated';
+
+  @override
+  String get ui3ce65beb => 'Diagnostic information';
+
+  @override
+  String get ui442a175d => 'Diagnostic information copied.';
+
+  @override
+  String get ui0a2256ac => 'Translation';
+
+  @override
+  String get ui5e9e6941 => 'Translation cannot be empty';
+
+  @override
+  String get ui52575ad3 => 'Language display mode';
+
+  @override
+  String get ui7894fed1 => 'Enter a valid base URL first.';
+
+  @override
+  String get ui190ff633 => 'Enter the name, base URL, model, and API key.';
+
+  @override
+  String get ui61ca1aa4 => 'Please enter at least 2 characters.';
+
+  @override
+  String get ui61cb4e40 => 'Please enter your password.';
+
+  @override
+  String get ui196453a1 => 'Please enter your registered email address.';
+
+  @override
+  String get ui77044f29 =>
+      'Return to Profile and sign in to view account information.';
+
+  @override
+  String get ui6447b2e3 => 'Account and library';
+
+  @override
+  String get ui730cbb68 => 'Account and security';
+
+  @override
+  String get ui6527aff1 => 'There are no playlists in the account yet.';
+
+  @override
+  String get ui4f0bb3b1 => 'Quality conditions';
+
+  @override
+  String get ui5e2feb59 => 'Failed to load data. Retry';
+
+  @override
+  String get ui5236b1c3 => 'Follow interface language';
+
+  @override
+  String get ui1c47ee05 => 'Use system setting';
+
+  @override
+  String ui76da0fc0(String p0) {
+    return 'Skipped $p0,';
+  }
+
+  @override
+  String get ui739c6fd6 => 'Past week';
+
+  @override
+  String get ui5fd87a82 => 'Past year';
+
+  @override
+  String get ui431df5d6 => 'Past month';
+
+  @override
+  String get ui759f4739 => 'Past 2 days';
+
+  @override
+  String get ui7790bf0c => 'Past 24 hours';
+
+  @override
+  String get ui0a322b08 => 'Past 3 months';
+
+  @override
+  String get ui58a37252 => 'Back';
+
+  @override
+  String get ui10524b4c => 'There are no download tasks yet.';
+
+  @override
+  String get ui6e7397b9 => 'No search history yet.';
+
+  @override
+  String get ui71607183 => 'No local libraries yet';
+
+  @override
+  String get ui7a38235f => 'No subscriptions yet.';
+
+  @override
+  String get ui2f767daa => 'This uploader has not published any videos yet.';
+
+  @override
+  String get ui3d2b959e => 'There are no videos in this playlist yet.';
+
+  @override
+  String get ui1543885f => 'There are no videos in this local library yet.';
+
+  @override
+  String get ui08dc5995 => 'This subscription has no videos to show right now.';
+
+  @override
+  String get ui0432dab5 => 'There are currently no videos in this collection.';
+
+  @override
+  String get ui6c1512dd => 'Use landscape in full screen';
+
+  @override
+  String ui340178b5(String p0) {
+    return 'Connection failed: $p0';
+  }
+
+  @override
+  String get ui15cf6bb2 => 'Exit';
+
+  @override
+  String get ui61f69587 => 'Exit full screen';
+
+  @override
+  String get ui27d0dda9 => 'Sign out of current account';
+
+  @override
+  String get ui60423290 => 'Log out';
+
+  @override
+  String get ui0c4a5e14 => 'Log out?';
+
+  @override
+  String get ui1d37ed9d => 'Select download quality';
+
+  @override
+  String get ui38e27fe6 => 'Select current result';
+
+  @override
+  String get ui63947462 => 'Select local library';
+
+  @override
+  String get ui2bbcf0c4 => 'Select model';
+
+  @override
+  String get ui53e6ce38 =>
+      'Follow the system language or choose a fixed interface language';
+
+  @override
+  String get ui5b975d06 => 'Check using the configured GitHub Releases source';
+
+  @override
+  String get ui359a4400 => 'Email address (optional)';
+
+  @override
+  String get ui273538ab =>
+      'Some autocomplete suggestions are temporarily unavailable.';
+
+  @override
+  String get ui37f64133 => 'Rename';
+
+  @override
+  String get ui6fd9a2aa => 'Rename local library';
+
+  @override
+  String get ui68e799c1 => 'Download again';
+
+  @override
+  String get ui3161da01 => 'Check again';
+
+  @override
+  String get ui611079ce => 'Reset';
+
+  @override
+  String get ui3e06d854 => 'Retry';
+
+  @override
+  String get ui2fc2172a => 'Refresh and retry';
+
+  @override
+  String get ui1f5c932b => 'Retry loading next page';
+
+  @override
+  String get ui4a255d3c => 'Lock controls';
+
+  @override
+  String get ui4e1780ec => 'Touch and hold a video thumbnail to preview';
+
+  @override
+  String get ui06efd73d => 'Random';
+
+  @override
+  String get ui74a56f94 => 'Explore randomly';
+
+  @override
+  String get ui5d3798d3 => 'Privacy and data';
+
+  @override
+  String get ui249b111a => 'Privacy notice';
+
+  @override
+  String get ui1c5806b0 =>
+      'Privacy notice: Sensitive information is automatically redacted from logs. Review them before sending anyway.';
+
+  @override
+  String get ui4b4e6624 => 'Hide password';
+
+  @override
+  String get ui25621c61 =>
+      'Notification permission is required to reliably show background download progress.';
+
+  @override
+  String get ui2555aad7 => 'Music';
+
+  @override
+  String ui0727f3bc(String p0) {
+    return 'Volume $p0%';
+  }
+
+  @override
+  String get ui7f532d14 => 'Play in order';
+
+  @override
+  String get ui73db46a3 => 'Pre-release';
+
+  @override
+  String get ui17cde1d0 => 'Channel';
+
+  @override
+  String get ui4bb87ce1 => 'Home';
+
+  @override
+  String get ui75c36c5d =>
+      'Video thumbnails are blurred on Home, Search, and Library cards.';
+
+  @override
+  String get ui11750af9 => 'Default content preference on Home';
+
+  @override
+  String get ui669768f7 => 'Top rated';
+
+  @override
+  String get ui1773f316 => 'Highly rated videos';
+
+  @override
+  String get ui349affc5 => 'Default playback quality';
+
+  @override
+  String get ui41526a4f => 'Default order';
+
+  @override
+  String ui5c240b03(String p0, String p1) {
+    return '(API $p0, user $p1);';
+  }
+
+  @override
+  String get ui2102bc09 => '(curated)';
+}

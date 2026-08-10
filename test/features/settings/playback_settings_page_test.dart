@@ -9,6 +9,7 @@ import 'package:flule34/features/playback/data/playback_repository.dart';
 import 'package:flule34/features/settings/data/app_settings_repository.dart';
 import 'package:flule34/features/settings/data/app_settings_store.dart';
 import 'package:flule34/features/settings/presentation/settings_pages.dart';
+import 'package:flule34/shared/settings_controls.dart';
 
 void main() {
   testWidgets('关闭记忆播放进度需确认并清空全部本地记录', (tester) async {
@@ -36,8 +37,21 @@ void main() {
       ),
     );
 
-    final progressSwitch = find.widgetWithText(SwitchListTile, '记忆播放进度');
+    await tester.scrollUntilVisible(
+      find.text('记忆播放进度'),
+      300,
+      scrollable: find.byType(Scrollable).last,
+    );
+    final progressField = find.ancestor(
+      of: find.text('记忆播放进度'),
+      matching: find.byType(SettingsSwitchField),
+    );
+    final progressSwitch = find.descendant(
+      of: progressField,
+      matching: find.byType(Switch),
+    );
     await tester.ensureVisible(progressSwitch);
+    await tester.pumpAndSettle();
     await tester.tap(progressSwitch);
     await tester.pumpAndSettle();
 

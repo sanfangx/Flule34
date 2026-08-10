@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,6 +10,7 @@ import '../../app/router/route_names.dart';
 import '../../core/api/rule34video_api.dart';
 import '../../core/models/video_models.dart';
 import '../../shared/site_avatar.dart';
+import '../../shared/transient_focus.dart';
 import '../settings/domain/app_settings.dart';
 import 'subscription_actions.dart';
 
@@ -273,7 +275,7 @@ class _SubscriptionsListState extends ConsumerState<SubscriptionsList>
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(16, 2, 16, 10),
                 sliver: SliverToBoxAdapter(
-                  child: Text(
+                  child: AppText(
                     activity.totalSources > 0
                         ? '正在读取最近更新（${activity.scannedSources}/${activity.totalSources}）'
                         : '正在读取最近更新…',
@@ -283,7 +285,7 @@ class _SubscriptionsListState extends ConsumerState<SubscriptionsList>
             if (subscriptions.isEmpty)
               const SliverFillRemaining(
                 hasScrollBody: false,
-                child: Center(child: Text('没有符合条件的订阅。')),
+                child: Center(child: AppText('没有符合条件的订阅。')),
               )
             else
               SliverPadding(
@@ -357,7 +359,7 @@ class _SubscriptionsListState extends ConsumerState<SubscriptionsList>
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 2),
-                        Text(
+                        AppText(
                           resolved.kind.label,
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
@@ -377,7 +379,9 @@ class _SubscriptionsListState extends ConsumerState<SubscriptionsList>
                       width: 36,
                       height: 40,
                       child: PopupMenuButton<_SubscriptionAction>(
-                        tooltip: '更多操作',
+                        requestFocus: false,
+                        onOpened: dismissInputFocus,
+                        tooltip: context.uiText('更多操作'),
                         padding: EdgeInsets.zero,
                         iconSize: 20,
                         onSelected: (action) {
@@ -392,7 +396,7 @@ class _SubscriptionsListState extends ConsumerState<SubscriptionsList>
                               children: [
                                 Icon(Icons.notifications_off_outlined),
                                 SizedBox(width: 12),
-                                Text('取消订阅'),
+                                AppText('取消订阅'),
                               ],
                             ),
                           ),
@@ -435,12 +439,12 @@ class _SubscriptionsListState extends ConsumerState<SubscriptionsList>
       _removeSubscription(subscription);
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('已取消订阅。')));
+      ).showSnackBar(const SnackBar(content: AppText('已取消订阅。')));
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text(error.toString())));
+        ).showSnackBar(SnackBar(content: AppText(error.toString())));
       }
     } finally {
       if (mounted) {
@@ -473,12 +477,12 @@ class _SubscriptionsListState extends ConsumerState<SubscriptionsList>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(message, textAlign: TextAlign.center),
+                    AppText(message, textAlign: TextAlign.center),
                     if (onRetry != null) ...[
                       const SizedBox(height: 12),
                       OutlinedButton(
                         onPressed: onRetry,
-                        child: const Text('重试'),
+                        child: const AppText('重试'),
                       ),
                     ],
                   ],
@@ -500,11 +504,11 @@ class _SubscriptionsListState extends ConsumerState<SubscriptionsList>
             child: SearchBar(
               controller: _searchController,
               leading: const Icon(Icons.search),
-              hintText: '搜索订阅',
+              hintText: context.uiText('搜索订阅'),
               trailing: [
                 if (_query.isNotEmpty)
                   IconButton(
-                    tooltip: '清除',
+                    tooltip: context.uiText('清除'),
                     onPressed: () {
                       _searchController.clear();
                       setState(() => _query = '');
@@ -517,12 +521,15 @@ class _SubscriptionsListState extends ConsumerState<SubscriptionsList>
           ),
           const SizedBox(width: 8),
           PopupMenuButton<SubscriptionSort>(
-            tooltip: '排序',
+            requestFocus: false,
+            onOpened: dismissInputFocus,
+            tooltip: context.uiText('排序'),
             initialValue: _sort,
             onSelected: (value) => unawaited(_setSort(value)),
             itemBuilder: (context) => SubscriptionSort.values
                 .map(
-                  (item) => PopupMenuItem(value: item, child: Text(item.label)),
+                  (item) =>
+                      PopupMenuItem(value: item, child: AppText(item.label)),
                 )
                 .toList(growable: false),
             child: const Padding(

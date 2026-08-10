@@ -14,12 +14,15 @@ void main() {
     addTearDown(repository.dispose);
 
     await repository.load();
+    expect(repository.settings.language, AppLanguagePreference.system);
     expect(repository.settings.theme, AppThemePreference.system);
     expect(repository.settings.askDownloadQuality, isTrue);
     expect(repository.settings.playbackQuality, VideoQualityPreference.p1080);
     expect(repository.settings.videoPreviewEnabled, isTrue);
 
     await repository.setTheme(AppThemePreference.light);
+    await repository.setLanguage(AppLanguagePreference.japanese);
+    await repository.setTranslationTarget(TranslationTargetPreference.korean);
     await repository.setNetworkPlaybackPolicy(NetworkPlaybackPolicy.dataSaver);
     await repository.setKeepScreenAwake(false);
     await repository.setFullscreenOrientation(
@@ -29,6 +32,7 @@ void main() {
     await repository.setDownloadConcurrentTasks(3);
     await repository.setSaveSearchHistory(false);
     await repository.setAutoplay(true);
+    await repository.setLoopPlayback(true);
     await repository.setRememberPlaybackProgress(false);
     await repository.setWifiOnlyDownloads(true);
     await repository.setUpdateChannel(UpdateChannel.prerelease);
@@ -43,6 +47,11 @@ void main() {
     final restored = AppSettingsRepository(store);
     addTearDown(restored.dispose);
     await restored.load();
+    expect(restored.settings.language, AppLanguagePreference.japanese);
+    expect(
+      restored.settings.translationTarget,
+      TranslationTargetPreference.korean,
+    );
     expect(restored.settings.theme, AppThemePreference.light);
     expect(
       restored.settings.networkPlaybackPolicy,
@@ -57,6 +66,7 @@ void main() {
     expect(restored.settings.downloadConcurrentTasks, 3);
     expect(restored.settings.saveSearchHistory, isFalse);
     expect(restored.settings.autoplay, isTrue);
+    expect(restored.settings.loopPlayback, isTrue);
     expect(restored.settings.rememberPlaybackProgress, isFalse);
     expect(restored.settings.wifiOnlyDownloads, isTrue);
     expect(restored.settings.updateChannel, UpdateChannel.prerelease);

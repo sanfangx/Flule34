@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 
 import '../../core/api/rule34video_api.dart';
 import '../../core/models/video_models.dart';
+import '../../shared/transient_focus.dart';
 import 'playlist_form_dialog.dart';
 
 Future<String?> manageVideoAccountPlaylists({
@@ -16,35 +18,42 @@ Future<String?> manageVideoAccountPlaylists({
   if (!context.mounted) {
     return null;
   }
-  final selectedId = await showModalBottomSheet<String>(
-    context: context,
-    useSafeArea: true,
-    builder: (context) => ListView(
-      shrinkWrap: true,
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
-          child: Text('播放列表', style: Theme.of(context).textTheme.titleLarge),
-        ),
-        for (final item in playlists)
-          ListTile(
-            leading: const Icon(Icons.playlist_play),
-            title: Text(item.title),
-            subtitle: item.videoCount == null
-                ? null
-                : Text('${item.videoCount} 个视频'),
-            trailing: containedIds.contains(item.id)
-                ? const Icon(Icons.check_circle)
-                : null,
-            onTap: () => Navigator.pop(context, item.id),
+  final selectedId = await runWithoutRestoringInputFocus(
+    context,
+    () => showModalBottomSheet<String>(
+      context: context,
+      requestFocus: false,
+      useSafeArea: true,
+      builder: (context) => ListView(
+        shrinkWrap: true,
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
+            child: AppText(
+              '播放列表',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
           ),
-        ListTile(
-          leading: const Icon(Icons.playlist_add),
-          title: const Text('新建播放列表'),
-          onTap: () => Navigator.pop(context, _newPlaylistValue),
-        ),
-      ],
+          for (final item in playlists)
+            ListTile(
+              leading: const Icon(Icons.playlist_play),
+              title: Text(item.title),
+              subtitle: item.videoCount == null
+                  ? null
+                  : AppText('${item.videoCount} 个视频'),
+              trailing: containedIds.contains(item.id)
+                  ? const Icon(Icons.check_circle)
+                  : null,
+              onTap: () => Navigator.pop(context, item.id),
+            ),
+          ListTile(
+            leading: const Icon(Icons.playlist_add),
+            title: const AppText('新建播放列表'),
+            onTap: () => Navigator.pop(context, _newPlaylistValue),
+          ),
+        ],
+      ),
     ),
   );
   if (selectedId == null || !context.mounted) {

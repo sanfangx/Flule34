@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,6 +10,7 @@ import '../../core/models/video_models.dart';
 import '../../shared/video_card.dart';
 import '../../shared/video_collection_layout.dart';
 import '../../shared/video_list_filters.dart';
+import '../../shared/transient_focus.dart';
 import 'data/local_library_repository.dart';
 import 'local_library_name_dialog.dart';
 
@@ -48,7 +50,7 @@ class _LocalLibraryOverviewState extends State<LocalLibraryOverview> {
       stream: widget.repository.watchLibrarySummaries(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return Center(child: Text(snapshot.error.toString()));
+          return Center(child: AppText(snapshot.error.toString()));
         }
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
@@ -62,7 +64,7 @@ class _LocalLibraryOverviewState extends State<LocalLibraryOverview> {
               FilledButton.tonalIcon(
                 onPressed: () => _create(context),
                 icon: const Icon(Icons.create_new_folder_outlined),
-                label: const Text('新建本地库'),
+                label: const AppText('新建本地库'),
               ),
               const SizedBox(height: 12),
               Row(
@@ -71,11 +73,11 @@ class _LocalLibraryOverviewState extends State<LocalLibraryOverview> {
                     child: SearchBar(
                       controller: _searchController,
                       leading: const Icon(Icons.search),
-                      hintText: '搜索本地库',
+                      hintText: context.uiText('搜索本地库'),
                       trailing: [
                         if (_query.isNotEmpty)
                           IconButton(
-                            tooltip: '清除',
+                            tooltip: context.uiText('清除'),
                             onPressed: () {
                               _searchController.clear();
                               setState(() => _query = '');
@@ -89,14 +91,16 @@ class _LocalLibraryOverviewState extends State<LocalLibraryOverview> {
                   ),
                   const SizedBox(width: 8),
                   PopupMenuButton<LocalLibraryOverviewSort>(
-                    tooltip: '排序',
+                    requestFocus: false,
+                    onOpened: dismissInputFocus,
+                    tooltip: context.uiText('排序'),
                     initialValue: _sort,
                     onSelected: (value) => setState(() => _sort = value),
                     itemBuilder: (context) => LocalLibraryOverviewSort.values
                         .map(
                           (item) => PopupMenuItem(
                             value: item,
-                            child: Text(item.label),
+                            child: AppText(item.label),
                           ),
                         )
                         .toList(growable: false),
@@ -113,7 +117,7 @@ class _LocalLibraryOverviewState extends State<LocalLibraryOverview> {
                     ? const _EmptyLibraries()
                     : const Padding(
                         padding: EdgeInsets.symmetric(vertical: 48),
-                        child: Center(child: Text('没有符合条件的本地库。')),
+                        child: Center(child: AppText('没有符合条件的本地库。')),
                       )
               else
                 for (final summary in libraries)
@@ -130,6 +134,8 @@ class _LocalLibraryOverviewState extends State<LocalLibraryOverview> {
                             style: Theme.of(context).textTheme.labelLarge,
                           ),
                           PopupMenuButton<_LibraryAction>(
+                            requestFocus: false,
+                            onOpened: dismissInputFocus,
                             onSelected: (action) {
                               switch (action) {
                                 case _LibraryAction.rename:
@@ -141,11 +147,11 @@ class _LocalLibraryOverviewState extends State<LocalLibraryOverview> {
                             itemBuilder: (context) => const [
                               PopupMenuItem(
                                 value: _LibraryAction.rename,
-                                child: Text('重命名'),
+                                child: AppText('重命名'),
                               ),
                               PopupMenuItem(
                                 value: _LibraryAction.delete,
-                                child: Text('删除'),
+                                child: AppText('删除'),
                               ),
                             ],
                           ),
@@ -233,16 +239,16 @@ class _LocalLibraryOverviewState extends State<LocalLibraryOverview> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('删除“${library.name}”？'),
-        content: const Text('只删除本地分类记录，不会删除网站收藏、历史或已下载的视频。'),
+        title: AppText('删除“${library.name}”？'),
+        content: const AppText('只删除本地分类记录，不会删除网站收藏、历史或已下载的视频。'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('取消'),
+            child: const AppText('取消'),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('删除'),
+            child: const AppText('删除'),
           ),
         ],
       ),
@@ -293,7 +299,7 @@ class _LocalLibraryPageState extends ConsumerState<LocalLibraryPage> {
         title: Text(widget.title),
         actions: [
           IconButton(
-            tooltip: '筛选',
+            tooltip: context.uiText('筛选'),
             onPressed: _showFilters,
             icon: Badge(
               isLabelVisible: _filters.activeCount > 0,
@@ -310,11 +316,11 @@ class _LocalLibraryPageState extends ConsumerState<LocalLibraryPage> {
             child: SearchBar(
               controller: _searchController,
               leading: const Icon(Icons.search),
-              hintText: '搜索此库中的视频',
+              hintText: context.uiText('搜索此库中的视频'),
               trailing: [
                 if (_query.isNotEmpty)
                   IconButton(
-                    tooltip: '清除',
+                    tooltip: context.uiText('清除'),
                     onPressed: () {
                       _searchController.clear();
                       setState(() => _query = '');
@@ -330,18 +336,18 @@ class _LocalLibraryPageState extends ConsumerState<LocalLibraryPage> {
               stream: widget.repository.watchVideos(widget.libraryId),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return Center(child: Text(snapshot.error.toString()));
+                  return Center(child: AppText(snapshot.error.toString()));
                 }
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
                 }
                 final sourceVideos = snapshot.requireData;
                 if (sourceVideos.isEmpty) {
-                  return const Center(child: Text('这个本地库里还没有视频。'));
+                  return const Center(child: AppText('这个本地库里还没有视频。'));
                 }
                 final videos = _filteredVideos(sourceVideos);
                 if (videos.isEmpty) {
-                  return const Center(child: Text('没有符合搜索和筛选条件的视频。'));
+                  return const Center(child: AppText('没有符合搜索和筛选条件的视频。'));
                 }
                 final settingsRepository = ref.watch(
                   appSettingsRepositoryProvider,
@@ -430,9 +436,9 @@ class _EmptyLibraries extends StatelessWidget {
         children: [
           const Icon(Icons.video_library_outlined, size: 56),
           const SizedBox(height: 16),
-          Text('还没有本地库', style: Theme.of(context).textTheme.titleLarge),
+          AppText('还没有本地库', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
-          const Text(
+          const AppText(
             '创建自定义分类后，可以从任意视频的“本地分类库”按钮保存到这里。',
             textAlign: TextAlign.center,
           ),
@@ -443,5 +449,7 @@ class _EmptyLibraries extends StatelessWidget {
 }
 
 void _message(BuildContext context, String message) {
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  ScaffoldMessenger.of(
+    context,
+  ).showSnackBar(SnackBar(content: AppText(message)));
 }

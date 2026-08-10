@@ -194,7 +194,7 @@ void main() {
     expect(find.byType(LocalizedTranslationText), findsOneWidget);
     await tester.longPress(find.byType(LocalizedTranslationText));
     await tester.pumpAndSettle();
-    expect(find.text('编辑中文翻译'), findsOneWidget);
+    expect(find.text('编辑译文'), findsOneWidget);
     expect(find.text('MOM BREAKER'), findsOneWidget);
     expect(find.byType(TextField), findsOneWidget);
   });
@@ -228,7 +228,7 @@ void main() {
 
     await tester.longPress(find.byType(LocalizedTranslationText));
     await tester.pumpAndSettle();
-    expect(find.text('编辑中文翻译'), findsOneWidget);
+    expect(find.text('编辑译文'), findsOneWidget);
     expect(find.byType(SelectableText), findsOneWidget);
     expect(find.byType(TextField), findsOneWidget);
     expect(find.text('使用翻译服务'), findsNothing);
@@ -287,7 +287,7 @@ void main() {
     await gesture.up();
     await tester.pumpAndSettle();
 
-    expect(find.text('编辑中文翻译'), findsOneWidget);
+    expect(find.text('编辑译文'), findsOneWidget);
     expect(find.byType(TextField), findsOneWidget);
   });
 

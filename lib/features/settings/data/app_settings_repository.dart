@@ -8,6 +8,7 @@ import 'app_settings_store.dart';
 final class AppSettingsRepository extends ChangeNotifier {
   AppSettingsRepository(this._store);
 
+  static const _languageKey = 'flule34.settings.language';
   static const _themeKey = 'flule34.settings.theme';
   static const _playbackQualityKey = 'flule34.settings.playback_quality';
   static const _networkPlaybackPolicyKey =
@@ -44,6 +45,8 @@ final class AppSettingsRepository extends ChangeNotifier {
       'flule34.settings.automatic_translation_mode';
   static const _automaticTranslationTargetsKey =
       'flule34.settings.automatic_translation_targets';
+  static const _translationTargetKey =
+      'flule34.settings.translation_target_language';
 
   final AppSettingsStore _store;
   AppSettings _settings = AppSettings.defaults;
@@ -83,8 +86,15 @@ final class AppSettingsRepository extends ChangeNotifier {
       _readString(_automaticTranslationModeKey),
       _readString(_automaticTranslationTargetsKey),
       _readString(_translationDisplayModesKey),
+      _readString(_languageKey),
+      _readString(_translationTargetKey),
     ]);
     _settings = AppSettings(
+      language: _enumValue(
+        AppLanguagePreference.values,
+        values[26] as String?,
+        AppSettings.defaults.language,
+      ),
       theme: _themeValue(values[0] as String?),
       playbackQuality: _qualityValue(
         values[1] as String?,
@@ -161,6 +171,11 @@ final class AppSettingsRepository extends ChangeNotifier {
         legacyValue: values[22] as String?,
         legacyEnabled: values[21] as bool?,
       ).$3,
+      translationTarget: _enumValue(
+        TranslationTargetPreference.values,
+        values[27] as String?,
+        AppSettings.defaults.translationTarget,
+      ),
       automaticTranslationTargets: _automaticTranslationTargets(
         values[24] as String?,
         legacyMode: values[23] as String?,
@@ -203,6 +218,11 @@ final class AppSettingsRepository extends ChangeNotifier {
   Future<void> setTheme(AppThemePreference value) async {
     await _store.writeString(_themeKey, value.name);
     _update(_settings.copyWith(theme: value));
+  }
+
+  Future<void> setLanguage(AppLanguagePreference value) async {
+    await _store.writeString(_languageKey, value.name);
+    _update(_settings.copyWith(language: value));
   }
 
   Future<void> setPlaybackQuality(VideoQualityPreference value) async {
@@ -391,6 +411,11 @@ final class AppSettingsRepository extends ChangeNotifier {
       _encodeAutomaticTranslationTargets(normalized),
     );
     _update(_settings.copyWith(automaticTranslationTargets: normalized));
+  }
+
+  Future<void> setTranslationTarget(TranslationTargetPreference value) async {
+    await _store.writeString(_translationTargetKey, value.name);
+    _update(_settings.copyWith(translationTarget: value));
   }
 
   void _update(AppSettings value) {

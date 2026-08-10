@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:share_plus/share_plus.dart';
@@ -13,6 +14,7 @@ import '../../../core/security/error_redaction.dart';
 import '../../../core/services/translation_service.dart';
 import '../../../core/services/translation_catalog_archive.dart';
 import '../../../shared/editable_translation.dart';
+import '../../../shared/transient_focus.dart';
 
 int compareTranslationCatalogItems(
   TranslationCatalogItem left,
@@ -58,6 +60,7 @@ class _TranslationCatalogPageState
   String _query = '';
   TranslationCatalogKind? _kind;
   TranslationCatalogSource? _source;
+  TranslationLanguage? _language;
   TranslationCatalogSort _sort = TranslationCatalogSort.updatedDesc;
   Timer? _searchDebounce;
   var _transferBusy = false;
@@ -78,8 +81,8 @@ class _TranslationCatalogPageState
         final items = _filteredItems(service.catalogItems());
         return Scaffold(
           appBar: AppBar(
-            title: Text(
-              _selectedKeys.isEmpty ? '中文翻译库' : '已选择 ${_selectedKeys.length} 项',
+            title: AppText(
+              _selectedKeys.isEmpty ? '翻译库' : '已选择 ${_selectedKeys.length} 项',
             ),
             actions: [
               if (_selectedKeys.isEmpty)
@@ -94,7 +97,9 @@ class _TranslationCatalogPageState
                         ),
                       )
                     : PopupMenuButton<_TranslationCatalogAction>(
-                        tooltip: '导入或导出',
+                        requestFocus: false,
+                        onOpened: dismissInputFocus,
+                        tooltip: context.uiText('导入或导出'),
                         icon: const Icon(Icons.import_export),
                         onSelected: (action) {
                           switch (action) {
@@ -109,7 +114,7 @@ class _TranslationCatalogPageState
                             value: _TranslationCatalogAction.import,
                             child: ListTile(
                               leading: Icon(Icons.file_open_outlined),
-                              title: Text('导入翻译库'),
+                              title: AppText('导入翻译库'),
                               contentPadding: EdgeInsets.zero,
                             ),
                           ),
@@ -117,14 +122,14 @@ class _TranslationCatalogPageState
                             value: _TranslationCatalogAction.export,
                             child: ListTile(
                               leading: Icon(Icons.ios_share_outlined),
-                              title: Text('导出翻译库'),
+                              title: AppText('导出翻译库'),
                               contentPadding: EdgeInsets.zero,
                             ),
                           ),
                         ],
                       ),
               IconButton(
-                tooltip: '筛选与排序',
+                tooltip: context.uiText('筛选与排序'),
                 onPressed: _showFilters,
                 icon: Badge(
                   isLabelVisible: _activeFilterCount > 0,
@@ -134,7 +139,7 @@ class _TranslationCatalogPageState
               ),
               if (_selectedKeys.isNotEmpty)
                 IconButton(
-                  tooltip: '选择当前结果',
+                  tooltip: context.uiText('选择当前结果'),
                   onPressed: () => setState(() {
                     _selectedKeys.addAll(items.map(_itemKey));
                   }),
@@ -142,7 +147,7 @@ class _TranslationCatalogPageState
                 ),
               if (_selectedKeys.isNotEmpty)
                 IconButton(
-                  tooltip: '取消选择',
+                  tooltip: context.uiText('取消选择'),
                   onPressed: () => setState(_selectedKeys.clear),
                   icon: const Icon(Icons.close),
                 ),
@@ -155,11 +160,11 @@ class _TranslationCatalogPageState
                 child: SearchBar(
                   controller: _searchController,
                   leading: const Icon(Icons.search),
-                  hintText: '搜索原文、中文或翻译服务',
+                  hintText: context.uiText('搜索原文、译文或翻译服务'),
                   trailing: [
                     if (_searchController.text.isNotEmpty)
                       IconButton(
-                        tooltip: '清除',
+                        tooltip: context.uiText('清除'),
                         onPressed: () {
                           _searchDebounce?.cancel();
                           _searchController.clear();
@@ -183,9 +188,8 @@ class _TranslationCatalogPageState
                 padding: const EdgeInsets.fromLTRB(16, 2, 16, 8),
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(
-                    '共 ${items.length} 条 · 内置 ${service.builtinTotalEntryCount} · '
-                    'API ${service.learnedEntryCount} · 用户 ${service.overrideEntryCount}',
+                  child: AppText(
+                    '共 ${items.length} 条 · 内置 ${service.builtinTotalEntryCount} · API ${service.learnedEntryCount} · 用户 ${service.overrideEntryCount}',
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ),
@@ -193,7 +197,7 @@ class _TranslationCatalogPageState
               const Divider(height: 1),
               Expanded(
                 child: items.isEmpty
-                    ? const Center(child: Text('没有符合条件的译文。'))
+                    ? const Center(child: AppText('没有符合条件的译文。'))
                     : ListView.builder(
                         itemCount: items.length,
                         itemBuilder: (context, index) =>
@@ -213,6 +217,7 @@ class _TranslationCatalogPageState
   int get _activeFilterCount =>
       (_kind == null ? 0 : 1) +
       (_source == null ? 0 : 1) +
+      (_language == null ? 0 : 1) +
       (_sort == TranslationCatalogSort.updatedDesc ? 0 : 1);
 
   Future<void> _exportCatalog(TranslationService service) async {
@@ -228,7 +233,7 @@ class _TranslationCatalogPageState
       await SharePlus.instance.share(
         ShareParams(
           files: [XFile(file.path, mimeType: 'application/json')],
-          subject: 'Flule34 中文翻译库',
+          subject: 'Flule34 翻译库',
         ),
       );
     } catch (error, stackTrace) {
@@ -240,7 +245,7 @@ class _TranslationCatalogPageState
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('导出翻译库失败。')));
+        ).showSnackBar(const SnackBar(content: AppText('导出翻译库失败。')));
       }
     } finally {
       if (mounted) setState(() => _transferBusy = false);
@@ -268,7 +273,7 @@ class _TranslationCatalogPageState
       setState(_selectedKeys.clear);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
+          content: AppText(
             '已导入 ${result.importedTotal} 层译文'
             '（API ${result.importedLearned}、用户 ${result.importedUserOverrides}）；'
             '跳过 ${result.skippedLearned + result.skippedUserOverrides}，'
@@ -284,7 +289,7 @@ class _TranslationCatalogPageState
       );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('导入失败：${redactSensitiveText(error)}')),
+          SnackBar(content: AppText('导入失败：${redactSensitiveText(error)}')),
         );
       }
     } finally {
@@ -298,8 +303,8 @@ class _TranslationCatalogPageState
     return showDialog<TranslationImportMode>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('导入中文翻译库'),
-        content: Text(
+        title: const AppText('导入翻译库'),
+        content: AppText(
           '文件包含 API 译文 ${archive.learnedLayerCount} 条、'
           '用户译文 ${archive.userLayerCount} 条。\n\n'
           '另有 ${archive.builtInLayerCount} 条内置译文，仅用于审计，'
@@ -308,17 +313,17 @@ class _TranslationCatalogPageState
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('取消'),
+            child: const AppText('取消'),
           ),
           TextButton(
             onPressed: () =>
                 Navigator.pop(context, TranslationImportMode.importedLayersWin),
-            child: const Text('导入文件优先'),
+            child: const AppText('导入文件优先'),
           ),
           FilledButton(
             onPressed: () =>
                 Navigator.pop(context, TranslationImportMode.safeMerge),
-            child: const Text('安全合并'),
+            child: const AppText('安全合并'),
           ),
         ],
       ),
@@ -328,127 +333,168 @@ class _TranslationCatalogPageState
   Future<void> _showFilters() async {
     var selectedKind = _kind;
     var selectedSource = _source;
+    var selectedLanguage = _language;
     var selectedSort = _sort;
-    final selected =
-        await showModalBottomSheet<
-          ({
-            TranslationCatalogKind? kind,
-            TranslationCatalogSource? source,
-            TranslationCatalogSort sort,
-          })
-        >(
-          context: context,
-          showDragHandle: true,
-          isScrollControlled: true,
-          builder: (context) => StatefulBuilder(
-            builder: (context, setSheetState) => SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      '筛选与排序',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 18),
-                    Text('类型', style: Theme.of(context).textTheme.titleSmall),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        ChoiceChip(
-                          label: const Text('全部'),
-                          selected: selectedKind == null,
-                          onSelected: (_) =>
-                              setSheetState(() => selectedKind = null),
-                        ),
-                        for (final kind in TranslationCatalogKind.values)
-                          ChoiceChip(
-                            label: Text(kind.label),
-                            selected: selectedKind == kind,
-                            onSelected: (_) =>
-                                setSheetState(() => selectedKind = kind),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 18),
-                    Text('来源', style: Theme.of(context).textTheme.titleSmall),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        ChoiceChip(
-                          label: const Text('全部'),
-                          selected: selectedSource == null,
-                          onSelected: (_) =>
-                              setSheetState(() => selectedSource = null),
-                        ),
-                        for (final source in TranslationCatalogSource.values)
-                          ChoiceChip(
-                            label: Text(source.label),
-                            selected: selectedSource == source,
-                            onSelected: (_) =>
-                                setSheetState(() => selectedSource = source),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 18),
-                    DropdownButtonFormField<TranslationCatalogSort>(
-                      initialValue: selectedSort,
-                      decoration: const InputDecoration(
-                        labelText: '排序',
-                        border: OutlineInputBorder(),
+    final selected = await runWithoutRestoringInputFocus(
+      context,
+      () =>
+          showModalBottomSheet<
+            ({
+              TranslationCatalogKind? kind,
+              TranslationCatalogSource? source,
+              TranslationLanguage? language,
+              TranslationCatalogSort sort,
+            })
+          >(
+            context: context,
+            requestFocus: false,
+            showDragHandle: true,
+            isScrollControlled: true,
+            builder: (context) => StatefulBuilder(
+              builder: (context, setSheetState) => SafeArea(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      AppText(
+                        '筛选与排序',
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      items: TranslationCatalogSort.values
-                          .map(
-                            (sort) => DropdownMenuItem(
-                              value: sort,
-                              child: Text(sort.label),
+                      const SizedBox(height: 18),
+                      AppText(
+                        '类型',
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          ChoiceChip(
+                            label: const AppText('全部'),
+                            selected: selectedKind == null,
+                            onSelected: (_) =>
+                                setSheetState(() => selectedKind = null),
+                          ),
+                          for (final kind in TranslationCatalogKind.values)
+                            ChoiceChip(
+                              label: AppText(kind.label),
+                              selected: selectedKind == kind,
+                              onSelected: (_) =>
+                                  setSheetState(() => selectedKind = kind),
                             ),
-                          )
-                          .toList(growable: false),
-                      onChanged: (value) {
-                        if (value != null) {
-                          setSheetState(() => selectedSort = value);
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      children: [
-                        TextButton(
-                          onPressed: () => setSheetState(() {
-                            selectedKind = null;
-                            selectedSource = null;
-                            selectedSort = TranslationCatalogSort.updatedDesc;
-                          }),
-                          child: const Text('重置'),
+                        ],
+                      ),
+                      const SizedBox(height: 18),
+                      AppText(
+                        '来源',
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          ChoiceChip(
+                            label: const AppText('全部'),
+                            selected: selectedSource == null,
+                            onSelected: (_) =>
+                                setSheetState(() => selectedSource = null),
+                          ),
+                          for (final source in TranslationCatalogSource.values)
+                            ChoiceChip(
+                              label: AppText(source.label),
+                              selected: selectedSource == source,
+                              onSelected: (_) =>
+                                  setSheetState(() => selectedSource = source),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 18),
+                      AppText(
+                        '目标语言',
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          ChoiceChip(
+                            label: const AppText('全部'),
+                            selected: selectedLanguage == null,
+                            onSelected: (_) =>
+                                setSheetState(() => selectedLanguage = null),
+                          ),
+                          for (final language in TranslationLanguage.values)
+                            ChoiceChip(
+                              label: Text(language.label),
+                              selected: selectedLanguage == language,
+                              onSelected: (_) => setSheetState(
+                                () => selectedLanguage = language,
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 18),
+                      DropdownButtonFormField<TranslationCatalogSort>(
+                        initialValue: selectedSort,
+                        decoration: InputDecoration(
+                          labelText: context.uiText('排序'),
+                          border: OutlineInputBorder(),
                         ),
-                        const Spacer(),
-                        FilledButton(
-                          onPressed: () => Navigator.pop(context, (
-                            kind: selectedKind,
-                            source: selectedSource,
-                            sort: selectedSort,
-                          )),
-                          child: const Text('应用'),
-                        ),
-                      ],
-                    ),
-                  ],
+                        items: TranslationCatalogSort.values
+                            .map(
+                              (sort) => DropdownMenuItem(
+                                value: sort,
+                                child: AppText(sort.label),
+                              ),
+                            )
+                            .toList(growable: false),
+                        onChanged: (value) {
+                          if (value != null) {
+                            setSheetState(() => selectedSort = value);
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          TextButton(
+                            onPressed: () => setSheetState(() {
+                              selectedKind = null;
+                              selectedSource = null;
+                              selectedLanguage = null;
+                              selectedSort = TranslationCatalogSort.updatedDesc;
+                            }),
+                            child: const AppText('重置'),
+                          ),
+                          const Spacer(),
+                          FilledButton(
+                            onPressed: () => Navigator.pop(context, (
+                              kind: selectedKind,
+                              source: selectedSource,
+                              language: selectedLanguage,
+                              sort: selectedSort,
+                            )),
+                            child: const AppText('应用'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        );
+    );
     if (selected == null || !mounted) return;
     setState(() {
       _kind = selected.kind;
       _source = selected.source;
+      _language = selected.language;
       _sort = selected.sort;
     });
   }
@@ -480,6 +526,10 @@ class _TranslationCatalogPageState
             runSpacing: 4,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
+              Text(
+                item.targetLanguage.label,
+                style: Theme.of(context).textTheme.labelSmall,
+              ),
               _SourceBadge(source: item.effectiveSource, effective: true),
               for (final source in item.sources)
                 if (source != item.effectiveSource)
@@ -532,7 +582,7 @@ class _TranslationCatalogPageState
                       ? () => _resetOverrides(service, selected)
                       : null,
                   icon: const Icon(Icons.restore),
-                  label: const Text('撤销自定义'),
+                  label: const AppText('撤销自定义'),
                 ),
               ),
               const SizedBox(width: 8),
@@ -542,7 +592,7 @@ class _TranslationCatalogPageState
                       ? () => _deleteLearned(service, selected)
                       : null,
                   icon: const Icon(Icons.delete_outline),
-                  label: const Text('删除 API 译文'),
+                  label: const AppText('删除 API 译文'),
                 ),
               ),
             ],
@@ -560,6 +610,9 @@ class _TranslationCatalogPageState
         .where((item) {
           if (_kind != null && item.kind != _kind) return false;
           if (_source != null && !item.sources.contains(_source)) return false;
+          if (_language != null && item.targetLanguage != _language) {
+            return false;
+          }
           if (query.isEmpty) return true;
           return [
             item.sourceText,
@@ -591,6 +644,7 @@ class _TranslationCatalogPageState
         videoId: item.canonicalName,
         english: item.sourceText,
         videoSlug: item.videoSlug,
+        targetLanguage: item.targetLanguage,
       );
       return;
     }
@@ -601,6 +655,7 @@ class _TranslationCatalogPageState
           ? DiscoveryKind.tag
           : DiscoveryKind.category,
       english: item.sourceText,
+      targetLanguage: item.targetLanguage,
     );
   }
 
@@ -610,13 +665,17 @@ class _TranslationCatalogPageState
   ) async {
     for (final item in items.where((item) => item.hasUserOverride)) {
       if (item.kind == TranslationCatalogKind.title) {
-        await service.removeTitleOverride(item.canonicalName);
+        await service.removeTitleOverride(
+          item.canonicalName,
+          language: item.targetLanguage,
+        );
       } else {
         await service.removeOverride(
           item.kind == TranslationCatalogKind.tag
               ? DiscoveryKind.tag
               : DiscoveryKind.category,
           item.sourceText,
+          language: item.targetLanguage,
         );
       }
     }
@@ -631,16 +690,16 @@ class _TranslationCatalogPageState
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('删除所选 API 译文？'),
-        content: Text('将永久删除 $count 条 API 译文。用户手动译文和内置译文不会被删除。'),
+        title: const AppText('删除所选 API 译文？'),
+        content: AppText('将永久删除 $count 条 API 译文。用户手动译文和内置译文不会被删除。'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('取消'),
+            child: const AppText('取消'),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('删除'),
+            child: const AppText('删除'),
           ),
         ],
       ),
@@ -658,7 +717,7 @@ class _TranslationCatalogPageState
   }
 
   static String _itemKey(TranslationCatalogItem item) =>
-      '${item.kind.name}:${item.canonicalName}';
+      '${item.siteId}:${item.targetLanguage.code}:${item.kind.name}:${item.canonicalName}';
 
   static IconData _kindIcon(TranslationCatalogKind kind) => switch (kind) {
     TranslationCatalogKind.title => Icons.title,
@@ -703,7 +762,7 @@ class _SourceBadge extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        child: Text(
+        child: AppText(
           effective ? '${source.label} · 生效' : source.label,
           style: Theme.of(context).textTheme.labelSmall?.copyWith(color: color),
         ),

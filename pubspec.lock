@@ -470,7 +470,7 @@ packages:
     source: hosted
     version: "6.0.0"
   flutter_localizations:
-    dependency: transitive
+    dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
@@ -580,6 +580,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "17.3.0"
+  google_mlkit_language_id:
+    dependency: "direct main"
+    description:
+      name: google_mlkit_language_id
+      sha256: f733dcd9e0d0b396232c82dbda2dcb968e954df4885f5d5a12f7771657723ed9
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.14.0"
   graphs:
     dependency: transitive
     description:
@@ -629,7 +637,7 @@ packages:
     source: hosted
     version: "4.1.2"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       sha256: "3df61194eb431efc39c4ceba583b95633a403f46c9fd341e550ce0bfa50e9aa5"

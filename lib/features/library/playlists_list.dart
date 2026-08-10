@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/router/route_names.dart';
 import '../../core/api/rule34video_api.dart';
 import '../../core/models/video_models.dart';
+import '../../shared/transient_focus.dart';
 import 'playlist_form_dialog.dart';
 
 enum PlaylistOverviewSort {
@@ -120,7 +122,7 @@ class _PlaylistsListState extends State<PlaylistsList>
             child: FilledButton.tonalIcon(
               onPressed: _mutating ? null : () => _editPlaylist(),
               icon: const Icon(Icons.playlist_add),
-              label: const Text('新建播放列表'),
+              label: const AppText('新建播放列表'),
             ),
           ),
         ),
@@ -142,7 +144,7 @@ class _PlaylistsListState extends State<PlaylistsList>
               }
               final playlists = snapshot.requireData;
               if (playlists.isEmpty) {
-                return const Center(child: Text('账号中还没有播放列表。'));
+                return const Center(child: AppText('账号中还没有播放列表。'));
               }
               final visible = _visiblePlaylists(playlists);
               return Material(
@@ -160,7 +162,7 @@ class _PlaylistsListState extends State<PlaylistsList>
                       if (visible.isEmpty) {
                         return const Padding(
                           padding: EdgeInsets.only(top: 44),
-                          child: Center(child: Text('没有符合条件的播放列表。')),
+                          child: Center(child: AppText('没有符合条件的播放列表。')),
                         );
                       }
                       final playlist = visible[index - 1];
@@ -172,8 +174,10 @@ class _PlaylistsListState extends State<PlaylistsList>
                           title: Text(playlist.title),
                           subtitle: playlist.videoCount == null
                               ? null
-                              : Text('${playlist.videoCount} 个视频'),
+                              : AppText('${playlist.videoCount} 个视频'),
                           trailing: PopupMenuButton<_PlaylistAction>(
+                            requestFocus: false,
+                            onOpened: dismissInputFocus,
                             enabled: !_mutating,
                             onSelected: (action) {
                               switch (action) {
@@ -186,11 +190,11 @@ class _PlaylistsListState extends State<PlaylistsList>
                             itemBuilder: (context) => const [
                               PopupMenuItem(
                                 value: _PlaylistAction.edit,
-                                child: Text('编辑'),
+                                child: AppText('编辑'),
                               ),
                               PopupMenuItem(
                                 value: _PlaylistAction.delete,
-                                child: Text('删除'),
+                                child: AppText('删除'),
                               ),
                             ],
                           ),
@@ -221,11 +225,11 @@ class _PlaylistsListState extends State<PlaylistsList>
             child: SearchBar(
               controller: _searchController,
               leading: const Icon(Icons.search),
-              hintText: '搜索播放列表',
+              hintText: context.uiText('搜索播放列表'),
               trailing: [
                 if (_query.isNotEmpty)
                   IconButton(
-                    tooltip: '清除',
+                    tooltip: context.uiText('清除'),
                     onPressed: () {
                       _searchController.clear();
                       setState(() => _query = '');
@@ -238,12 +242,15 @@ class _PlaylistsListState extends State<PlaylistsList>
           ),
           const SizedBox(width: 8),
           PopupMenuButton<PlaylistOverviewSort>(
-            tooltip: '排序',
+            requestFocus: false,
+            onOpened: dismissInputFocus,
+            tooltip: context.uiText('排序'),
             initialValue: _sort,
             onSelected: (value) => setState(() => _sort = value),
             itemBuilder: (context) => PlaylistOverviewSort.values
                 .map(
-                  (item) => PopupMenuItem(value: item, child: Text(item.label)),
+                  (item) =>
+                      PopupMenuItem(value: item, child: AppText(item.label)),
                 )
                 .toList(growable: false),
             child: const Padding(
@@ -297,16 +304,16 @@ class _PlaylistsListState extends State<PlaylistsList>
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('删除“${playlist.title}”？'),
-        content: const Text('播放列表会从网站账号中删除。'),
+        title: AppText('删除“${playlist.title}”？'),
+        content: const AppText('播放列表会从网站账号中删除。'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('取消'),
+            child: const AppText('取消'),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('删除'),
+            child: const AppText('删除'),
           ),
         ],
       ),
@@ -335,7 +342,7 @@ class _PlaylistsListState extends State<PlaylistsList>
   void _message(String message) {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    ).showSnackBar(SnackBar(content: AppText(message)));
   }
 
   @override
@@ -358,9 +365,9 @@ class _PlaylistState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(message, textAlign: TextAlign.center),
+            AppText(message, textAlign: TextAlign.center),
             const SizedBox(height: 12),
-            OutlinedButton(onPressed: onRetry, child: const Text('重试')),
+            OutlinedButton(onPressed: onRetry, child: const AppText('重试')),
           ],
         ),
       ),

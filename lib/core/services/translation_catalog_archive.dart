@@ -28,6 +28,9 @@ final class TranslationArchiveLayer {
 
 final class TranslationArchiveEntry {
   const TranslationArchiveEntry({
+    required this.siteId,
+    required this.sourceLanguageCode,
+    required this.targetLanguage,
     required this.kind,
     required this.canonicalName,
     required this.sourceText,
@@ -37,6 +40,9 @@ final class TranslationArchiveEntry {
     this.userOverride,
   });
 
+  final String siteId;
+  final String sourceLanguageCode;
+  final TranslationLanguage targetLanguage;
   final TranslationCatalogKind kind;
   final String canonicalName;
   final String sourceText;
@@ -82,7 +88,7 @@ final class TranslationCatalogArchiveService {
   const TranslationCatalogArchiveService();
 
   static const format = 'flule34-translation-catalog';
-  static const schemaVersion = 1;
+  static const schemaVersion = 2;
   static const maxImportBytes = 10 * 1024 * 1024;
   static const maxEntries = 100000;
 
@@ -99,6 +105,9 @@ final class TranslationCatalogArchiveService {
       'entries': [
         for (final item in items)
           <String, Object?>{
+            'siteId': item.siteId,
+            'sourceLanguage': item.sourceLanguageCode,
+            'targetLanguage': item.targetLanguage.code,
             'kind': item.kind.name,
             'canonicalName': item.canonicalName,
             'sourceText': item.sourceText,
@@ -136,7 +145,8 @@ final class TranslationCatalogArchiveService {
     if (decoded is! Map || decoded['format'] != format) {
       throw const FormatException('不是 Flule34 翻译库文件');
     }
-    if (decoded['schemaVersion'] != schemaVersion) {
+    final archiveVersion = decoded['schemaVersion'];
+    if (archiveVersion != 1 && archiveVersion != schemaVersion) {
       throw FormatException('不支持的翻译库版本：${decoded['schemaVersion']}');
     }
     final rawEntries = decoded['entries'];
@@ -159,6 +169,22 @@ final class TranslationCatalogArchiveService {
       final canonicalName = _limitedText(raw['canonicalName'], 1000);
       final sourceText = _limitedText(raw['sourceText'], 4000);
       if (kind == null || canonicalName.isEmpty || sourceText.isEmpty) continue;
+      final siteId = archiveVersion == 1
+          ? 'rule34video'
+          : _optionalLimitedText(raw['siteId'], 200) ?? 'rule34video';
+      final sourceLanguageCode = archiveVersion == 1
+          ? TranslationLanguage.english.code
+          : _optionalLimitedText(raw['sourceLanguage'], 50) ?? 'und';
+      final targetLanguage = archiveVersion == 1
+          ? TranslationLanguage.simplifiedChinese
+          : _targetLanguage(raw['targetLanguage']);
+      if ([
+        siteId,
+        sourceLanguageCode,
+        canonicalName,
+      ].any((value) => value.contains('\u0000'))) {
+        throw const FormatException('翻译库键字段包含非法字符');
+      }
       final builtIn = _layer(raw['builtIn'], allowMetadata: false);
       final learned = _layer(raw['learned'], allowMetadata: true);
       final user = _layer(raw['userOverride'], allowMetadata: false);
@@ -167,6 +193,9 @@ final class TranslationCatalogArchiveService {
       if (user != null) userCount += 1;
       entries.add(
         TranslationArchiveEntry(
+          siteId: siteId,
+          sourceLanguageCode: sourceLanguageCode,
+          targetLanguage: targetLanguage,
           kind: kind,
           canonicalName: canonicalName,
           sourceText: sourceText,
@@ -228,6 +257,14 @@ final class TranslationCatalogArchiveService {
   static DateTime? _date(Object? value) {
     final parsed = DateTime.tryParse(value?.toString() ?? '');
     return parsed?.toUtc();
+  }
+
+  static TranslationLanguage _targetLanguage(Object? raw) {
+    final code = _optionalLimitedText(raw, 50);
+    for (final language in TranslationLanguage.values) {
+      if (language.code.toLowerCase() == code?.toLowerCase()) return language;
+    }
+    throw FormatException('翻译库包含不支持的目标语言：${code ?? ''}');
   }
 
   static String _limitedText(Object? value, int maxLength) {

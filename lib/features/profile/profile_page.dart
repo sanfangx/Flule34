@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/router/route_names.dart';
@@ -36,7 +37,7 @@ class ProfilePage extends StatelessWidget {
             ),
             _SettingsTile(
               icon: Icons.palette_outlined,
-              title: '外观设置',
+              title: '显示设置',
               onTap: () => context.pushNamed(AppRouteNames.appearanceSettings),
             ),
             _SettingsTile(
@@ -137,14 +138,18 @@ class _AccountCardState extends State<_AccountCard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.loggedIn
-                          ? profile?.displayName ?? 'Rule34Video 账号'
-                          : '尚未登录',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
+                    if (widget.loggedIn && profile?.displayName != null)
+                      Text(
+                        profile!.displayName,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      )
+                    else
+                      AppText(
+                        widget.loggedIn ? 'Rule34Video 账号' : '尚未登录',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
                     const SizedBox(height: 4),
-                    Text(
+                    AppText(
                       widget.loggedIn
                           ? '用户 ID：${widget.api.sessionStore.currentUserId}'
                           : '登录后同步网站收藏、历史记录和订阅。',
@@ -178,7 +183,7 @@ class _SettingsTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
         leading: Icon(icon),
-        title: Text(title),
+        title: AppText(title),
         trailing: const Icon(Icons.chevron_right),
         onTap: onTap,
       ),

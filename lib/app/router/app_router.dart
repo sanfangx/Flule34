@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -357,7 +358,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           if (extra is! PlaylistPlaybackRequest) {
             return scrollablePage(
               state,
-              const Scaffold(body: Center(child: Text('播放列表播放参数无效。'))),
+              const Scaffold(body: Center(child: AppText('播放列表播放参数无效。'))),
             );
           }
           return scrollablePage(

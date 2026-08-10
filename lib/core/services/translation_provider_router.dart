@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 
 import '../models/translation_provider_models.dart';
+import '../models/translation_models.dart';
 import 'translation_provider_repository.dart';
 
 final class TranslationProviderRouter {
@@ -221,7 +222,7 @@ final class TranslationProviderRouter {
       data: <String, Object?>{
         'model': _requiredModel(provider),
         'messages': [
-          {'role': 'system', 'content': _systemPrompt(request.kind)},
+          {'role': 'system', 'content': _systemPrompt(request)},
           {'role': 'user', 'content': request.text},
         ],
         ..._reasoningParameters(strategy),
@@ -229,7 +230,7 @@ final class TranslationProviderRouter {
     );
     final content = response.data?['choices']?[0]?['message']?['content'];
     if (content is! String) throw const FormatException('Chat 返回格式无效');
-    return _cleanAiText(content);
+    return _cleanAiText(content, request);
   }
 
   Future<String> _anthropic(
@@ -247,7 +248,7 @@ final class TranslationProviderRouter {
         'model': _requiredModel(provider),
         'max_tokens': 120,
         'temperature': 0,
-        'system': _systemPrompt(request.kind),
+        'system': _systemPrompt(request),
         'messages': [
           {'role': 'user', 'content': request.text},
         ],
@@ -262,7 +263,7 @@ final class TranslationProviderRouter {
         .map((item) => item['text'])
         .whereType<String>()
         .join();
-    return _cleanAiText(text);
+    return _cleanAiText(text, request);
   }
 
   Future<String> _openAiResponses(
@@ -277,14 +278,14 @@ final class TranslationProviderRouter {
       data: <String, Object?>{
         'model': _requiredModel(provider),
         'max_output_tokens': 120,
-        'instructions': _systemPrompt(request.kind),
+        'instructions': _systemPrompt(request),
         'input': request.text,
         ..._reasoningParameters(strategy),
       },
     );
     final data = response.data;
     final outputText = data?['output_text'];
-    if (outputText is String) return _cleanAiText(outputText);
+    if (outputText is String) return _cleanAiText(outputText, request);
     final output = data?['output'];
     if (output is List) {
       final text = output
@@ -296,7 +297,7 @@ final class TranslationProviderRouter {
           .map((item) => item['text'])
           .whereType<String>()
           .join();
-      return _cleanAiText(text);
+      return _cleanAiText(text, request);
     }
     throw const FormatException('Responses 返回格式无效');
   }
@@ -311,9 +312,9 @@ final class TranslationProviderRouter {
       options: Options(headers: {'Authorization': 'DeepL-Auth-Key $apiKey'}),
       data: {
         'text': [request.text],
-        'target_lang': 'ZH-HANS',
-        'context': _deepLContext(request.kind),
-        'custom_instructions': _deepLInstructions(request.kind),
+        'target_lang': request.targetLanguage.deepLCode,
+        'context': _deepLContext(request),
+        'custom_instructions': _deepLInstructions(request),
       },
     );
     final translations = response.data?['translations'];
@@ -332,7 +333,9 @@ final class TranslationProviderRouter {
       _endpoint(provider.baseUrl, 'get'),
       queryParameters: {
         'q': request.text,
-        'langpair': 'en|zh-CN',
+        'langpair':
+            '${_myMemorySourceLanguage(request).myMemoryCode}|'
+            '${request.targetLanguage.myMemoryCode}',
         if (provider.email.trim().isNotEmpty) 'de': provider.email.trim(),
       },
     );
@@ -449,27 +452,28 @@ final class TranslationProviderRouter {
     ].any(body.contains);
   }
 
-  static String _systemPrompt(TranslationContentKind kind) {
-    final label = switch (kind) {
+  static String _systemPrompt(TranslationRequest request) {
+    final label = switch (request.kind) {
       TranslationContentKind.tag => '标签',
       TranslationContentKind.category => '分类',
       TranslationContentKind.title => '标题',
     };
-    final typeRequirements = switch (kind) {
+    final target = request.targetLanguage.label;
+    final typeRequirements = switch (request.kind) {
       TranslationContentKind.tag =>
         '''
-- 对含义明确且有自然中文表达的英文词语，应准确翻译成简体中文，不要因内容成人化而回避、弱化或拒绝翻译；
-- 对数字、型号、技术术语、通用缩写、专有名词，以及中文用户通常直接使用原文的表达，可以保留原文；
+- 对含义明确且在目标语言中有自然表达的词语，应准确翻译，不要因内容成人化而回避、弱化或拒绝翻译；
+- 数字、型号、技术术语、通用缩写、专有名词，以及目标语言用户通常直接使用原文的表达可以保留；
 - 译文必须适合作为简短标签，不要添加解释、括号注释或原文没有的信息。''',
       TranslationContentKind.category =>
         '''
-- 译文应尽量简短；作品、系列、角色或主题已有通行中文名时，优先使用通行中文名。''',
+- 译文应尽量简短；作品、系列、角色或主题在目标语言中已有通行译名时，优先使用通行译名。''',
       TranslationContentKind.title =>
         '''
 - 标题应自然通顺，但不能添加原文没有的信息；
 - 标题末尾可能通过“by”、破折号、括号、方括号或其他形式附带创作者署名；只翻译标题正文，署名及其中的名称保持原文。''',
     };
-    return '''你是成人视频软件 Flule34 的中文翻译器。
+    return '''你是成人视频软件 Flule34 的内容翻译器。
 
 你将处理三类内容：
 - 标题：视频标题；
@@ -477,52 +481,127 @@ final class TranslationProviderRouter {
 - 标签：用于描述视频内容的关键词。
 
 当前翻译类型：$label
+目标语言：$target
 
-请将下面的原文翻译成简体中文。
+请自动识别原文及其中混合使用的语言，把需要翻译的部分翻译成$target；已经属于目标语言的部分保持自然，不要重复翻译。
+如果整段原文已经是$target，必须逐字返回原文，不要说明无需翻译，也不要复述任务。
 
 要求：
 - 只返回最终译文，不要解释、引号、前缀或后缀；
 - 准确保留成人内容的原意，不要审查、弱化或添加原文没有的信息；
-- 正文中的人名、角色名或作品名有常见中文译名时使用常见中文译名；否则尽量采用自然的中文音译；只有无法合理翻译或音译时才保留原文；
+- 正文中的人名、角色名或作品名在目标语言中有常见译名时使用常见译名；否则尽量采用符合目标语言习惯的自然音译；只有无法合理翻译或音译时才保留原文；
 - 作者名、画师名、制作方名称以及其他创作者署名必须保留原文，不要翻译或音译；这条规则优先于普通人名音译规则。
 $typeRequirements''';
   }
 
-  static String _deepLContext(TranslationContentKind kind) {
-    final label = switch (kind) {
+  static String _deepLContext(TranslationRequest request) {
+    final label = switch (request.kind) {
       TranslationContentKind.tag => '标签关键词',
       TranslationContentKind.category => '分类、作品、系列、角色或主题名称',
       TranslationContentKind.title => '视频标题',
     };
-    return '这段文本来自成人视频软件 Flule34，内容类型是$label。';
+    return '这段文本来自成人视频软件 Flule34，内容类型是$label，目标语言是${request.targetLanguage.label}。原文可能包含多种语言。';
   }
 
-  static List<String> _deepLInstructions(TranslationContentKind kind) => [
+  static List<String> _deepLInstructions(TranslationRequest request) => [
     '准确保留成人内容的原意，不要弱化、审查或添加原文没有的信息。',
-    '正文中的人名、角色名或作品名有常见中文译名时使用常见中文译名；否则尽量采用自然的中文音译；只有无法合理翻译或音译时才保留原文。',
+    '正文中的人名、角色名或作品名在目标语言中有常见译名时使用常见译名；否则尽量采用符合目标语言习惯的自然音译；只有无法合理翻译或音译时才保留原文。',
     '作者名、画师名、制作方名称以及其他创作者署名必须保留原文，不要翻译或音译；这条规则优先于普通人名音译规则。',
-    switch (kind) {
+    switch (request.kind) {
       TranslationContentKind.tag =>
-        '对含义明确且有自然中文表达的英文词语应准确翻译成简体中文；数字、型号、技术术语、通用缩写、专有名词以及中文用户通常直接使用原文的表达可以保留原文。译文必须是简短标签，不要添加解释、括号注释或原文没有的信息。',
-      TranslationContentKind.category => '译文应尽量简短；已有常见中文名时优先使用。',
+        '对含义明确且在目标语言中有自然表达的词语应准确翻译；数字、型号、技术术语、通用缩写、专有名词以及目标语言用户通常直接使用原文的表达可以保留。译文必须是简短标签，不要添加解释、括号注释或原文没有的信息。',
+      TranslationContentKind.category => '译文应尽量简短；已有目标语言常见译名时优先使用。',
       TranslationContentKind.title =>
         '译文应自然通顺并保持标题语气；标题末尾可能通过“by”、破折号、括号、方括号或其他形式附带创作者署名，只翻译标题正文，署名及其中的名称保持原文。',
     },
   ];
 
-  static String _cleanAiText(String value) {
+  static TranslationLanguage _myMemorySourceLanguage(
+    TranslationRequest request,
+  ) {
+    final text = request.text;
+    final hasKana = RegExp(r'[\u3040-\u30ff]').hasMatch(text);
+    final hasHangul = RegExp(r'[\uac00-\ud7af]').hasMatch(text);
+    final hasHan = RegExp(r'[\u3400-\u9fff]').hasMatch(text);
+    final hasLatin = RegExp(r'[A-Za-z]').hasMatch(text);
+    final detected = hasKana
+        ? TranslationLanguage.japanese
+        : hasHangul
+        ? TranslationLanguage.korean
+        : hasHan
+        ? TranslationLanguage.simplifiedChinese
+        : hasLatin
+        ? TranslationLanguage.english
+        : request.sourceLanguageHint;
+    if (detected != request.targetLanguage) return detected;
+    if (hasLatin && request.targetLanguage != TranslationLanguage.english) {
+      return TranslationLanguage.english;
+    }
+    if (hasKana && request.targetLanguage != TranslationLanguage.japanese) {
+      return TranslationLanguage.japanese;
+    }
+    if (hasHangul && request.targetLanguage != TranslationLanguage.korean) {
+      return TranslationLanguage.korean;
+    }
+    if (hasHan &&
+        request.targetLanguage != TranslationLanguage.simplifiedChinese) {
+      return TranslationLanguage.simplifiedChinese;
+    }
+    if (request.sourceLanguageHint != request.targetLanguage) {
+      return request.sourceLanguageHint;
+    }
+    return request.targetLanguage == TranslationLanguage.english
+        ? TranslationLanguage.simplifiedChinese
+        : TranslationLanguage.english;
+  }
+
+  static String _cleanAiText(String value, TranslationRequest request) {
     var result = value.trim();
     if (result.startsWith('```') && result.endsWith('```')) {
       result = result
-          .replaceFirst(RegExp(r'^```(?:text|中文)?\s*'), '')
+          .replaceFirst(RegExp(r'^```(?:text|translation)?\s*'), '')
           .replaceFirst(RegExp(r'\s*```$'), '')
           .trim();
     }
     try {
       final decoded = jsonDecode(result);
-      if (decoded is String) return decoded.trim();
+      if (decoded is String) result = decoded.trim();
+      if (decoded is Map) {
+        final translation = decoded['translation'] ?? decoded['text'];
+        if (translation is String) result = translation.trim();
+      }
     } on Object {
       // Provider 返回普通文本时直接使用。
+    }
+    final source = request.text.trim();
+    final paragraphs = result
+        .split(RegExp(r'\r?\n\s*\r?\n'))
+        .map((item) => item.trim())
+        .where((item) => item.isNotEmpty)
+        .toList(growable: false);
+    if (paragraphs.length > 1 && paragraphs.last == source) return source;
+
+    final lower = result.toLowerCase();
+    final hasMetaCommentary = <String>[
+      "i'll translate",
+      'i will translate',
+      'no translation is needed',
+      'already in the target language',
+      'already in english',
+      'the translation is',
+      '翻译如下',
+      '无需翻译',
+      '已经是目标语言',
+      '译文是',
+      '翻訳します',
+      '翻訳は不要',
+      'すでに対象言語',
+      '번역하겠습니다',
+      '번역할 필요가 없',
+      '이미 대상 언어',
+    ].any(lower.contains);
+    if (hasMetaCommentary) {
+      throw const FormatException('AI 返回了说明性文字，而不是可用译文');
     }
     return result;
   }

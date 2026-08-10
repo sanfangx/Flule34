@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,6 +17,7 @@ import '../features/library/playlist_picker.dart';
 import '../features/settings/domain/quality_selection.dart';
 import 'editable_translation.dart';
 import 'localized_translation_text.dart';
+import 'transient_focus.dart';
 
 class VideoCard extends ConsumerWidget {
   const VideoCard({
@@ -50,83 +52,90 @@ class VideoCard extends ConsumerWidget {
     unawaited(
       detailsFuture.then<void>((_) {}, onError: (Object _, StackTrace _) {}),
     );
-    final action = await showModalBottomSheet<_VideoCardAction>(
-      context: context,
-      showDragHandle: true,
-      builder: (context) => SafeArea(
-        child: Wrap(
-          children: [
-            if (!loggedIn)
+    final action = await runWithoutRestoringInputFocus(
+      context,
+      () => showModalBottomSheet<_VideoCardAction>(
+        context: context,
+        requestFocus: false,
+        showDragHandle: true,
+        builder: (context) => SafeArea(
+          child: Wrap(
+            children: [
+              if (!loggedIn)
+                ListTile(
+                  leading: const Icon(Icons.favorite_border),
+                  title: const AppText('收藏'),
+                  onTap: () =>
+                      Navigator.pop(context, _VideoCardAction.favorite),
+                )
+              else
+                FutureBuilder<bool>(
+                  future: favoriteFuture,
+                  initialData: initialFavorite,
+                  builder: (context, snapshot) {
+                    final value = snapshot.data;
+                    final loading = value == null && !snapshot.hasError;
+                    return ListTile(
+                      leading: loading
+                          ? const SizedBox.square(
+                              dimension: 22,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Icon(
+                              value == true
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                            ),
+                      title: AppText(
+                        loading
+                            ? '正在读取收藏状态'
+                            : snapshot.hasError
+                            ? '收藏状态读取失败，点击重试'
+                            : value == true
+                            ? '取消收藏'
+                            : '收藏',
+                      ),
+                      onTap: loading
+                          ? null
+                          : () => Navigator.pop(
+                              context,
+                              _VideoCardAction.favorite,
+                            ),
+                    );
+                  },
+                ),
               ListTile(
-                leading: const Icon(Icons.favorite_border),
-                title: const Text('收藏'),
-                onTap: () => Navigator.pop(context, _VideoCardAction.favorite),
-              )
-            else
-              FutureBuilder<bool>(
-                future: favoriteFuture,
-                initialData: initialFavorite,
-                builder: (context, snapshot) {
-                  final value = snapshot.data;
-                  final loading = value == null && !snapshot.hasError;
-                  return ListTile(
-                    leading: loading
-                        ? const SizedBox.square(
-                            dimension: 22,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : Icon(
-                            value == true
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                          ),
-                    title: Text(
-                      loading
-                          ? '正在读取收藏状态'
-                          : snapshot.hasError
-                          ? '收藏状态读取失败，点击重试'
-                          : value == true
-                          ? '取消收藏'
-                          : '收藏',
-                    ),
-                    onTap: loading
-                        ? null
-                        : () =>
-                              Navigator.pop(context, _VideoCardAction.favorite),
-                  );
-                },
+                leading: const Icon(Icons.download_outlined),
+                title: const AppText('下载'),
+                onTap: () => Navigator.pop(context, _VideoCardAction.download),
               ),
-            ListTile(
-              leading: const Icon(Icons.download_outlined),
-              title: const Text('下载'),
-              onTap: () => Navigator.pop(context, _VideoCardAction.download),
-            ),
-            ListTile(
-              leading: const Icon(Icons.library_add_outlined),
-              title: const Text('本地分类库'),
-              onTap: () =>
-                  Navigator.pop(context, _VideoCardAction.localLibrary),
-            ),
-            ListTile(
-              leading: const Icon(Icons.playlist_add),
-              title: const Text('播放列表'),
-              onTap: () => Navigator.pop(context, _VideoCardAction.playlist),
-            ),
-            ListTile(
-              leading: const Icon(Icons.share_outlined),
-              title: const Text('分享'),
-              onTap: () => Navigator.pop(context, _VideoCardAction.share),
-            ),
-            if (contextActionLabel != null && onContextAction != null) ...[
-              const Divider(height: 1),
               ListTile(
-                leading: const Icon(Icons.remove_circle_outline),
-                title: Text(contextActionLabel!),
+                leading: const Icon(Icons.library_add_outlined),
+                title: const AppText('本地分类库'),
                 onTap: () =>
-                    Navigator.pop(context, _VideoCardAction.contextAction),
+                    Navigator.pop(context, _VideoCardAction.localLibrary),
               ),
+              ListTile(
+                leading: const Icon(Icons.playlist_add),
+                title: const AppText('播放列表'),
+                onTap: () => Navigator.pop(context, _VideoCardAction.playlist),
+              ),
+              ListTile(
+                leading: const Icon(Icons.share_outlined),
+                title: const AppText('分享'),
+                onTap: () => Navigator.pop(context, _VideoCardAction.share),
+              ),
+              if (contextActionLabel != null && onContextAction != null) ...[
+                const Divider(height: 1),
+                ListTile(
+                  leading: const Icon(Icons.remove_circle_outline),
+                  title: AppText(contextActionLabel!),
+                  onTap: () =>
+                      Navigator.pop(context, _VideoCardAction.contextAction),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -218,19 +227,23 @@ class VideoCard extends ConsumerWidget {
     BuildContext context,
     List<VideoSource> sources,
   ) {
-    return showModalBottomSheet<VideoSource>(
-      context: context,
-      useSafeArea: true,
-      builder: (context) => ListView(
-        shrinkWrap: true,
-        children: [
-          for (final source in sources.reversed)
-            ListTile(
-              leading: Icon(source.isHd ? Icons.hd : Icons.sd),
-              title: Text(source.label),
-              onTap: () => Navigator.pop(context, source),
-            ),
-        ],
+    return runWithoutRestoringInputFocus(
+      context,
+      () => showModalBottomSheet<VideoSource>(
+        context: context,
+        requestFocus: false,
+        useSafeArea: true,
+        builder: (context) => ListView(
+          shrinkWrap: true,
+          children: [
+            for (final source in sources.reversed)
+              ListTile(
+                leading: Icon(source.isHd ? Icons.hd : Icons.sd),
+                title: Text(source.label),
+                onTap: () => Navigator.pop(context, source),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -261,7 +274,7 @@ class VideoCard extends ConsumerWidget {
               child: CircularProgressIndicator(strokeWidth: 2.5),
             ),
             SizedBox(width: 18),
-            Expanded(child: Text('正在读取可用清晰度…')),
+            Expanded(child: AppText('正在读取可用清晰度…')),
           ],
         ),
       ),
@@ -278,7 +291,9 @@ class VideoCard extends ConsumerWidget {
   }
 
   void _message(BuildContext context, String text) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: AppText(text)));
   }
 
   @override
@@ -382,7 +397,7 @@ class VideoCard extends ConsumerWidget {
                           child: GestureDetector(
                             onLongPress: () {},
                             child: IconButton.filledTonal(
-                              tooltip: '视频操作',
+                              tooltip: context.uiText('视频操作'),
                               visualDensity: VisualDensity.compact,
                               onPressed: () =>
                                   unawaited(_showActions(context, ref)),

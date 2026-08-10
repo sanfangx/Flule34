@@ -15,6 +15,8 @@ import 'generated/schema_v7.dart' as v7;
 import 'generated/schema_v8.dart' as v8;
 import 'generated/schema_v9.dart' as v9;
 import 'generated/schema_v10.dart' as v10;
+import 'generated/schema_v12.dart' as v12;
+import 'generated/schema_v13.dart' as v13;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -500,4 +502,73 @@ void main() {
       },
     );
   });
+
+  test(
+    'migration from v12 to v13 preserves translations as Simplified Chinese',
+    () async {
+      const updatedAt = 1700000120;
+      const oldOverride = v12.TranslationOverridesData(
+        kind: 'tag',
+        canonicalName: 'example',
+        sourceText: 'example',
+        translation: '用户示例',
+        updatedAt: updatedAt,
+      );
+      const oldLearned = v12.LearnedTranslationsData(
+        kind: 'title',
+        canonicalName: 'video-1',
+        sourceText: 'Example title',
+        translation: '示例标题',
+        providerId: 'provider-1',
+        providerName: 'AI',
+        videoSlug: 'example-title',
+        createdAt: updatedAt - 60,
+        updatedAt: updatedAt,
+      );
+      const newOverride = v13.TranslationOverridesData(
+        siteId: 'rule34video',
+        sourceLanguage: 'en',
+        targetLanguage: 'zh-Hans',
+        kind: 'tag',
+        canonicalName: 'example',
+        sourceText: 'example',
+        translation: '用户示例',
+        updatedAt: updatedAt,
+      );
+      const newLearned = v13.LearnedTranslationsData(
+        siteId: 'rule34video',
+        sourceLanguage: 'en',
+        targetLanguage: 'zh-Hans',
+        kind: 'title',
+        canonicalName: 'video-1',
+        sourceText: 'Example title',
+        translation: '示例标题',
+        providerId: 'provider-1',
+        providerName: 'AI',
+        videoSlug: 'example-title',
+        createdAt: updatedAt - 60,
+        updatedAt: updatedAt,
+      );
+
+      await verifier.testWithDataIntegrity(
+        oldVersion: 12,
+        newVersion: 13,
+        createOld: v12.DatabaseAtV12.new,
+        createNew: v13.DatabaseAtV13.new,
+        openTestedDatabase: AppDatabase.new,
+        createItems: (batch, oldDb) {
+          batch.insert(oldDb.translationOverrides, oldOverride);
+          batch.insert(oldDb.learnedTranslations, oldLearned);
+        },
+        validateItems: (newDb) async {
+          expect(await newDb.select(newDb.translationOverrides).get(), [
+            newOverride,
+          ]);
+          expect(await newDb.select(newDb.learnedTranslations).get(), [
+            newLearned,
+          ]);
+        },
+      );
+    },
+  );
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -201,7 +202,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
         title: Text(widget.playlist.title),
         actions: [
           IconButton(
-            tooltip: '筛选',
+            tooltip: context.uiText('筛选'),
             onPressed: _showFilters,
             icon: Badge(
               isLabelVisible: _filters.activeCount > 0,
@@ -210,7 +211,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
             ),
           ),
           IconButton(
-            tooltip: '从头连续播放',
+            tooltip: context.uiText('从头连续播放'),
             onPressed: _filteredVideos.isEmpty || _loadingAllForFilter
                 ? null
                 : () => _playFrom(_filteredVideos, 0),
@@ -233,7 +234,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
       );
     }
     if (_videos.isEmpty) {
-      return const Center(child: Text('这个播放列表里还没有视频。'));
+      return const Center(child: AppText('这个播放列表里还没有视频。'));
     }
     final videos = _filteredVideos;
     return Column(
@@ -243,11 +244,11 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
           child: SearchBar(
             controller: _searchController,
             leading: const Icon(Icons.search),
-            hintText: '搜索播放列表中的视频',
+            hintText: context.uiText('搜索播放列表中的视频'),
             trailing: [
               if (_query.isNotEmpty)
                 IconButton(
-                  tooltip: '清除',
+                  tooltip: context.uiText('清除'),
                   onPressed: () {
                     _searchController.clear();
                     _applyQuery('');
@@ -265,7 +266,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
           ),
         Expanded(
           child: videos.isEmpty && _hasActiveFiltering && !_loadingAllForFilter
-              ? const Center(child: Text('没有符合搜索和筛选条件的视频。'))
+              ? const Center(child: AppText('没有符合搜索和筛选条件的视频。'))
               : _playlistVideos(videos),
         ),
       ],
@@ -307,7 +308,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                   : Padding(
                       padding: const EdgeInsets.all(18),
                       child: Center(
-                        child: Text(
+                        child: AppText(
                           _loadingAllForFilter
                               ? '正在读取全部视频…'
                               : (_hasActiveFiltering &&
@@ -342,12 +343,12 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
       setState(() => _videos.removeWhere((item) => item.id == video.id));
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('已从播放列表移出。')));
+      ).showSnackBar(const SnackBar(content: AppText('已从播放列表移出。')));
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text(error.toString())));
+        ).showSnackBar(SnackBar(content: AppText(error.toString())));
       }
     } finally {
       if (mounted) {
@@ -371,9 +372,9 @@ class _PlaylistMessage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(message, textAlign: TextAlign.center),
+            AppText(message, textAlign: TextAlign.center),
             const SizedBox(height: 12),
-            OutlinedButton(onPressed: onRetry, child: const Text('重试')),
+            OutlinedButton(onPressed: onRetry, child: const AppText('重试')),
           ],
         ),
       ),

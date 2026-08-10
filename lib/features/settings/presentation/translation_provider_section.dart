@@ -1,12 +1,14 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
 import '../../../core/models/translation_provider_models.dart';
 import '../../../core/security/error_redaction.dart';
 import '../../../core/services/external_link_service.dart';
+import '../../../shared/transient_focus.dart';
 
 class TranslationProviderSection extends ConsumerWidget {
   const TranslationProviderSection({super.key});
@@ -25,7 +27,7 @@ class TranslationProviderSection extends ConsumerWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text(
+                  child: AppText(
                     '翻译服务',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
@@ -33,12 +35,12 @@ class TranslationProviderSection extends ConsumerWidget {
                 FilledButton.tonalIcon(
                   onPressed: () => _editProvider(context, ref),
                   icon: const Icon(Icons.add),
-                  label: const Text('新建'),
+                  label: const AppText('新建'),
                 ),
               ],
             ),
             const SizedBox(height: 6),
-            Text(
+            AppText(
               '自动或手动翻译时，每次只发送当前标题、标签或分类。服务按当前顺序依次尝试，失败后自动使用下一项。建议优先使用 AI 翻译，结果通常更自然、准确。',
               style: Theme.of(context).textTheme.bodySmall,
             ),
@@ -47,7 +49,7 @@ class TranslationProviderSection extends ConsumerWidget {
               const Card(
                 child: Padding(
                   padding: EdgeInsets.all(16),
-                  child: Text('尚未配置翻译服务。内置词表和用户手动译文仍可正常使用。'),
+                  child: AppText('尚未配置翻译服务。内置词表和用户手动译文仍可正常使用。'),
                 ),
               )
             else
@@ -84,17 +86,31 @@ class TranslationProviderSection extends ConsumerWidget {
                                 repository.setEnabled(provider.id, value),
                           ),
                           title: Text(provider.name),
-                          subtitle: Text(provider.protocol.label),
+                          subtitle: AppText(provider.protocol.label),
                           onTap: () =>
                               _editProvider(context, ref, provider: provider),
                           trailing: PopupMenuButton<String>(
+                            requestFocus: false,
+                            onOpened: dismissInputFocus,
                             onSelected: (value) =>
                                 _handleAction(context, ref, provider, value),
                             itemBuilder: (context) => const [
-                              PopupMenuItem(value: 'test', child: Text('测试连接')),
-                              PopupMenuItem(value: 'edit', child: Text('编辑')),
-                              PopupMenuItem(value: 'copy', child: Text('复制')),
-                              PopupMenuItem(value: 'delete', child: Text('删除')),
+                              PopupMenuItem(
+                                value: 'test',
+                                child: AppText('测试连接'),
+                              ),
+                              PopupMenuItem(
+                                value: 'edit',
+                                child: AppText('编辑'),
+                              ),
+                              PopupMenuItem(
+                                value: 'copy',
+                                child: AppText('复制'),
+                              ),
+                              PopupMenuItem(
+                                value: 'delete',
+                                child: AppText('删除'),
+                              ),
                             ],
                           ),
                         ),
@@ -126,12 +142,12 @@ class TranslationProviderSection extends ConsumerWidget {
           if (context.mounted) {
             ScaffoldMessenger.of(
               context,
-            ).showSnackBar(SnackBar(content: Text('${provider.name} 连接成功')));
+            ).showSnackBar(SnackBar(content: AppText('${provider.name} 连接成功')));
           }
         } catch (error) {
           if (context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('连接失败：${redactSensitiveText(error)}')),
+              SnackBar(content: AppText('连接失败：${redactSensitiveText(error)}')),
             );
           }
         }
@@ -143,7 +159,9 @@ class TranslationProviderSection extends ConsumerWidget {
         } catch (error) {
           if (context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('复制翻译服务失败：${redactSensitiveText(error)}')),
+              SnackBar(
+                content: AppText('复制翻译服务失败：${redactSensitiveText(error)}'),
+              ),
             );
           }
         }
@@ -151,16 +169,16 @@ class TranslationProviderSection extends ConsumerWidget {
         final confirmed = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('删除翻译服务？'),
-            content: Text('将删除“${provider.name}”及其本机密钥。'),
+            title: const AppText('删除翻译服务？'),
+            content: AppText('将删除“${provider.name}”及其本机密钥。'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('取消'),
+                child: const AppText('取消'),
               ),
               FilledButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: const Text('删除'),
+                child: const AppText('删除'),
               ),
             ],
           ),
@@ -174,7 +192,7 @@ class TranslationProviderSection extends ConsumerWidget {
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('删除翻译服务失败：${redactSensitiveText(error)}'),
+                  content: AppText('删除翻译服务失败：${redactSensitiveText(error)}'),
                 ),
               );
             }
@@ -199,7 +217,7 @@ class TranslationProviderSection extends ConsumerWidget {
     } catch (error) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('保存翻译服务失败：${redactSensitiveText(error)}')),
+          SnackBar(content: AppText('保存翻译服务失败：${redactSensitiveText(error)}')),
         );
       }
     }
@@ -270,7 +288,7 @@ class _ProviderEditDialogState extends ConsumerState<_ProviderEditDialog> {
     final dialogWidth = min(520.0, MediaQuery.sizeOf(context).width - 48);
     return AlertDialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-      title: Text(widget.provider == null ? '新建翻译服务' : '编辑翻译服务'),
+      title: AppText(widget.provider == null ? '新建翻译服务' : '编辑翻译服务'),
       content: SizedBox(
         width: dialogWidth,
         child: SingleChildScrollView(
@@ -279,12 +297,12 @@ class _ProviderEditDialogState extends ConsumerState<_ProviderEditDialog> {
             children: [
               DropdownButtonFormField<TranslationProviderProtocol>(
                 initialValue: _protocol,
-                decoration: const InputDecoration(labelText: '接口类型'),
+                decoration: InputDecoration(labelText: context.uiText('接口类型')),
                 items: TranslationProviderProtocol.values
                     .map(
                       (item) => DropdownMenuItem(
                         value: item,
-                        child: Text(item.label),
+                        child: AppText(item.label),
                       ),
                     )
                     .toList(),
@@ -308,12 +326,14 @@ class _ProviderEditDialogState extends ConsumerState<_ProviderEditDialog> {
               ),
               TextField(
                 controller: _name,
-                decoration: const InputDecoration(labelText: '服务名称'),
+                decoration: InputDecoration(labelText: context.uiText('服务名称')),
               ),
               if (_protocol == TranslationProviderProtocol.deepL)
                 DropdownButtonFormField<String>(
                   initialValue: _deepLPlan,
-                  decoration: const InputDecoration(labelText: 'DeepL 套餐与端点'),
+                  decoration: InputDecoration(
+                    labelText: context.uiText('DeepL 套餐与端点'),
+                  ),
                   items: [
                     const DropdownMenuItem(
                       value: 'free',
@@ -326,7 +346,7 @@ class _ProviderEditDialogState extends ConsumerState<_ProviderEditDialog> {
                     if (_deepLPlan == 'legacy')
                       const DropdownMenuItem(
                         value: 'legacy',
-                        child: Text('旧版自定义端点'),
+                        child: AppText('旧版自定义端点'),
                       ),
                   ],
                   onChanged: (value) {
@@ -346,11 +366,11 @@ class _ProviderEditDialogState extends ConsumerState<_ProviderEditDialog> {
                 readOnly: _protocol.hasFixedBaseUrl,
                 keyboardType: TextInputType.url,
                 decoration: InputDecoration(
-                  labelText: '基址',
+                  labelText: context.uiText('基址'),
                   suffixIcon: _protocol.helpUri == null
                       ? null
                       : IconButton(
-                          tooltip: '打开官方网站',
+                          tooltip: context.uiText('打开官方网站'),
                           onPressed: _openProviderHelp,
                           icon: const Icon(Icons.open_in_new),
                         ),
@@ -375,9 +395,9 @@ class _ProviderEditDialogState extends ConsumerState<_ProviderEditDialog> {
                 TextField(
                   controller: _model,
                   decoration: InputDecoration(
-                    labelText: '模型名',
+                    labelText: context.uiText('模型名'),
                     suffixIcon: IconButton(
-                      tooltip: '拉取模型列表',
+                      tooltip: context.uiText('拉取模型列表'),
                       onPressed: _loadingModels ? null : _loadModels,
                       icon: _loadingModels
                           ? const Padding(
@@ -392,9 +412,9 @@ class _ProviderEditDialogState extends ConsumerState<_ProviderEditDialog> {
                 TextField(
                   controller: _email,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    labelText: '邮箱（可选）',
-                    helperText: 'MyMemory 可用邮箱标识提高免费额度。',
+                  decoration: InputDecoration(
+                    labelText: context.uiText('邮箱（可选）'),
+                    helperText: context.uiText('MyMemory 可用邮箱标识提高免费额度。'),
                   ),
                 ),
               if (_error != null) ...[
@@ -411,9 +431,9 @@ class _ProviderEditDialogState extends ConsumerState<_ProviderEditDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('取消'),
+          child: const AppText('取消'),
         ),
-        FilledButton(onPressed: _save, child: const Text('保存')),
+        FilledButton(onPressed: _save, child: const AppText('保存')),
       ],
     );
   }
@@ -484,7 +504,7 @@ class _ProviderEditDialogState extends ConsumerState<_ProviderEditDialog> {
       final selected = await showDialog<String>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('选择模型'),
+          title: const AppText('选择模型'),
           content: SizedBox(
             width: 420,
             child: ListView.builder(
@@ -499,7 +519,7 @@ class _ProviderEditDialogState extends ConsumerState<_ProviderEditDialog> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('继续手动填写'),
+              child: const AppText('继续手动填写'),
             ),
           ],
         ),

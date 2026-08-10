@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../features/settings/domain/app_settings.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../shared/video_preview_overlay.dart';
 import 'providers.dart';
 import 'router/app_router.dart';
@@ -19,6 +20,7 @@ class Flule34App extends ConsumerWidget {
       listenable: settingsRepository,
       builder: (context, _) {
         final preference = settingsRepository.settings.theme;
+        final language = settingsRepository.settings.language;
         return MaterialApp.router(
           title: 'Flule34',
           debugShowCheckedModeBanner: false,
@@ -29,6 +31,11 @@ class Flule34App extends ConsumerWidget {
             AppThemePreference.light => ThemeMode.light,
             AppThemePreference.dark => ThemeMode.dark,
           },
+          locale: language.languageCode == null
+              ? null
+              : Locale(language.languageCode!),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           routerConfig: router,
           builder: (context, child) => VideoPreviewOverlay(
             navigationListenable: router.routerDelegate,

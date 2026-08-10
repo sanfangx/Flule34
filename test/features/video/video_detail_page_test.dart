@@ -195,7 +195,7 @@ void main() {
     await gesture.up();
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.text('编辑中文翻译'), findsOneWidget);
+    expect(find.text('编辑译文'), findsOneWidget);
     expect(find.byType(TextField), findsOneWidget);
   });
 }

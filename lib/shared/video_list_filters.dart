@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 
 import '../core/models/video_models.dart';
+import 'transient_focus.dart';
 
 enum VideoListSort {
   sourceOrder('默认顺序'),
@@ -144,112 +146,120 @@ Future<VideoListFilters?> showVideoListFilters(
   String defaultSortLabel = '默认顺序',
 }) {
   var value = initialValue;
-  return showModalBottomSheet<VideoListFilters>(
-    context: context,
-    useSafeArea: true,
-    isScrollControlled: true,
-    builder: (context) => StatefulBuilder(
-      builder: (context, setModalState) => Padding(
-        padding: EdgeInsets.fromLTRB(
-          20,
-          8,
-          20,
-          20 + MediaQuery.viewInsetsOf(context).bottom,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(title, style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<VideoListSort>(
-              initialValue: value.sort,
-              decoration: const InputDecoration(labelText: '排序'),
-              items: VideoListSort.values
-                  .map(
-                    (item) => DropdownMenuItem(
-                      value: item,
-                      child: Text(
-                        item == VideoListSort.sourceOrder
-                            ? defaultSortLabel
-                            : item.label,
+  return runWithoutRestoringInputFocus(
+    context,
+    () => showModalBottomSheet<VideoListFilters>(
+      context: context,
+      requestFocus: false,
+      useSafeArea: true,
+      isScrollControlled: true,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Padding(
+          padding: EdgeInsets.fromLTRB(
+            20,
+            8,
+            20,
+            20 + MediaQuery.viewInsetsOf(context).bottom,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AppText(title, style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<VideoListSort>(
+                initialValue: value.sort,
+                decoration: InputDecoration(labelText: context.uiText('排序')),
+                items: VideoListSort.values
+                    .map(
+                      (item) => DropdownMenuItem(
+                        value: item,
+                        child: AppText(
+                          item == VideoListSort.sourceOrder
+                              ? defaultSortLabel
+                              : item.label,
+                        ),
                       ),
-                    ),
-                  )
-                  .toList(growable: false),
-              onChanged: (next) {
-                if (next != null) {
-                  setModalState(() => value = value.copyWith(sort: next));
-                }
-              },
-            ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<VideoDurationPreset>(
-              initialValue: value.duration,
-              decoration: const InputDecoration(labelText: '时长'),
-              items: VideoDurationPreset.values
-                  .map(
-                    (item) =>
-                        DropdownMenuItem(value: item, child: Text(item.label)),
-                  )
-                  .toList(growable: false),
-              onChanged: (next) {
-                if (next != null) {
-                  setModalState(() => value = value.copyWith(duration: next));
-                }
-              },
-            ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<int>(
-              initialValue: value.minRating,
-              decoration: const InputDecoration(labelText: '最低点赞率'),
-              items: const [0, 70, 80, 90, 95]
-                  .map(
-                    (item) => DropdownMenuItem(
-                      value: item,
-                      child: Text(item == 0 ? '不限' : '$item%'),
-                    ),
-                  )
-                  .toList(growable: false),
-              onChanged: (next) {
-                if (next != null) {
-                  setModalState(() => value = value.copyWith(minRating: next));
-                }
-              },
-            ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<int>(
-              initialValue: value.minVotes,
-              decoration: const InputDecoration(labelText: '最低票数'),
-              items: const [0, 5, 10, 25, 50, 100]
-                  .map(
-                    (item) => DropdownMenuItem(
-                      value: item,
-                      child: Text(item == 0 ? '不限' : '$item 票'),
-                    ),
-                  )
-                  .toList(growable: false),
-              onChanged: (next) {
-                if (next != null) {
-                  setModalState(() => value = value.copyWith(minVotes: next));
-                }
-              },
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                TextButton(
-                  onPressed: () =>
-                      setModalState(() => value = const VideoListFilters()),
-                  child: const Text('重置'),
-                ),
-                const Spacer(),
-                FilledButton(
-                  onPressed: () => Navigator.pop(context, value),
-                  child: const Text('应用'),
-                ),
-              ],
-            ),
-          ],
+                    )
+                    .toList(growable: false),
+                onChanged: (next) {
+                  if (next != null) {
+                    setModalState(() => value = value.copyWith(sort: next));
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<VideoDurationPreset>(
+                initialValue: value.duration,
+                decoration: InputDecoration(labelText: context.uiText('时长')),
+                items: VideoDurationPreset.values
+                    .map(
+                      (item) => DropdownMenuItem(
+                        value: item,
+                        child: AppText(item.label),
+                      ),
+                    )
+                    .toList(growable: false),
+                onChanged: (next) {
+                  if (next != null) {
+                    setModalState(() => value = value.copyWith(duration: next));
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<int>(
+                initialValue: value.minRating,
+                decoration: InputDecoration(labelText: context.uiText('最低点赞率')),
+                items: const [0, 70, 80, 90, 95]
+                    .map(
+                      (item) => DropdownMenuItem(
+                        value: item,
+                        child: AppText(item == 0 ? '不限' : '$item%'),
+                      ),
+                    )
+                    .toList(growable: false),
+                onChanged: (next) {
+                  if (next != null) {
+                    setModalState(
+                      () => value = value.copyWith(minRating: next),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<int>(
+                initialValue: value.minVotes,
+                decoration: InputDecoration(labelText: context.uiText('最低票数')),
+                items: const [0, 5, 10, 25, 50, 100]
+                    .map(
+                      (item) => DropdownMenuItem(
+                        value: item,
+                        child: AppText(item == 0 ? '不限' : '$item 票'),
+                      ),
+                    )
+                    .toList(growable: false),
+                onChanged: (next) {
+                  if (next != null) {
+                    setModalState(() => value = value.copyWith(minVotes: next));
+                  }
+                },
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  TextButton(
+                    onPressed: () =>
+                        setModalState(() => value = const VideoListFilters()),
+                    child: const AppText('重置'),
+                  ),
+                  const Spacer(),
+                  FilledButton(
+                    onPressed: () => Navigator.pop(context, value),
+                    child: const AppText('应用'),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     ),

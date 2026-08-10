@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 
 import '../../core/models/video_models.dart';
+import '../../shared/settings_controls.dart';
 
 Future<PlaylistFormData?> showPlaylistEditor(
   BuildContext context, {
@@ -16,7 +18,7 @@ Future<PlaylistFormData?> showPlaylistEditor(
     context: context,
     builder: (context) => StatefulBuilder(
       builder: (context, setDialogState) => AlertDialog(
-        title: Text(title),
+        title: AppText(title),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -25,18 +27,19 @@ Future<PlaylistFormData?> showPlaylistEditor(
                 controller: titleController,
                 autofocus: true,
                 maxLength: 100,
-                decoration: const InputDecoration(labelText: '名称'),
+                decoration: InputDecoration(labelText: context.uiText('名称')),
               ),
               TextField(
                 controller: descriptionController,
                 minLines: 2,
                 maxLines: 4,
                 maxLength: 500,
-                decoration: const InputDecoration(labelText: '描述（可选）'),
+                decoration: InputDecoration(
+                  labelText: context.uiText('描述（可选）'),
+                ),
               ),
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text('设为私密'),
+              SettingsSwitchField(
+                title: '设为私密',
                 value: isPrivate,
                 onChanged: (value) => setDialogState(() => isPrivate = value),
               ),
@@ -46,7 +49,7 @@ Future<PlaylistFormData?> showPlaylistEditor(
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('取消'),
+            child: const AppText('取消'),
           ),
           FilledButton(
             onPressed: () {
@@ -63,7 +66,7 @@ Future<PlaylistFormData?> showPlaylistEditor(
                 ),
               );
             },
-            child: const Text('保存'),
+            child: const AppText('保存'),
           ),
         ],
       ),

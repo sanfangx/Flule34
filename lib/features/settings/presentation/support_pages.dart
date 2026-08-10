@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +23,7 @@ class AppSettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final repository = ref.watch(appSettingsRepositoryProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('App 设置')),
+      appBar: AppBar(title: const AppText('App 设置')),
       body: ListenableBuilder(
         listenable: repository,
         builder: (context, _) {
@@ -30,11 +31,13 @@ class AppSettingsPage extends ConsumerWidget {
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              const Card(
+              Card(
                 child: ListTile(
-                  leading: Icon(Icons.language_outlined),
-                  title: Text('界面语言'),
-                  subtitle: Text('简体中文（首个公开版本）'),
+                  leading: const Icon(Icons.language_outlined),
+                  title: const AppText('界面语言'),
+                  subtitle: settings.language == AppLanguagePreference.system
+                      ? AppText(settings.language.label)
+                      : Text(settings.language.label),
                 ),
               ),
               Card(
@@ -43,7 +46,7 @@ class AppSettingsPage extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      AppText(
                         '更新通道',
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
@@ -53,7 +56,7 @@ class AppSettingsPage extends ConsumerWidget {
                             .map(
                               (channel) => ButtonSegment<UpdateChannel>(
                                 value: channel,
-                                label: Text(channel.label),
+                                label: AppText(channel.label),
                               ),
                             )
                             .toList(growable: false),
@@ -69,7 +72,7 @@ class AppSettingsPage extends ConsumerWidget {
                         },
                       ),
                       const SizedBox(height: 8),
-                      Text(
+                      AppText(
                         AppBuildConfig.updateApiUri == null
                             ? '当前开发构建未配置更新源。'
                             : '更新源：${AppBuildConfig.updateApiUri}',
@@ -82,8 +85,8 @@ class AppSettingsPage extends ConsumerWidget {
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.monitor_heart_outlined),
-                  title: const Text('诊断信息'),
-                  subtitle: const Text('查看并复制不含凭据的运行环境摘要'),
+                  title: const AppText('诊断信息'),
+                  subtitle: const AppText('查看并复制不含凭据的运行环境摘要'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => context.pushNamed(AppRouteNames.diagnostics),
                 ),
@@ -102,7 +105,7 @@ class HelpFeedbackPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('帮助与反馈')),
+      appBar: AppBar(title: const AppText('帮助与反馈')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -124,8 +127,8 @@ class HelpFeedbackPage extends StatelessWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.bug_report_outlined),
-              title: const Text('查看诊断信息'),
-              subtitle: const Text('复制版本、设备和配置摘要，不包含 Cookie 或密码'),
+              title: const AppText('查看诊断信息'),
+              subtitle: const AppText('复制版本、设备和配置摘要，不包含 Cookie 或密码'),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.pushNamed(AppRouteNames.diagnostics),
             ),
@@ -133,8 +136,8 @@ class HelpFeedbackPage extends StatelessWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.feedback_outlined),
-              title: const Text('打开网站反馈表单'),
-              subtitle: const Text('网站要求填写验证码，因此由系统浏览器完成提交'),
+              title: const AppText('打开网站反馈表单'),
+              subtitle: const AppText('网站要求填写验证码，因此由系统浏览器完成提交'),
               trailing: const Icon(Icons.open_in_new),
               onTap: () => _openExternal(
                 context,
@@ -177,10 +180,10 @@ class _DiagnosticsPageState extends ConsumerState<DiagnosticsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('诊断信息'),
+        title: const AppText('诊断信息'),
         actions: [
           IconButton(
-            tooltip: '刷新',
+            tooltip: context.uiText('刷新'),
             onPressed: () => setState(_reload),
             icon: const Icon(Icons.refresh),
           ),
@@ -213,7 +216,7 @@ class _DiagnosticsPageState extends ConsumerState<DiagnosticsPage> {
                       .map(
                         (entry) => ListTile(
                           dense: true,
-                          title: Text(entry.key),
+                          title: AppText(entry.key),
                           subtitle: SelectableText(entry.value),
                         ),
                       )
@@ -227,13 +230,13 @@ class _DiagnosticsPageState extends ConsumerState<DiagnosticsPage> {
                     ClipboardData(text: report.toPlainText()),
                   );
                   if (context.mounted) {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(const SnackBar(content: Text('诊断信息已复制。')));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: AppText('诊断信息已复制。')),
+                    );
                   }
                 },
                 icon: const Icon(Icons.copy),
-                label: const Text('复制诊断信息'),
+                label: const AppText('复制诊断信息'),
               ),
             ],
           );
@@ -278,7 +281,7 @@ class _AppUpdatePageState extends ConsumerState<AppUpdatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('检查更新')),
+      appBar: AppBar(title: const AppText('检查更新')),
       body: FutureBuilder<AppUpdateResult>(
         future: _result,
         builder: (context, snapshot) {
@@ -304,13 +307,13 @@ class _AppUpdatePageState extends ConsumerState<AppUpdatePage> {
             children: [
               Icon(icon, size: 72),
               const SizedBox(height: 16),
-              Text(
+              AppText(
                 result.message ?? '更新检查已完成。',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 8),
-              Text(
+              AppText(
                 '当前版本：${result.currentVersion}',
                 textAlign: TextAlign.center,
               ),
@@ -327,7 +330,7 @@ class _AppUpdatePageState extends ConsumerState<AppUpdatePage> {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         const SizedBox(height: 6),
-                        Text('版本：${release.version}'),
+                        AppText('版本：${release.version}'),
                         if (release.notes?.isNotEmpty == true) ...[
                           const SizedBox(height: 12),
                           Text(
@@ -343,14 +346,14 @@ class _AppUpdatePageState extends ConsumerState<AppUpdatePage> {
                 FilledButton.icon(
                   onPressed: () => _openExternal(context, release.pageUri),
                   icon: const Icon(Icons.open_in_new),
-                  label: const Text('打开 GitHub 发布页'),
+                  label: const AppText('打开 GitHub 发布页'),
                 ),
               ],
               const SizedBox(height: 12),
               OutlinedButton.icon(
                 onPressed: () => setState(_check),
                 icon: const Icon(Icons.refresh),
-                label: const Text('重新检查'),
+                label: const AppText('重新检查'),
               ),
             ],
           );
@@ -371,7 +374,7 @@ Future<void> _saveUpdateChannel(
     if (context.mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('保存更新通道失败：$error')));
+      ).showSnackBar(SnackBar(content: AppText('保存更新通道失败：$error')));
     }
   }
 }
@@ -395,7 +398,7 @@ class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('关于 Flule34')),
+      appBar: AppBar(title: const AppText('关于 Flule34')),
       body: FutureBuilder<PackageInfo>(
         future: _packageInfo,
         builder: (context, snapshot) {
@@ -415,13 +418,13 @@ class _AboutPageState extends State<AboutPage> {
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: 4),
-              Text(version, textAlign: TextAlign.center),
+              AppText(version, textAlign: TextAlign.center),
               const SizedBox(height: 24),
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.system_update_outlined),
-                  title: const Text('检查更新'),
-                  subtitle: Text(
+                  title: const AppText('检查更新'),
+                  subtitle: AppText(
                     AppBuildConfig.updateApiUri == null
                         ? '当前开发构建未配置更新源'
                         : '通过配置的 GitHub Releases 源检查',
@@ -433,8 +436,8 @@ class _AboutPageState extends State<AboutPage> {
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.description_outlined),
-                  title: const Text('开源许可'),
-                  subtitle: const Text('查看 Flule34 与第三方 Flutter 依赖许可'),
+                  title: const AppText('开源许可'),
+                  subtitle: const AppText('查看 Flule34 与第三方 Flutter 依赖许可'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => showLicensePage(
                     context: context,
@@ -449,8 +452,8 @@ class _AboutPageState extends State<AboutPage> {
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.source_outlined),
-                  title: const Text('GitHub 源代码'),
-                  subtitle: Text(
+                  title: const AppText('GitHub 源代码'),
+                  subtitle: AppText(
                     AppBuildConfig.repositoryUri == null
                         ? '当前构建未配置仓库地址'
                         : AppBuildConfig.repositoryUri.toString(),
@@ -500,9 +503,12 @@ class _InfoCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: Theme.of(context).textTheme.titleMedium),
+                  AppText(
+                    title,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                   const SizedBox(height: 4),
-                  Text(text),
+                  AppText(text),
                 ],
               ),
             ),
@@ -529,12 +535,12 @@ class _ErrorState extends StatelessWidget {
           children: [
             const Icon(Icons.error_outline, size: 56),
             const SizedBox(height: 12),
-            Text(message, textAlign: TextAlign.center),
+            AppText(message, textAlign: TextAlign.center),
             const SizedBox(height: 12),
             FilledButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
-              label: const Text('重试'),
+              label: const AppText('重试'),
             ),
           ],
         ),
@@ -550,7 +556,7 @@ Future<void> _openExternal(BuildContext context, Uri uri) async {
     if (context.mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(error.toString())));
+      ).showSnackBar(SnackBar(content: AppText(error.toString())));
     }
   }
 }

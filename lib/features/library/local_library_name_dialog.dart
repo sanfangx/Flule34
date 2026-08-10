@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 
 Future<String?> showLocalLibraryNameDialog(
   BuildContext context, {
@@ -50,13 +51,13 @@ class _LocalLibraryNameDialogState extends State<_LocalLibraryNameDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.title),
+      title: AppText(widget.title),
       content: TextField(
         controller: _controller,
         autofocus: true,
         maxLength: 40,
         decoration: InputDecoration(
-          labelText: '库名称',
+          labelText: context.uiText('库名称'),
           hintText: widget.hintText,
         ),
         onSubmitted: (_) => _submit(),
@@ -64,9 +65,9 @@ class _LocalLibraryNameDialogState extends State<_LocalLibraryNameDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('取消'),
+          child: const AppText('取消'),
         ),
-        FilledButton(onPressed: _submit, child: const Text('确定')),
+        FilledButton(onPressed: _submit, child: const AppText('确定')),
       ],
     );
   }

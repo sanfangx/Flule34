@@ -123,6 +123,10 @@ class LocalLibraryVideos extends Table {
 }
 
 class TranslationOverrides extends Table {
+  TextColumn get siteId => text().withDefault(const Constant('rule34video'))();
+  TextColumn get sourceLanguage => text().withDefault(const Constant('en'))();
+  TextColumn get targetLanguage =>
+      text().withDefault(const Constant('zh-Hans'))();
   TextColumn get kind => text()();
   TextColumn get canonicalName => text()();
   TextColumn get sourceText => text().nullable()();
@@ -131,10 +135,19 @@ class TranslationOverrides extends Table {
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 
   @override
-  Set<Column<Object>> get primaryKey => {kind, canonicalName};
+  Set<Column<Object>> get primaryKey => {
+    siteId,
+    kind,
+    canonicalName,
+    targetLanguage,
+  };
 }
 
 class LearnedTranslations extends Table {
+  TextColumn get siteId => text().withDefault(const Constant('rule34video'))();
+  TextColumn get sourceLanguage => text().withDefault(const Constant('en'))();
+  TextColumn get targetLanguage =>
+      text().withDefault(const Constant('zh-Hans'))();
   TextColumn get kind => text()();
   TextColumn get canonicalName => text()();
   TextColumn get sourceText => text()();
@@ -146,10 +159,19 @@ class LearnedTranslations extends Table {
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 
   @override
-  Set<Column<Object>> get primaryKey => {kind, canonicalName};
+  Set<Column<Object>> get primaryKey => {
+    siteId,
+    kind,
+    canonicalName,
+    targetLanguage,
+  };
 }
 
 class BuiltInTranslationStates extends Table {
+  TextColumn get siteId => text().withDefault(const Constant('rule34video'))();
+  TextColumn get sourceLanguage => text().withDefault(const Constant('en'))();
+  TextColumn get targetLanguage =>
+      text().withDefault(const Constant('zh-Hans'))();
   TextColumn get kind => text()();
   TextColumn get canonicalName => text()();
   IntColumn get introducedPackVersion => integer()();
@@ -158,7 +180,12 @@ class BuiltInTranslationStates extends Table {
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 
   @override
-  Set<Column<Object>> get primaryKey => {kind, canonicalName};
+  Set<Column<Object>> get primaryKey => {
+    siteId,
+    kind,
+    canonicalName,
+    targetLanguage,
+  };
 }
 
 class TranslationCatalogPacks extends Table {
@@ -200,7 +227,7 @@ final class AppDatabase extends _$AppDatabase {
       );
 
   @override
-  int get schemaVersion => 12;
+  int get schemaVersion => 13;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -327,6 +354,62 @@ final class AppDatabase extends _$AppDatabase {
           'ON search_histories (user_id, last_searched_at)',
         );
       },
+      from12To13: (migrator, schema) async {
+        await customStatement(
+          'ALTER TABLE translation_overrides '
+          'RENAME TO translation_overrides_v12',
+        );
+        await customStatement(
+          'ALTER TABLE learned_translations '
+          'RENAME TO learned_translations_v12',
+        );
+        await customStatement(
+          'ALTER TABLE built_in_translation_states '
+          'RENAME TO built_in_translation_states_v12',
+        );
+        await migrator.createTable(schema.translationOverrides);
+        await migrator.createTable(schema.learnedTranslations);
+        await migrator.createTable(schema.builtInTranslationStates);
+        await customStatement('''
+          INSERT INTO translation_overrides (
+            site_id, source_language, target_language,
+            kind, canonical_name, source_text, video_slug,
+            translation, updated_at
+          )
+          SELECT
+            'rule34video', 'en', 'zh-Hans',
+            kind, canonical_name, source_text, video_slug,
+            translation, updated_at
+          FROM translation_overrides_v12
+        ''');
+        await customStatement('''
+          INSERT INTO learned_translations (
+            site_id, source_language, target_language,
+            kind, canonical_name, source_text, translation,
+            provider_id, provider_name, video_slug, created_at, updated_at
+          )
+          SELECT
+            'rule34video', 'en', 'zh-Hans',
+            kind, canonical_name, source_text, translation,
+            provider_id, provider_name, video_slug, created_at, updated_at
+          FROM learned_translations_v12
+        ''');
+        await customStatement('''
+          INSERT INTO built_in_translation_states (
+            site_id, source_language, target_language,
+            kind, canonical_name, introduced_pack_version,
+            protect_existing_learned, updated_at
+          )
+          SELECT
+            'rule34video', 'en', 'zh-Hans',
+            kind, canonical_name, introduced_pack_version,
+            protect_existing_learned, updated_at
+          FROM built_in_translation_states_v12
+        ''');
+        await customStatement('DROP TABLE translation_overrides_v12');
+        await customStatement('DROP TABLE learned_translations_v12');
+        await customStatement('DROP TABLE built_in_translation_states_v12');
+      },
     ),
     beforeOpen: (_) async {
       await customStatement('PRAGMA foreign_keys = ON');
@@ -342,17 +425,42 @@ final class AppDatabase extends _$AppDatabase {
         .write(LocalLibraryVideosCompanion(previewUrl: Value(previewUrl)));
   }
 
-  Future<List<TranslationOverride>> loadTranslationOverrides() {
-    return (select(translationOverrides)..orderBy([
-          (row) => OrderingTerm.asc(row.kind),
-          (row) => OrderingTerm.asc(row.canonicalName),
-        ]))
+  Future<List<TranslationOverride>> loadTranslationOverrides({
+    String siteId = 'rule34video',
+    String targetLanguage = 'zh-Hans',
+  }) {
+    return (select(translationOverrides)
+          ..orderBy([
+            (row) => OrderingTerm.asc(row.kind),
+            (row) => OrderingTerm.asc(row.canonicalName),
+          ])
+          ..where(
+            (row) =>
+                row.siteId.equals(siteId) &
+                row.targetLanguage.equals(targetLanguage),
+          ))
+        .get();
+  }
+
+  Future<List<TranslationOverride>> loadAllTranslationOverrides({
+    String siteId = 'rule34video',
+  }) {
+    return (select(translationOverrides)
+          ..orderBy([
+            (row) => OrderingTerm.asc(row.targetLanguage),
+            (row) => OrderingTerm.asc(row.kind),
+            (row) => OrderingTerm.asc(row.canonicalName),
+          ])
+          ..where((row) => row.siteId.equals(siteId)))
         .get();
   }
 
   Future<void> upsertTranslationOverride({
     required String kind,
     required String canonicalName,
+    String siteId = 'rule34video',
+    String sourceLanguage = 'en',
+    String targetLanguage = 'zh-Hans',
     String? sourceText,
     String? videoSlug,
     required String translation,
@@ -360,6 +468,9 @@ final class AppDatabase extends _$AppDatabase {
   }) {
     return into(translationOverrides).insertOnConflictUpdate(
       TranslationOverridesCompanion.insert(
+        siteId: Value(siteId),
+        sourceLanguage: Value(sourceLanguage),
+        targetLanguage: Value(targetLanguage),
         kind: kind,
         canonicalName: canonicalName,
         sourceText: Value(sourceText),
@@ -370,17 +481,42 @@ final class AppDatabase extends _$AppDatabase {
     );
   }
 
-  Future<List<LearnedTranslation>> loadLearnedTranslations() {
-    return (select(learnedTranslations)..orderBy([
-          (row) => OrderingTerm.asc(row.kind),
-          (row) => OrderingTerm.asc(row.canonicalName),
-        ]))
+  Future<List<LearnedTranslation>> loadLearnedTranslations({
+    String siteId = 'rule34video',
+    String targetLanguage = 'zh-Hans',
+  }) {
+    return (select(learnedTranslations)
+          ..orderBy([
+            (row) => OrderingTerm.asc(row.kind),
+            (row) => OrderingTerm.asc(row.canonicalName),
+          ])
+          ..where(
+            (row) =>
+                row.siteId.equals(siteId) &
+                row.targetLanguage.equals(targetLanguage),
+          ))
+        .get();
+  }
+
+  Future<List<LearnedTranslation>> loadAllLearnedTranslations({
+    String siteId = 'rule34video',
+  }) {
+    return (select(learnedTranslations)
+          ..orderBy([
+            (row) => OrderingTerm.asc(row.targetLanguage),
+            (row) => OrderingTerm.asc(row.kind),
+            (row) => OrderingTerm.asc(row.canonicalName),
+          ])
+          ..where((row) => row.siteId.equals(siteId)))
         .get();
   }
 
   Future<void> upsertLearnedTranslation({
     required String kind,
     required String canonicalName,
+    String siteId = 'rule34video',
+    String sourceLanguage = 'en',
+    String targetLanguage = 'zh-Hans',
     required String sourceText,
     required String translation,
     String? providerId,
@@ -393,12 +529,17 @@ final class AppDatabase extends _$AppDatabase {
     final existing =
         await (select(learnedTranslations)..where(
               (row) =>
+                  row.siteId.equals(siteId) &
                   row.kind.equals(kind) &
-                  row.canonicalName.equals(canonicalName),
+                  row.canonicalName.equals(canonicalName) &
+                  row.targetLanguage.equals(targetLanguage),
             ))
             .getSingleOrNull();
     await into(learnedTranslations).insertOnConflictUpdate(
       LearnedTranslationsCompanion.insert(
+        siteId: Value(siteId),
+        sourceLanguage: Value(sourceLanguage),
+        targetLanguage: Value(targetLanguage),
         kind: kind,
         canonicalName: canonicalName,
         sourceText: sourceText,
@@ -415,31 +556,59 @@ final class AppDatabase extends _$AppDatabase {
   Future<void> deleteLearnedTranslation({
     required String kind,
     required String canonicalName,
+    String siteId = 'rule34video',
+    String targetLanguage = 'zh-Hans',
   }) {
     return (delete(learnedTranslations)..where(
           (row) =>
-              row.kind.equals(kind) & row.canonicalName.equals(canonicalName),
+              row.siteId.equals(siteId) &
+              row.kind.equals(kind) &
+              row.canonicalName.equals(canonicalName) &
+              row.targetLanguage.equals(targetLanguage),
         ))
         .go();
   }
 
   Future<void> deleteLearnedTranslations(
-    Iterable<({String kind, String canonicalName})> entries,
+    Iterable<
+      ({
+        String siteId,
+        String targetLanguage,
+        String kind,
+        String canonicalName,
+      })
+    >
+    entries,
   ) async {
     final grouped = <String, Set<String>>{};
     for (final entry in entries) {
+      final siteId = entry.siteId.trim();
+      final targetLanguage = entry.targetLanguage.trim();
       final kind = entry.kind.trim();
       final canonicalName = entry.canonicalName.trim();
-      if (kind.isEmpty || canonicalName.isEmpty) continue;
-      grouped.putIfAbsent(kind, () => <String>{}).add(canonicalName);
+      if (siteId.isEmpty ||
+          targetLanguage.isEmpty ||
+          kind.isEmpty ||
+          canonicalName.isEmpty) {
+        continue;
+      }
+      grouped
+          .putIfAbsent(
+            '$siteId\u0000$targetLanguage\u0000$kind',
+            () => <String>{},
+          )
+          .add(canonicalName);
     }
     if (grouped.isEmpty) return;
 
     await transaction(() async {
       for (final entry in grouped.entries) {
+        final parts = entry.key.split('\u0000');
         await (delete(learnedTranslations)..where(
               (row) =>
-                  row.kind.equals(entry.key) &
+                  row.siteId.equals(parts[0]) &
+                  row.targetLanguage.equals(parts[1]) &
+                  row.kind.equals(parts[2]) &
                   row.canonicalName.isIn(entry.value.toList(growable: false)),
             ))
             .go();
@@ -447,18 +616,38 @@ final class AppDatabase extends _$AppDatabase {
     });
   }
 
-  Future<void> clearLearnedTranslations() {
-    return delete(learnedTranslations).go();
+  Future<void> clearLearnedTranslations({
+    String? siteId,
+    String? targetLanguage,
+  }) {
+    final statement = delete(learnedTranslations);
+    if (siteId != null || targetLanguage != null) {
+      statement.where(
+        (row) =>
+            (siteId == null
+                ? const Constant(true)
+                : row.siteId.equals(siteId)) &
+            (targetLanguage == null
+                ? const Constant(true)
+                : row.targetLanguage.equals(targetLanguage)),
+      );
+    }
+    return statement.go();
   }
 
   Future<void> setBuiltInLearnedProtection({
     required String kind,
     required String canonicalName,
     required bool protect,
+    String siteId = 'rule34video',
+    String targetLanguage = 'zh-Hans',
   }) {
     return (update(builtInTranslationStates)..where(
           (row) =>
-              row.kind.equals(kind) & row.canonicalName.equals(canonicalName),
+              row.siteId.equals(siteId) &
+              row.kind.equals(kind) &
+              row.canonicalName.equals(canonicalName) &
+              row.targetLanguage.equals(targetLanguage),
         ))
         .write(
           BuiltInTranslationStatesCompanion(
@@ -474,28 +663,53 @@ final class AppDatabase extends _$AppDatabase {
     )..where((row) => row.packKey.equals(packKey))).getSingleOrNull();
   }
 
-  Future<List<BuiltInTranslationState>> loadBuiltInTranslationStates() {
-    return select(builtInTranslationStates).get();
+  Future<List<BuiltInTranslationState>> loadBuiltInTranslationStates({
+    String siteId = 'rule34video',
+    String targetLanguage = 'zh-Hans',
+  }) {
+    return (select(builtInTranslationStates)..where(
+          (row) =>
+              row.siteId.equals(siteId) &
+              row.targetLanguage.equals(targetLanguage),
+        ))
+        .get();
+  }
+
+  Future<List<BuiltInTranslationState>> loadAllBuiltInTranslationStates({
+    String siteId = 'rule34video',
+  }) {
+    return (select(
+      builtInTranslationStates,
+    )..where((row) => row.siteId.equals(siteId))).get();
   }
 
   Future<void> applyBuiltInTranslationPack({
     required String packKey,
     required int packVersion,
     required Iterable<({String kind, String canonicalName})> entries,
+    String siteId = 'rule34video',
+    String sourceLanguage = 'en',
+    String targetLanguage = 'zh-Hans',
   }) async {
     await transaction(() async {
       final previous = await loadTranslationCatalogPack(packKey);
       if (previous != null && previous.packVersion >= packVersion) return;
       final baseline = previous == null;
       final now = DateTime.now().toUtc();
-      final existingStates = await loadBuiltInTranslationStates();
+      final existingStates = await loadBuiltInTranslationStates(
+        siteId: siteId,
+        targetLanguage: targetLanguage,
+      );
       final existingKeys = {
         for (final state in existingStates)
           '${state.kind}:${state.canonicalName}',
       };
       final learnedRows = baseline
           ? const <LearnedTranslation>[]
-          : await loadLearnedTranslations();
+          : await loadLearnedTranslations(
+              siteId: siteId,
+              targetLanguage: targetLanguage,
+            );
       final learnedKeys = {
         for (final learned in learnedRows)
           '${learned.kind}:${learned.canonicalName}',
@@ -506,6 +720,9 @@ final class AppDatabase extends _$AppDatabase {
         if (!existingKeys.add(key)) continue;
         additions.add(
           BuiltInTranslationStatesCompanion.insert(
+            siteId: Value(siteId),
+            sourceLanguage: Value(sourceLanguage),
+            targetLanguage: Value(targetLanguage),
             kind: entry.kind,
             canonicalName: entry.canonicalName,
             introducedPackVersion: packVersion,
@@ -538,10 +755,15 @@ final class AppDatabase extends _$AppDatabase {
   Future<void> deleteTranslationOverride({
     required String kind,
     required String canonicalName,
+    String siteId = 'rule34video',
+    String targetLanguage = 'zh-Hans',
   }) {
     return (delete(translationOverrides)..where(
           (row) =>
-              row.kind.equals(kind) & row.canonicalName.equals(canonicalName),
+              row.siteId.equals(siteId) &
+              row.kind.equals(kind) &
+              row.canonicalName.equals(canonicalName) &
+              row.targetLanguage.equals(targetLanguage),
         ))
         .go();
   }

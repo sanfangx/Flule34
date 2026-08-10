@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 
 import '../../core/api/rule34video_api.dart';
 import '../../core/models/video_models.dart';
@@ -211,7 +212,7 @@ class _PlaylistPlaybackPageState extends State<PlaylistPlaybackPage> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('加载下一视频失败：$error')));
+        ).showSnackBar(SnackBar(content: AppText('加载下一视频失败：$error')));
       }
       return;
     }
@@ -226,7 +227,7 @@ class _PlaylistPlaybackPageState extends State<PlaylistPlaybackPage> {
     if (!automatic && mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('已经是播放列表最后一个视频。')));
+      ).showSnackBar(const SnackBar(content: AppText('已经是播放列表最后一个视频。')));
     }
   }
 
@@ -267,7 +268,7 @@ class _PlaylistPlaybackPageState extends State<PlaylistPlaybackPage> {
         setState(() => _switchingVideo = false);
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('加载下一视频失败：$error')));
+        ).showSnackBar(SnackBar(content: AppText('加载下一视频失败：$error')));
       }
     }
   }
@@ -363,7 +364,7 @@ class _PlaylistPlaybackPageState extends State<PlaylistPlaybackPage> {
                         .map(
                           (mode) => ButtonSegment(
                             value: mode,
-                            label: Text(mode.label),
+                            label: AppText(mode.label),
                           ),
                         )
                         .toList(growable: false),
@@ -379,13 +380,13 @@ class _PlaylistPlaybackPageState extends State<PlaylistPlaybackPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     IconButton.filledTonal(
-                      tooltip: '上一个',
+                      tooltip: context.uiText('上一个'),
                       onPressed: _index > 0 ? _previous : null,
                       icon: const Icon(Icons.skip_previous),
                     ),
                     const SizedBox(width: 24),
                     IconButton.filledTonal(
-                      tooltip: '下一个',
+                      tooltip: context.uiText('下一个'),
                       onPressed: _next,
                       icon: const Icon(Icons.skip_next),
                     ),
@@ -419,9 +420,12 @@ class _InitialPlaylistPlayerState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(error?.toString() ?? '加载视频失败。', textAlign: TextAlign.center),
+            AppText(
+              error?.toString() ?? '加载视频失败。',
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 12),
-            OutlinedButton(onPressed: onRetry, child: const Text('重试')),
+            OutlinedButton(onPressed: onRetry, child: const AppText('重试')),
           ],
         ),
       ),

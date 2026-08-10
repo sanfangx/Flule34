@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/models/translation_models.dart';
 import '../core/models/video_models.dart';
 import '../core/services/translation_service.dart';
+import '../l10n/ui_localization.dart';
 
 class TranslatedMetadataText extends StatelessWidget {
   const TranslatedMetadataText({
@@ -65,14 +66,14 @@ class LocalizedTranslationText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveStyle = style ?? DefaultTextStyle.of(context).style;
-    final chinese = value.translation?.trim();
+    final translated = value.translation?.trim();
     final bilingual =
-        value.mode == TranslationDisplayMode.bilingual &&
-        chinese != null &&
-        chinese.isNotEmpty;
+        value.mode == TranslationDisplayMode.bilingual && value.hasResult;
     final child = bilingual
         ? Semantics(
-            label: '$prefix${value.original}；中文译文：$chinese$suffix',
+            label: context.uiText(
+              '$prefix${value.original}；译文：$translated$suffix',
+            ),
             excludeSemantics: true,
             child: Text.rich(
               TextSpan(
@@ -90,7 +91,7 @@ class LocalizedTranslationText extends StatelessWidget {
                       ),
                     ),
                   ),
-                  TextSpan(text: '$chinese$suffix'),
+                  TextSpan(text: '$translated$suffix'),
                 ],
               ),
               textAlign: textAlign,

@@ -1,8 +1,72 @@
 import 'package:flutter/foundation.dart';
 
+enum TranslationLanguage {
+  simplifiedChinese('简体中文', 'zh-Hans', 'ZH-HANS', 'zh-CN'),
+  english('English', 'en', 'EN-US', 'en'),
+  japanese('日本語', 'ja', 'JA', 'ja'),
+  korean('한국어', 'ko', 'KO', 'ko');
+
+  const TranslationLanguage(
+    this.label,
+    this.code,
+    this.deepLCode,
+    this.myMemoryCode,
+  );
+
+  final String label;
+  final String code;
+  final String deepLCode;
+  final String myMemoryCode;
+
+  static TranslationLanguage fromCode(
+    String? code, {
+    TranslationLanguage fallback = TranslationLanguage.english,
+  }) {
+    final normalized = code?.trim().toLowerCase().replaceAll('_', '-');
+    return switch (normalized) {
+      'zh' || 'zh-cn' || 'zh-hans' => simplifiedChinese,
+      'en' || 'en-us' || 'en-gb' => english,
+      'ja' || 'jp' => japanese,
+      'ko' || 'kr' => korean,
+      _ => fallback,
+    };
+  }
+
+  static TranslationLanguage? fromCodeOrNull(String? code) {
+    final normalized = code?.trim().toLowerCase().replaceAll('_', '-');
+    return switch (normalized) {
+      'zh' || 'zh-cn' || 'zh-hans' || 'zh-hant' || 'zh-tw' => simplifiedChinese,
+      'en' || 'en-us' || 'en-gb' => english,
+      'ja' || 'jp' => japanese,
+      'ko' || 'kr' => korean,
+      _ => null,
+    };
+  }
+}
+
+enum TranslationTargetPreference {
+  followInterface('跟随界面语言'),
+  simplifiedChinese('简体中文'),
+  english('English'),
+  japanese('日本語'),
+  korean('한국어');
+
+  const TranslationTargetPreference(this.label);
+
+  final String label;
+
+  TranslationLanguage? get fixedLanguage => switch (this) {
+    followInterface => null,
+    simplifiedChinese => TranslationLanguage.simplifiedChinese,
+    english => TranslationLanguage.english,
+    japanese => TranslationLanguage.japanese,
+    korean => TranslationLanguage.korean,
+  };
+}
+
 enum TranslationDisplayMode {
   originalOnly('原文'),
-  chineseOnly('中文'),
+  chineseOnly('译文'),
   bilingual('双语');
 
   const TranslationDisplayMode(this.label);
@@ -42,17 +106,26 @@ final class LocalizedTranslation {
   final String? translation;
   final TranslationDisplayMode mode;
 
-  bool get hasTranslation => translation?.trim().isNotEmpty ?? false;
+  bool get hasTranslation {
+    final value = translation?.trim();
+    return value != null && value.isNotEmpty && value != original.trim();
+  }
+
+  /// 表示翻译结果存在，即使它与原文完全相同。
+  bool get hasResult {
+    final value = translation?.trim();
+    return value != null && value.isNotEmpty;
+  }
 
   String get plainText {
-    final chinese = translation?.trim();
+    final translated = translation?.trim();
     if (mode == TranslationDisplayMode.originalOnly ||
-        chinese == null ||
-        chinese.isEmpty) {
+        translated == null ||
+        translated.isEmpty) {
       return original;
     }
-    if (mode == TranslationDisplayMode.chineseOnly) return chinese;
-    return '$original | $chinese';
+    if (mode == TranslationDisplayMode.chineseOnly) return translated;
+    return '$original | $translated';
   }
 }
 
@@ -89,7 +162,7 @@ enum TranslationCatalogKind {
 enum TranslationCatalogSort {
   updatedDesc('按最近更新排序'),
   originalAsc('按原文排序'),
-  translationAsc('按中文排序'),
+  translationAsc('按译文排序'),
   source('按来源排序');
 
   const TranslationCatalogSort(this.label);
@@ -100,6 +173,9 @@ enum TranslationCatalogSort {
 @immutable
 final class TranslationCatalogItem {
   const TranslationCatalogItem({
+    this.siteId = 'rule34video',
+    this.sourceLanguageCode = 'und',
+    this.targetLanguage = TranslationLanguage.simplifiedChinese,
     required this.kind,
     required this.canonicalName,
     required this.sourceText,
@@ -114,6 +190,9 @@ final class TranslationCatalogItem {
     required this.protectLearnedFromBuiltIn,
   });
 
+  final String siteId;
+  final String sourceLanguageCode;
+  final TranslationLanguage targetLanguage;
   final TranslationCatalogKind kind;
   final String canonicalName;
   final String sourceText;

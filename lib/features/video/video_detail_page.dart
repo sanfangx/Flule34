@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -18,6 +19,7 @@ import '../../shared/video_collection_layout.dart';
 import '../../shared/editable_translation.dart';
 import '../../shared/localized_translation_text.dart';
 import '../../shared/site_avatar.dart';
+import '../../shared/transient_focus.dart';
 import '../auth/login_sheet.dart';
 import '../downloads/data/download_repository.dart';
 import '../library/data/local_library_repository.dart';
@@ -109,7 +111,7 @@ class _VideoDetailPageState extends ConsumerState<VideoDetailPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('视频详情')),
+      appBar: AppBar(title: const AppText('视频详情')),
       body: FutureBuilder<VideoDetails>(
         future: _detailsFuture,
         builder: (context, snapshot) {
@@ -197,12 +199,12 @@ class _DetailLoadError extends StatelessWidget {
           children: [
             const Icon(Icons.cloud_off_outlined, size: 48),
             const SizedBox(height: 16),
-            Text(message, textAlign: TextAlign.center),
+            AppText(message, textAlign: TextAlign.center),
             const SizedBox(height: 16),
             FilledButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
-              label: const Text('重试'),
+              label: const AppText('重试'),
             ),
           ],
         ),
@@ -353,30 +355,34 @@ class _VideoDetailsBodyState extends State<_VideoDetailsBody> {
     }
     final preferences = widget.settings.settings;
     final source = preferences.askDownloadQuality
-        ? await showModalBottomSheet<VideoSource>(
-            context: context,
-            useSafeArea: true,
-            builder: (context) {
-              return ListView(
-                shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
-                    child: Text(
-                      '选择下载清晰度',
-                      style: Theme.of(context).textTheme.titleLarge,
+        ? await runWithoutRestoringInputFocus(
+            context,
+            () => showModalBottomSheet<VideoSource>(
+              context: context,
+              requestFocus: false,
+              useSafeArea: true,
+              builder: (context) {
+                return ListView(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
+                      child: AppText(
+                        '选择下载清晰度',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
                     ),
-                  ),
-                  for (final item in _details.sources.reversed)
-                    ListTile(
-                      leading: Icon(item.isHd ? Icons.hd : Icons.sd),
-                      title: Text(item.label),
-                      onTap: () => Navigator.of(context).pop(item),
-                    ),
-                ],
-              );
-            },
+                    for (final item in _details.sources.reversed)
+                      ListTile(
+                        leading: Icon(item.isHd ? Icons.hd : Icons.sd),
+                        title: AppText(item.label),
+                        onTap: () => Navigator.of(context).pop(item),
+                      ),
+                  ],
+                );
+              },
+            ),
           )
         : selectVideoSource(_details.sources, preferences.downloadQuality);
     if (source == null || !mounted) {
@@ -454,29 +460,33 @@ class _VideoDetailsBodyState extends State<_VideoDetailsBody> {
 
   Future<void> _openMetadataActions(VideoMetadataItem item) async {
     final subscribed = _subscriptionPaths.contains(item.path);
-    final action = await showModalBottomSheet<_MetadataAction>(
-      context: context,
-      showDragHandle: true,
-      builder: (context) => SafeArea(
-        child: Wrap(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.open_in_new),
-              title: Text('打开${item.kind.label}集合'),
-              onTap: () => Navigator.pop(context, _MetadataAction.open),
-            ),
-            if (item.canSubscribe)
+    final action = await runWithoutRestoringInputFocus(
+      context,
+      () => showModalBottomSheet<_MetadataAction>(
+        context: context,
+        requestFocus: false,
+        showDragHandle: true,
+        builder: (context) => SafeArea(
+          child: Wrap(
+            children: [
               ListTile(
-                leading: Icon(
-                  subscribed
-                      ? Icons.notifications_off_outlined
-                      : Icons.notifications_active_outlined,
-                ),
-                title: Text(subscribed ? '取消订阅' : '订阅'),
-                onTap: () =>
-                    Navigator.pop(context, _MetadataAction.subscription),
+                leading: const Icon(Icons.open_in_new),
+                title: AppText('打开${item.kind.label}集合'),
+                onTap: () => Navigator.pop(context, _MetadataAction.open),
               ),
-          ],
+              if (item.canSubscribe)
+                ListTile(
+                  leading: Icon(
+                    subscribed
+                        ? Icons.notifications_off_outlined
+                        : Icons.notifications_active_outlined,
+                  ),
+                  title: AppText(subscribed ? '取消订阅' : '订阅'),
+                  onTap: () =>
+                      Navigator.pop(context, _MetadataAction.subscription),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -540,7 +550,7 @@ class _VideoDetailsBodyState extends State<_VideoDetailsBody> {
   void _showMessage(String message) {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    ).showSnackBar(SnackBar(content: AppText(message)));
   }
 
   void _clearDescriptionSelection() {
@@ -579,7 +589,7 @@ class _VideoDetailsBodyState extends State<_VideoDetailsBody> {
             child: ColoredBox(
               color: Colors.black,
               child: Center(
-                child: Text(
+                child: AppText(
                   '此视频未提供可直接播放的 MP4 源。',
                   style: TextStyle(color: Colors.white),
                 ),
@@ -699,7 +709,7 @@ class _VideoDetailsBodyState extends State<_VideoDetailsBody> {
                       ),
                       if (details.description != null) ...[
                         const SizedBox(height: 24),
-                        Text(
+                        AppText(
                           '简介',
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
@@ -749,7 +759,7 @@ class _VideoDetailsBodyState extends State<_VideoDetailsBody> {
                       ),
                       if (details.uploader case final uploader?) ...[
                         const SizedBox(height: 24),
-                        Text(
+                        AppText(
                           '上传者',
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
@@ -788,7 +798,7 @@ class _VideoDetailsBodyState extends State<_VideoDetailsBody> {
                       ],
                       if (details.relatedVideos.isNotEmpty) ...[
                         const SizedBox(height: 28),
-                        Text(
+                        AppText(
                           '相关视频',
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
@@ -860,7 +870,7 @@ class _ActionButton extends StatelessWidget {
               child: CircularProgressIndicator(strokeWidth: 2),
             )
           : Icon(icon),
-      label: Text(label),
+      label: AppText(label),
     );
   }
 }
@@ -873,7 +883,7 @@ class _StatChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Chip(avatar: Icon(icon, size: 16), label: Text(label));
+    return Chip(avatar: Icon(icon, size: 16), label: AppText(label));
   }
 }
 
@@ -975,7 +985,7 @@ class _MetadataSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: Theme.of(context).textTheme.titleMedium),
+          AppText(title, style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,

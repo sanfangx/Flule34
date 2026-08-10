@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -190,11 +191,11 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
           child: SearchBar(
             controller: _searchController,
             leading: const Icon(Icons.search),
-            hintText: widget.searchHint,
+            hintText: context.uiText(widget.searchHint),
             trailing: [
               if (_query.isNotEmpty)
                 IconButton(
-                  tooltip: '清除搜索',
+                  tooltip: context.uiText('清除搜索'),
                   onPressed: () {
                     _searchController.clear();
                     setState(() => _query = '');
@@ -202,7 +203,7 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
                   icon: const Icon(Icons.close),
                 ),
               IconButton(
-                tooltip: '筛选',
+                tooltip: context.uiText('筛选'),
                 onPressed: _showFilters,
                 icon: Badge(
                   isLabelVisible: _filters.activeCount > 0,
@@ -314,7 +315,7 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
                   ? _load(reset: true, forceRefresh: true)
                   : _load(reset: false),
               icon: const Icon(Icons.refresh),
-              label: Text(_page == 1 ? '重试刷新' : '重试加载下一页'),
+              label: AppText(_page == 1 ? '重试刷新' : '重试加载下一页'),
             ),
           ],
         ),
@@ -322,7 +323,7 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
     }
     return Padding(
       padding: const EdgeInsets.all(20),
-      child: Center(child: Text(_hasMore ? '继续向下滚动以加载更多' : '已经到底了')),
+      child: Center(child: AppText(_hasMore ? '继续向下滚动以加载更多' : '已经到底了')),
     );
   }
 
@@ -387,10 +388,10 @@ class _StateMessage extends StatelessWidget {
           children: [
             Icon(icon, size: 48),
             const SizedBox(height: 16),
-            Text(message, textAlign: TextAlign.center),
+            AppText(message, textAlign: TextAlign.center),
             if (actionLabel != null) ...[
               const SizedBox(height: 16),
-              FilledButton(onPressed: onAction, child: Text(actionLabel!)),
+              FilledButton(onPressed: onAction, child: AppText(actionLabel!)),
             ],
           ],
         ),

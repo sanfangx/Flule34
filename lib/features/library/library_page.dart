@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import '../../core/api/rule34video_api.dart';
 import '../../core/services/predictive_prefetch_service.dart';
 import '../../shared/video_feed.dart';
@@ -95,11 +96,11 @@ class _LibraryTabsState extends State<_LibraryTabs>
     final api = widget.api;
     final prefetch = widget.prefetchService;
     final tabs = <Widget>[
-      const Tab(text: '本地分类库'),
-      if (loggedIn) const Tab(text: '收藏'),
-      if (loggedIn) const Tab(text: '历史'),
-      if (loggedIn) const Tab(text: '播放列表'),
-      if (loggedIn) const Tab(text: '订阅'),
+      const Tab(child: AppText('本地分类库')),
+      if (loggedIn) const Tab(child: AppText('收藏')),
+      if (loggedIn) const Tab(child: AppText('历史')),
+      if (loggedIn) const Tab(child: AppText('播放列表')),
+      if (loggedIn) const Tab(child: AppText('订阅')),
     ];
     final pages = <Widget>[
       LocalLibraryOverview(repository: widget.localLibraryRepository),
@@ -144,7 +145,7 @@ class _LibraryTabsState extends State<_LibraryTabs>
         if (!loggedIn)
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-            child: Text(
+            child: AppText(
               '本地分类库无需登录；登录后还可查看网站收藏、历史和订阅。',
               style: Theme.of(context).textTheme.bodySmall,
             ),

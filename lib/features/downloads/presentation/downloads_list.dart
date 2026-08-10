@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/router/route_names.dart';
 import '../../../core/database/app_database.dart';
 import '../data/download_repository.dart';
 import '../domain/download_models.dart';
+import '../../../shared/transient_focus.dart';
 
 class DownloadManagementPage extends StatefulWidget {
   const DownloadManagementPage({super.key, required this.repository});
@@ -25,7 +27,7 @@ class _DownloadManagementPageState extends State<DownloadManagementPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('下载'),
+        title: const AppText('下载'),
         actions: [
           if (_bulkDeleting)
             const Padding(
@@ -39,12 +41,12 @@ class _DownloadManagementPageState extends State<DownloadManagementPage> {
             )
           else
             IconButton(
-              tooltip: '批量删除',
+              tooltip: context.uiText('批量删除'),
               onPressed: _showBulkDelete,
               icon: const Icon(Icons.delete_sweep_outlined),
             ),
           IconButton(
-            tooltip: '下载设置',
+            tooltip: context.uiText('下载设置'),
             onPressed: () => context.pushNamed(AppRouteNames.downloadSettings),
             icon: const Icon(Icons.settings_outlined),
           ),
@@ -55,36 +57,42 @@ class _DownloadManagementPageState extends State<DownloadManagementPage> {
   }
 
   Future<void> _showBulkDelete() async {
-    final mode = await showModalBottomSheet<DownloadBulkDeleteMode>(
-      context: context,
-      showDragHandle: true,
-      builder: (context) => SafeArea(
-        child: Wrap(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.list_alt_outlined),
-              title: const Text('删除全部下载记录'),
-              subtitle: const Text('保留已经下载到公共目录的视频'),
-              onTap: () =>
-                  Navigator.pop(context, DownloadBulkDeleteMode.recordsOnly),
-            ),
-            ListTile(
-              leading: const Icon(Icons.delete_outline),
-              title: const Text('删除全部失效下载记录'),
-              subtitle: const Text('只移除已经找不到对应文件的记录'),
-              onTap: () =>
-                  Navigator.pop(context, DownloadBulkDeleteMode.invalidRecords),
-            ),
-            ListTile(
-              leading: const Icon(Icons.delete_forever_outlined),
-              title: const Text('删除全部下载记录及对应视频'),
-              subtitle: const Text('同时删除公共目录中仍能对应上的视频'),
-              onTap: () => Navigator.pop(
-                context,
-                DownloadBulkDeleteMode.filesAndRecords,
+    final mode = await runWithoutRestoringInputFocus(
+      context,
+      () => showModalBottomSheet<DownloadBulkDeleteMode>(
+        context: context,
+        requestFocus: false,
+        showDragHandle: true,
+        builder: (context) => SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.list_alt_outlined),
+                title: const AppText('删除全部下载记录'),
+                subtitle: const AppText('保留已经下载到公共目录的视频'),
+                onTap: () =>
+                    Navigator.pop(context, DownloadBulkDeleteMode.recordsOnly),
               ),
-            ),
-          ],
+              ListTile(
+                leading: const Icon(Icons.delete_outline),
+                title: const AppText('删除全部失效下载记录'),
+                subtitle: const AppText('只移除已经找不到对应文件的记录'),
+                onTap: () => Navigator.pop(
+                  context,
+                  DownloadBulkDeleteMode.invalidRecords,
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete_forever_outlined),
+                title: const AppText('删除全部下载记录及对应视频'),
+                subtitle: const AppText('同时删除公共目录中仍能对应上的视频'),
+                onTap: () => Navigator.pop(
+                  context,
+                  DownloadBulkDeleteMode.filesAndRecords,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -94,16 +102,16 @@ class _DownloadManagementPageState extends State<DownloadManagementPage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('确认批量删除？'),
+        title: const AppText('确认批量删除？'),
         content: Text(_bulkDeleteDescription(mode)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('取消'),
+            child: const AppText('取消'),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('确认删除'),
+            child: const AppText('确认删除'),
           ),
         ],
       ),
@@ -124,12 +132,12 @@ class _DownloadManagementPageState extends State<DownloadManagementPage> {
           : '已删除 ${result.deleted} 条下载记录。';
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(message)));
+      ).showSnackBar(SnackBar(content: AppText(message)));
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text(error.toString())));
+        ).showSnackBar(SnackBar(content: AppText(error.toString())));
       }
     } finally {
       if (mounted) {
@@ -160,14 +168,14 @@ class DownloadsList extends StatelessWidget {
       stream: repository.watchCurrentUserDownloads(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return Center(child: Text(snapshot.error.toString()));
+          return Center(child: AppText(snapshot.error.toString()));
         }
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
         final records = snapshot.requireData;
         if (records.isEmpty) {
-          return const Center(child: Text('还没有下载任务。'));
+          return const Center(child: AppText('还没有下载任务。'));
         }
         final completed = records.where((item) => item.state == 'complete');
         final storedBytes = completed.fold<int>(
@@ -181,7 +189,7 @@ class DownloadsList extends StatelessWidget {
             if (index == 0) {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(4, 4, 4, 12),
-                child: Text(
+                child: AppText(
                   '共 ${records.length} 个任务 · 已完成 ${completed.length} 个 · 约占用 ${_formatBytes(storedBytes)}',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
@@ -311,7 +319,7 @@ class _DownloadCardState extends State<_DownloadCard>
                 else if (_isActive(record.state))
                   const LinearProgressIndicator(),
                 const SizedBox(height: 7),
-                Text(
+                AppText(
                   downloadStatusText(
                     record,
                     validation: validation,
@@ -375,7 +383,7 @@ class _DownloadCardState extends State<_DownloadCard>
                       record.state == 'not_found' ||
                       record.state == 'canceled')
                     IconButton(
-                      tooltip: '重新下载',
+                      tooltip: context.uiText('重新下载'),
                       onPressed: () => _run(
                         () => widget.repository.retry(record),
                         successMessage: '已重新加入下载队列。',
@@ -384,21 +392,21 @@ class _DownloadCardState extends State<_DownloadCard>
                     ),
                   if (_canPause(record.state))
                     IconButton(
-                      tooltip: '暂停',
+                      tooltip: context.uiText('暂停'),
                       onPressed: () =>
                           _run(() => widget.repository.pause(record.id)),
                       icon: const Icon(Icons.pause_circle_outline),
                     ),
                   if (record.state == 'paused')
                     IconButton(
-                      tooltip: '继续',
+                      tooltip: context.uiText('继续'),
                       onPressed: () =>
                           _run(() => widget.repository.resume(record.id)),
                       icon: const Icon(Icons.play_arrow),
                     ),
                   if (record.state == 'complete' && !invalid && !validating)
                     IconButton(
-                      tooltip: '播放文件',
+                      tooltip: context.uiText('播放文件'),
                       onPressed: _open,
                       icon: const Icon(Icons.play_circle_outline),
                     ),
@@ -418,8 +426,8 @@ class _DownloadCardState extends State<_DownloadCard>
     final choice = await showDialog<_DownloadDeleteChoice>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(invalid ? '移除失效记录？' : '删除下载？'),
-        content: Text(
+        title: AppText(invalid ? '移除失效记录？' : '删除下载？'),
+        content: AppText(
           invalid
               ? '可以只移除 App 内记录，也可以尝试删除当前记录所指向的外部文件。'
               : active
@@ -429,17 +437,17 @@ class _DownloadCardState extends State<_DownloadCard>
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('取消'),
+            child: const AppText('取消'),
           ),
           TextButton(
             onPressed: () =>
                 Navigator.of(context).pop(_DownloadDeleteChoice.recordOnly),
-            child: const Text('仅删除记录'),
+            child: const AppText('仅删除记录'),
           ),
           FilledButton(
             onPressed: () =>
                 Navigator.of(context).pop(_DownloadDeleteChoice.fileAndRecord),
-            child: const Text('删除文件和记录'),
+            child: const AppText('删除文件和记录'),
           ),
         ],
       ),
@@ -469,14 +477,14 @@ class _DownloadCardState extends State<_DownloadCard>
       if (!opened) {
         _reloadValidation();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('下载文件已失效或没有可播放此 MP4 的应用。')),
+          const SnackBar(content: AppText('下载文件已失效或没有可播放此 MP4 的应用。')),
         );
       }
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('打开下载失败：$error')));
+        ).showSnackBar(SnackBar(content: AppText('打开下载失败：$error')));
       }
     } finally {
       if (mounted) {
@@ -502,13 +510,13 @@ class _DownloadCardState extends State<_DownloadCard>
       if (message != null) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text(message)));
+        ).showSnackBar(SnackBar(content: AppText(message)));
       }
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text(error.toString())));
+        ).showSnackBar(SnackBar(content: AppText(error.toString())));
       }
     } finally {
       if (mounted) {

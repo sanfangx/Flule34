@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -36,26 +37,26 @@ class AppShell extends ConsumerWidget {
               initialLocation: index == navigationShell.currentIndex,
             );
           },
-          destinations: const [
+          destinations: [
             NavigationDestination(
               icon: Icon(Icons.home_outlined),
               selectedIcon: Icon(Icons.home),
-              label: '首页',
+              label: context.uiText('首页'),
             ),
             NavigationDestination(
               icon: Icon(Icons.explore_outlined),
               selectedIcon: Icon(Icons.explore),
-              label: '发现',
+              label: context.uiText('发现'),
             ),
             NavigationDestination(
               icon: Icon(Icons.video_library_outlined),
               selectedIcon: Icon(Icons.video_library),
-              label: '媒体库',
+              label: context.uiText('媒体库'),
             ),
             NavigationDestination(
               icon: Icon(Icons.person_outline),
               selectedIcon: Icon(Icons.person),
-              label: '我的',
+              label: context.uiText('我的'),
             ),
           ],
         ),

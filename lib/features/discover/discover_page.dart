@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/router/route_names.dart';
@@ -15,11 +16,11 @@ class DiscoverPage extends StatelessWidget {
         SearchBar(
           readOnly: true,
           leading: const Icon(Icons.search),
-          hintText: '搜索视频、标签、分类或艺术家',
+          hintText: context.uiText('搜索视频、标签、分类或艺术家'),
           onTap: () => context.pushNamed(AppRouteNames.search),
         ),
         const SizedBox(height: 24),
-        Text('探索内容', style: Theme.of(context).textTheme.titleLarge),
+        AppText('探索内容', style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: 12),
         _DiscoveryEntry(
           icon: Icons.tag,
@@ -98,8 +99,8 @@ class _DiscoveryEntry extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
         leading: Icon(icon),
-        title: Text(title),
-        subtitle: Text(description),
+        title: AppText(title),
+        subtitle: AppText(description),
         trailing: const Icon(Icons.chevron_right),
         onTap: onTap,
       ),

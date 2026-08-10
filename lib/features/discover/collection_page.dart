@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 
 import '../../core/api/rule34video_api.dart';
 import '../../core/models/video_models.dart';
@@ -7,6 +8,7 @@ import '../../shared/editable_translation.dart';
 import '../../shared/localized_translation_text.dart';
 import '../../shared/site_avatar.dart';
 import '../../shared/video_feed.dart';
+import '../../shared/transient_focus.dart';
 import '../search/video_filter_sheet.dart';
 
 class CollectionPage extends StatefulWidget {
@@ -109,7 +111,7 @@ class _CollectionPageState extends State<CollectionPage> {
         actions: [
           if (_supportsAdvancedFilters)
             IconButton(
-              tooltip: '筛选与排序',
+              tooltip: context.uiText('筛选与排序'),
               onPressed: _openFilters,
               icon: Badge(
                 isLabelVisible: _filters.activeCount > 1,
@@ -119,14 +121,18 @@ class _CollectionPageState extends State<CollectionPage> {
             )
           else
             PopupMenuButton<VideoSort>(
-              tooltip: '排序',
+              requestFocus: false,
+              onOpened: dismissInputFocus,
+              tooltip: context.uiText('排序'),
               initialValue: _channelSort,
               onSelected: (value) => setState(() => _channelSort = value),
               itemBuilder: (context) => VideoSort.values
                   .where((value) => value != VideoSort.relevance)
                   .map(
-                    (value) =>
-                        PopupMenuItem(value: value, child: Text(value.label)),
+                    (value) => PopupMenuItem(
+                      value: value,
+                      child: AppText(value.label),
+                    ),
                   )
                   .toList(growable: false),
             ),
@@ -294,14 +300,14 @@ class _ActiveFilterBar extends StatelessWidget {
           if (filters.minRating != null)
             Padding(
               padding: const EdgeInsets.only(right: 8),
-              child: Chip(label: Text('点赞率 ≥ ${filters.minRating}%')),
+              child: Chip(label: AppText('点赞率 ≥ ${filters.minRating}%')),
             ),
           if (filters.minRatingVotes != null)
             Padding(
               padding: const EdgeInsets.only(right: 8),
-              child: Chip(label: Text('投票数 ≥ ${filters.minRatingVotes}')),
+              child: Chip(label: AppText('投票数 ≥ ${filters.minRatingVotes}')),
             ),
-          TextButton(onPressed: onClear, child: const Text('清除条件')),
+          TextButton(onPressed: onClear, child: const AppText('清除条件')),
         ],
       ),
     );

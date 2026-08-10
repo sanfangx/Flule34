@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 
 import '../core/models/translation_provider_models.dart';
+import '../core/models/translation_models.dart';
 import '../core/models/video_models.dart';
 import '../core/services/translation_service.dart';
 
@@ -53,19 +55,42 @@ Future<void> showTranslationEditDialog(
   required TranslationService translationService,
   required DiscoveryKind kind,
   required String english,
+  TranslationLanguage? targetLanguage,
 }) async {
-  final current = translationService.lookupChinese(english, kind: kind);
-  final builtIn = translationService.lookupBuiltInChinese(english, kind: kind);
+  final language = targetLanguage ?? translationService.targetLanguage;
+  final current = translationService.lookupChinese(
+    english,
+    kind: kind,
+    language: language,
+  );
+  final builtIn = translationService.lookupBuiltInChinese(
+    english,
+    kind: kind,
+    language: language,
+  );
   final result = await showDialog<_TranslationEditResult>(
     context: context,
     builder: (context) => _TranslationEditDialog(
       english: english,
       currentTranslation: current ?? '',
-      hasOverride: translationService.hasOverride(kind, english),
+      targetLanguage: language,
+      hasOverride: translationService.hasOverride(
+        kind,
+        english,
+        language: language,
+      ),
       hasBuiltIn: builtIn != null,
-      hasLearned: translationService.hasLearnedTranslation(kind, english),
+      hasLearned: translationService.hasLearnedTranslation(
+        kind,
+        english,
+        language: language,
+      ),
       translate: translationService.hasEnabledProvider
-          ? () => translationService.translateWithProvider(kind, english)
+          ? () => translationService.translateWithProvider(
+              kind,
+              english,
+              language: language,
+            )
           : null,
     ),
   );
@@ -75,15 +100,24 @@ Future<void> showTranslationEditDialog(
 
   try {
     if (result.restoreBuiltIn) {
-      await translationService.removeOverride(kind, english);
+      await translationService.removeOverride(
+        kind,
+        english,
+        language: language,
+      );
     } else {
-      await translationService.setOverride(kind, english, result.translation!);
+      await translationService.setOverride(
+        kind,
+        english,
+        result.translation!,
+        language: language,
+      );
     }
   } catch (error) {
     if (context.mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('保存翻译失败：$error')));
+      ).showSnackBar(SnackBar(content: AppText('保存翻译失败：$error')));
     }
   }
 }
@@ -103,6 +137,7 @@ class _TranslationEditDialog extends StatefulWidget {
   const _TranslationEditDialog({
     required this.english,
     required this.currentTranslation,
+    required this.targetLanguage,
     required this.hasOverride,
     required this.hasBuiltIn,
     required this.hasLearned,
@@ -111,6 +146,7 @@ class _TranslationEditDialog extends StatefulWidget {
 
   final String english;
   final String currentTranslation;
+  final TranslationLanguage targetLanguage;
   final bool hasOverride;
   final bool hasBuiltIn;
   final bool hasLearned;
@@ -140,13 +176,13 @@ class _TranslationEditDialogState extends State<_TranslationEditDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('编辑中文翻译'),
+      title: const AppText('编辑译文'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('原文', style: Theme.of(context).textTheme.labelLarge),
+            AppText('原文', style: Theme.of(context).textTheme.labelLarge),
             const SizedBox(height: 6),
             SelectableText(widget.english),
             const SizedBox(height: 20),
@@ -156,7 +192,8 @@ class _TranslationEditDialogState extends State<_TranslationEditDialog> {
               minLines: 1,
               maxLines: 3,
               decoration: InputDecoration(
-                labelText: '中文翻译',
+                labelText:
+                    '${context.uiText('译文')} · ${widget.targetLanguage.label}',
                 errorText: _errorText,
                 border: const OutlineInputBorder(),
               ),
@@ -167,14 +204,14 @@ class _TranslationEditDialogState extends State<_TranslationEditDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('取消'),
+          child: const AppText('取消'),
         ),
         if (widget.hasOverride)
           TextButton(
             onPressed: () => Navigator.of(
               context,
             ).pop(const _TranslationEditResult.restore()),
-            child: Text(
+            child: AppText(
               widget.hasBuiltIn
                   ? '恢复内置翻译'
                   : widget.hasLearned
@@ -190,11 +227,11 @@ class _TranslationEditDialogState extends State<_TranslationEditDialog> {
                     dimension: 18,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : const Text('使用翻译服务'),
+                : const AppText('使用翻译服务'),
           ),
         FilledButton(
           onPressed: _translating ? null : _save,
-          child: const Text('保存'),
+          child: const AppText('保存'),
         ),
       ],
     );
@@ -203,7 +240,7 @@ class _TranslationEditDialogState extends State<_TranslationEditDialog> {
   void _save() {
     final value = _controller.text.trim();
     if (value.isEmpty) {
-      setState(() => _errorText = '中文翻译不能为空');
+      setState(() => _errorText = '译文不能为空');
       return;
     }
     Navigator.of(context).pop(_TranslationEditResult.save(value));
@@ -234,22 +271,39 @@ Future<void> showTitleTranslationEditDialog(
   required String videoId,
   required String english,
   String? videoSlug,
+  TranslationLanguage? targetLanguage,
 }) async {
+  final language = targetLanguage ?? translationService.targetLanguage;
   final current =
-      translationService.lookupTitleChinese(videoId, raw: english) ?? '';
+      translationService.lookupTitleChinese(
+        videoId,
+        raw: english,
+        language: language,
+      ) ??
+      '';
   final result = await showDialog<_TranslationEditResult>(
     context: context,
     builder: (context) => _TranslationEditDialog(
       english: english,
       currentTranslation: current,
-      hasOverride: translationService.hasTitleOverride(videoId, raw: english),
+      targetLanguage: language,
+      hasOverride: translationService.hasTitleOverride(
+        videoId,
+        raw: english,
+        language: language,
+      ),
       hasBuiltIn: false,
-      hasLearned: translationService.hasLearnedTitle(videoId, raw: english),
+      hasLearned: translationService.hasLearnedTitle(
+        videoId,
+        raw: english,
+        language: language,
+      ),
       translate: translationService.hasEnabledProvider
           ? () => translationService.translateTitleWithProvider(
               english,
               videoId: videoId,
               videoSlug: videoSlug,
+              language: language,
             )
           : null,
     ),
@@ -257,20 +311,21 @@ Future<void> showTitleTranslationEditDialog(
   if (result == null || !context.mounted) return;
   try {
     if (result.restoreBuiltIn) {
-      await translationService.removeTitleOverride(videoId);
+      await translationService.removeTitleOverride(videoId, language: language);
     } else {
       await translationService.setTitleOverride(
         videoId,
         result.translation!,
         sourceText: english,
         videoSlug: videoSlug,
+        language: language,
       );
     }
   } catch (error) {
     if (context.mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('保存翻译失败：$error')));
+      ).showSnackBar(SnackBar(content: AppText('保存翻译失败：$error')));
     }
   }
 }

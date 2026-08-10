@@ -1,6 +1,19 @@
 import '../../../core/models/video_models.dart';
 import '../../../core/models/translation_models.dart';
 
+enum AppLanguagePreference {
+  system('跟随系统', null),
+  simplifiedChinese('简体中文', 'zh'),
+  english('English', 'en'),
+  japanese('日本語', 'ja'),
+  korean('한국어', 'ko');
+
+  const AppLanguagePreference(this.label, this.languageCode);
+
+  final String label;
+  final String? languageCode;
+}
+
 enum AppThemePreference {
   system('跟随系统'),
   light('浅色'),
@@ -73,6 +86,7 @@ enum UpdateChannel {
 
 final class AppSettings {
   const AppSettings({
+    required this.language,
     required this.theme,
     required this.playbackQuality,
     required this.networkPlaybackPolicy,
@@ -96,10 +110,12 @@ final class AppSettings {
     required this.titleTranslationDisplayMode,
     required this.categoryTranslationDisplayMode,
     required this.tagTranslationDisplayMode,
+    required this.translationTarget,
     required this.automaticTranslationTargets,
   });
 
   static const defaults = AppSettings(
+    language: AppLanguagePreference.system,
     theme: AppThemePreference.system,
     playbackQuality: VideoQualityPreference.p1080,
     networkPlaybackPolicy: NetworkPlaybackPolicy.automatic,
@@ -123,9 +139,11 @@ final class AppSettings {
     titleTranslationDisplayMode: TranslationDisplayMode.bilingual,
     categoryTranslationDisplayMode: TranslationDisplayMode.bilingual,
     tagTranslationDisplayMode: TranslationDisplayMode.bilingual,
+    translationTarget: TranslationTargetPreference.followInterface,
     automaticTranslationTargets: <AutomaticTranslationTarget>{},
   );
 
+  final AppLanguagePreference language;
   final AppThemePreference theme;
   final VideoQualityPreference playbackQuality;
   final NetworkPlaybackPolicy networkPlaybackPolicy;
@@ -149,6 +167,7 @@ final class AppSettings {
   final TranslationDisplayMode titleTranslationDisplayMode;
   final TranslationDisplayMode categoryTranslationDisplayMode;
   final TranslationDisplayMode tagTranslationDisplayMode;
+  final TranslationTargetPreference translationTarget;
 
   /// 兼容旧代码：当三类内容模式不一致时返回双语。
   TranslationDisplayMode get translationDisplayMode =>
@@ -159,6 +178,7 @@ final class AppSettings {
   final Set<AutomaticTranslationTarget> automaticTranslationTargets;
 
   AppSettings copyWith({
+    AppLanguagePreference? language,
     AppThemePreference? theme,
     VideoQualityPreference? playbackQuality,
     NetworkPlaybackPolicy? networkPlaybackPolicy,
@@ -182,9 +202,11 @@ final class AppSettings {
     TranslationDisplayMode? titleTranslationDisplayMode,
     TranslationDisplayMode? categoryTranslationDisplayMode,
     TranslationDisplayMode? tagTranslationDisplayMode,
+    TranslationTargetPreference? translationTarget,
     Set<AutomaticTranslationTarget>? automaticTranslationTargets,
   }) {
     return AppSettings(
+      language: language ?? this.language,
       theme: theme ?? this.theme,
       playbackQuality: playbackQuality ?? this.playbackQuality,
       networkPlaybackPolicy:
@@ -215,6 +237,7 @@ final class AppSettings {
           categoryTranslationDisplayMode ?? this.categoryTranslationDisplayMode,
       tagTranslationDisplayMode:
           tagTranslationDisplayMode ?? this.tagTranslationDisplayMode,
+      translationTarget: translationTarget ?? this.translationTarget,
       automaticTranslationTargets: Set.unmodifiable(
         automaticTranslationTargets ?? this.automaticTranslationTargets,
       ),

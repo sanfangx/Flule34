@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app.dart';
+import '../l10n/generated/app_localizations.dart';
+import '../l10n/ui_localization.dart';
 import '../core/security/error_redaction.dart';
 import 'providers.dart';
 import 'theme/app_theme.dart';
@@ -39,6 +41,8 @@ class _BootstrapScreen extends StatelessWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.system,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: Center(
           child: error == null
@@ -50,9 +54,12 @@ class _BootstrapScreen extends StatelessWidget {
                     children: [
                       const Icon(Icons.error_outline, size: 52),
                       const SizedBox(height: 16),
-                      Text(error!, textAlign: TextAlign.center),
+                      AppText(error!, textAlign: TextAlign.center),
                       const SizedBox(height: 20),
-                      FilledButton(onPressed: onRetry, child: const Text('重试')),
+                      FilledButton(
+                        onPressed: onRetry,
+                        child: const AppText('重试'),
+                      ),
                     ],
                   ),
                 ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 
 final class ScrollToTopController extends ChangeNotifier {
   bool _suppressed = false;
@@ -132,7 +133,7 @@ class _ScrollToTopOverlayState extends State<ScrollToTopOverlay> {
                       duration: const Duration(milliseconds: 160),
                       child: FloatingActionButton.small(
                         heroTag: null,
-                        tooltip: '回到顶部',
+                        tooltip: context.uiText('回到顶部'),
                         elevation: 0,
                         onPressed: _scrollToTop,
                         child: const Icon(Icons.keyboard_arrow_up),

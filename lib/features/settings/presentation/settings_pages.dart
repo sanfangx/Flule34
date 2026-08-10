@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -18,6 +19,7 @@ import '../data/app_diagnostics_service.dart';
 import '../domain/app_settings.dart';
 import '../../../core/models/translation_models.dart';
 import 'translation_provider_section.dart';
+import '../../../shared/settings_controls.dart';
 
 class AppearanceSettingsPage extends ConsumerWidget {
   const AppearanceSettingsPage({super.key});
@@ -26,65 +28,97 @@ class AppearanceSettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final repository = ref.watch(appSettingsRepositoryProvider);
     return _SettingsScaffold(
-      title: '外观设置',
+      title: '显示设置',
       repository: repository,
       builder: (context, settings) => [
-        Text('主题模式', style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 12),
-        SegmentedButton<AppThemePreference>(
-          segments: AppThemePreference.values
+        const AppText('界面语言'),
+        const SizedBox(height: 4),
+        AppText(
+          '选择跟随系统或固定使用一种界面语言',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        const SizedBox(height: 10),
+        DropdownButtonFormField<AppLanguagePreference>(
+          initialValue: settings.language,
+          isExpanded: true,
+          decoration: const InputDecoration(border: OutlineInputBorder()),
+          items: AppLanguagePreference.values
               .map(
-                (value) => ButtonSegment<AppThemePreference>(
-                  value: value,
-                  label: Text(value.label),
+                (language) => DropdownMenuItem(
+                  value: language,
+                  child: language == AppLanguagePreference.system
+                      ? AppText(language.label)
+                      : Text(language.label),
                 ),
               )
               .toList(growable: false),
-          selected: {settings.theme},
-          onSelectionChanged: (selection) {
-            unawaited(_save(context, repository.setTheme(selection.single)));
+          onChanged: (language) {
+            if (language != null) {
+              unawaited(_save(context, repository.setLanguage(language)));
+            }
           },
         ),
-        const SizedBox(height: 16),
-        Text('视频布局', style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 12),
-        SegmentedButton<ContentLayout>(
-          segments: ContentLayout.values
-              .map(
-                (value) => ButtonSegment<ContentLayout>(
-                  value: value,
-                  label: Text(value.label),
-                ),
-              )
-              .toList(growable: false),
-          selected: {settings.videoLayout},
-          onSelectionChanged: (selection) {
-            unawaited(
-              _save(context, repository.setVideoLayout(selection.single)),
-            );
-          },
+        const SizedBox(height: 8),
+        SettingsField(
+          title: '主题模式',
+          child: SegmentedButton<AppThemePreference>(
+            expandedInsets: EdgeInsets.zero,
+            segments: AppThemePreference.values
+                .map(
+                  (value) => ButtonSegment<AppThemePreference>(
+                    value: value,
+                    label: AppText(value.label),
+                  ),
+                )
+                .toList(growable: false),
+            selected: {settings.theme},
+            onSelectionChanged: (selection) {
+              unawaited(_save(context, repository.setTheme(selection.single)));
+            },
+          ),
         ),
-        const SizedBox(height: 16),
-        Text('订阅页布局', style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 12),
-        SegmentedButton<ContentLayout>(
-          segments: ContentLayout.values
-              .map(
-                (value) => ButtonSegment<ContentLayout>(
-                  value: value,
-                  label: Text(value.label),
+        SettingsField(
+          title: '视频布局',
+          child: SegmentedButton<ContentLayout>(
+            expandedInsets: EdgeInsets.zero,
+            segments: ContentLayout.values
+                .map(
+                  (value) => ButtonSegment<ContentLayout>(
+                    value: value,
+                    label: AppText(value.label),
+                  ),
+                )
+                .toList(growable: false),
+            selected: {settings.videoLayout},
+            onSelectionChanged: (selection) {
+              unawaited(
+                _save(context, repository.setVideoLayout(selection.single)),
+              );
+            },
+          ),
+        ),
+        SettingsField(
+          title: '订阅页布局',
+          child: SegmentedButton<ContentLayout>(
+            expandedInsets: EdgeInsets.zero,
+            segments: ContentLayout.values
+                .map(
+                  (value) => ButtonSegment<ContentLayout>(
+                    value: value,
+                    label: AppText(value.label),
+                  ),
+                )
+                .toList(growable: false),
+            selected: {settings.subscriptionLayout},
+            onSelectionChanged: (selection) {
+              unawaited(
+                _save(
+                  context,
+                  repository.setSubscriptionLayout(selection.single),
                 ),
-              )
-              .toList(growable: false),
-          selected: {settings.subscriptionLayout},
-          onSelectionChanged: (selection) {
-            unawaited(
-              _save(
-                context,
-                repository.setSubscriptionLayout(selection.single),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ],
     );
@@ -108,86 +142,75 @@ class PlaybackSettingsPage extends ConsumerWidget {
           onChanged: (value) =>
               _save(context, repository.setPlaybackQuality(value)),
         ),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          title: const Text('网络播放策略'),
-          subtitle: Text(settings.networkPlaybackPolicy.description),
-          trailing: DropdownButton<NetworkPlaybackPolicy>(
-            value: settings.networkPlaybackPolicy,
-            items: NetworkPlaybackPolicy.values
-                .map(
-                  (value) =>
-                      DropdownMenuItem(value: value, child: Text(value.label)),
-                )
-                .toList(growable: false),
-            onChanged: (value) {
-              if (value != null) {
-                unawaited(
-                  _save(context, repository.setNetworkPlaybackPolicy(value)),
-                );
-              }
-            },
-          ),
+        SettingsDropdownField<NetworkPlaybackPolicy>(
+          title: '网络播放策略',
+          description: settings.networkPlaybackPolicy.description,
+          value: settings.networkPlaybackPolicy,
+          items: NetworkPlaybackPolicy.values
+              .map(
+                (value) =>
+                    DropdownMenuItem(value: value, child: AppText(value.label)),
+              )
+              .toList(growable: false),
+          onChanged: (value) {
+            if (value != null) {
+              unawaited(
+                _save(context, repository.setNetworkPlaybackPolicy(value)),
+              );
+            }
+          },
         ),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: const Text('循环播放'),
+        SettingsSwitchField(
+          title: '循环播放',
           value: settings.loopPlayback,
           onChanged: (value) {
             unawaited(_save(context, repository.setLoopPlayback(value)));
           },
         ),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: const Text('视频预览'),
-          subtitle: const Text('长按视频封面预览'),
+        SettingsSwitchField(
+          title: '视频预览',
+          description: '长按视频封面预览',
           value: settings.videoPreviewEnabled,
           onChanged: (value) {
             unawaited(_save(context, repository.setVideoPreviewEnabled(value)));
           },
         ),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: const Text('播放时保持屏幕常亮'),
-          subtitle: const Text('仅在视频正在播放时生效，暂停或离开页面后自动恢复。'),
+        SettingsSwitchField(
+          title: '播放时保持屏幕常亮',
+          description: '仅在视频正在播放时生效，暂停或离开页面后自动恢复。',
           value: settings.keepScreenAwake,
           onChanged: (value) {
             unawaited(_save(context, repository.setKeepScreenAwake(value)));
           },
         ),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: const Text('后台播放'),
-          subtitle: const Text('开启后，切换应用或关闭屏幕时继续播放声音。'),
+        SettingsSwitchField(
+          title: '后台播放',
+          description: '开启后，切换应用或关闭屏幕时继续播放声音。',
           value: settings.backgroundPlayback,
           onChanged: (value) {
             unawaited(_save(context, repository.setBackgroundPlayback(value)));
           },
         ),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          title: const Text('全屏方向'),
-          trailing: DropdownButton<FullscreenOrientationPreference>(
-            value: settings.fullscreenOrientation,
-            items: FullscreenOrientationPreference.values
-                .map(
-                  (value) =>
-                      DropdownMenuItem(value: value, child: Text(value.label)),
-                )
-                .toList(growable: false),
-            onChanged: (value) {
-              if (value != null) {
-                unawaited(
-                  _save(context, repository.setFullscreenOrientation(value)),
-                );
-              }
-            },
-          ),
+        SettingsDropdownField<FullscreenOrientationPreference>(
+          title: '全屏方向',
+          value: settings.fullscreenOrientation,
+          items: FullscreenOrientationPreference.values
+              .map(
+                (value) =>
+                    DropdownMenuItem(value: value, child: AppText(value.label)),
+              )
+              .toList(growable: false),
+          onChanged: (value) {
+            if (value != null) {
+              unawaited(
+                _save(context, repository.setFullscreenOrientation(value)),
+              );
+            }
+          },
         ),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: const Text('记忆播放进度'),
-          subtitle: const Text('在本机保存，与登录账号无关'),
+        SettingsSwitchField(
+          title: '记忆播放进度',
+          description: '在本机保存，与登录账号无关',
           value: settings.rememberPlaybackProgress,
           onChanged: (value) {
             unawaited(
@@ -215,30 +238,26 @@ class ContentSettingsPage extends ConsumerWidget {
       title: '内容设置',
       repository: repository,
       builder: (context, settings) => [
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          title: const Text('首页默认内容取向'),
-          trailing: DropdownButton<ContentOrientation>(
-            value: settings.defaultOrientation,
-            items: ContentOrientation.values
-                .map(
-                  (value) =>
-                      DropdownMenuItem(value: value, child: Text(value.label)),
-                )
-                .toList(growable: false),
-            onChanged: (value) {
-              if (value != null) {
-                unawaited(
-                  _save(context, repository.setDefaultOrientation(value)),
-                );
-              }
-            },
-          ),
+        SettingsDropdownField<ContentOrientation>(
+          title: '首页默认内容取向',
+          value: settings.defaultOrientation,
+          items: ContentOrientation.values
+              .map(
+                (value) =>
+                    DropdownMenuItem(value: value, child: AppText(value.label)),
+              )
+              .toList(growable: false),
+          onChanged: (value) {
+            if (value != null) {
+              unawaited(
+                _save(context, repository.setDefaultOrientation(value)),
+              );
+            }
+          },
         ),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: const Text('模糊视频封面'),
-          subtitle: const Text('首页、搜索和媒体库的视频卡片会模糊显示封面。'),
+        SettingsSwitchField(
+          title: '模糊视频封面',
+          description: '首页、搜索和媒体库的视频卡片会模糊显示封面。',
           value: settings.blurThumbnails,
           onChanged: (value) {
             unawaited(_save(context, repository.setBlurThumbnails(value)));
@@ -270,58 +289,85 @@ class TranslationSettingsPage extends ConsumerWidget {
                 settings.tagTranslationDisplayMode,
             };
         return [
-          Text('语言显示模式', style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 6),
-          const Text('标题、分类和标签可以分别选择显示原文、中文或双语。'),
+          const AppText('翻译目标语言'),
           const SizedBox(height: 4),
-          Text(
-            '提示：长按标题、分类或标签，可以手动添加或修改中文翻译。',
+          AppText(
+            '可跟随界面语言，也可单独指定；不同目标语言的译文会分别保存。',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 10),
+          DropdownButtonFormField<TranslationTargetPreference>(
+            initialValue: settings.translationTarget,
+            isExpanded: true,
+            decoration: const InputDecoration(border: OutlineInputBorder()),
+            items: TranslationTargetPreference.values
+                .map(
+                  (value) => DropdownMenuItem(
+                    value: value,
+                    child: value == TranslationTargetPreference.followInterface
+                        ? AppText(value.label)
+                        : Text(value.label),
+                  ),
+                )
+                .toList(growable: false),
+            onChanged: (value) {
+              if (value != null) {
+                unawaited(
+                  _save(context, repository.setTranslationTarget(value)),
+                );
+              }
+            },
+          ),
+          const Divider(height: 32),
+          AppText('语言显示模式', style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 6),
+          const AppText('标题、分类和标签可以分别选择显示原文、译文或双语。'),
+          const SizedBox(height: 4),
+          AppText(
+            '提示：长按标题、分类或标签，可以手动添加或修改译文。',
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 10),
           for (final target in TranslationDisplayTarget.values) ...[
-            Row(
-              children: [
-                SizedBox(width: 56, child: Text(target.label)),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: SegmentedButton<TranslationDisplayMode>(
-                    segments: TranslationDisplayMode.values
-                        .map(
-                          (mode) => ButtonSegment<TranslationDisplayMode>(
-                            value: mode,
-                            label: Text(mode.label),
-                          ),
-                        )
-                        .toList(growable: false),
-                    selected: {modeFor(target)},
-                    onSelectionChanged: (selection) => unawaited(
-                      _save(
-                        context,
-                        repository.setTranslationDisplayModeFor(
-                          target,
-                          selection.single,
-                        ),
+            SettingsField(
+              title: target.label,
+              padding: EdgeInsets.zero,
+              child: SegmentedButton<TranslationDisplayMode>(
+                expandedInsets: EdgeInsets.zero,
+                segments: TranslationDisplayMode.values
+                    .map(
+                      (mode) => ButtonSegment<TranslationDisplayMode>(
+                        value: mode,
+                        label: AppText(mode.label),
                       ),
+                    )
+                    .toList(growable: false),
+                selected: {modeFor(target)},
+                onSelectionChanged: (selection) => unawaited(
+                  _save(
+                    context,
+                    repository.setTranslationDisplayModeFor(
+                      target,
+                      selection.single,
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
             if (target != TranslationDisplayTarget.values.last)
               const SizedBox(height: 8),
           ],
           const Divider(height: 32),
-          Text('自动翻译', style: Theme.of(context).textTheme.titleMedium),
+          AppText('自动翻译', style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 6),
-          const Text('勾选需要自动翻译的内容类型；仅在缺少本地译文且已配置可用翻译服务时请求。默认全部关闭。'),
+          const AppText('勾选需要自动翻译的内容类型；仅在缺少本地译文且已配置可用翻译服务时请求。默认全部关闭。'),
           const SizedBox(height: 4),
           for (final target in AutomaticTranslationTarget.values)
             CheckboxListTile(
               contentPadding: EdgeInsets.zero,
               dense: true,
               controlAffinity: ListTileControlAffinity.leading,
-              title: Text(target.label),
+              title: AppText(target.label),
               value: settings.automaticTranslationTargets.contains(target),
               onChanged: (selected) {
                 final next = {...settings.automaticTranslationTargets};
@@ -343,12 +389,9 @@ class TranslationSettingsPage extends ConsumerWidget {
             builder: (context, _) => ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.auto_stories_outlined),
-              title: const Text('中文翻译库'),
-              subtitle: Text(
-                '共 ${translationService.catalogEntryCount} 条 · '
-                '内置 ${translationService.builtinTotalEntryCount} · '
-                'API ${translationService.learnedEntryCount} · '
-                '用户 ${translationService.overrideEntryCount}',
+              title: const AppText('翻译库'),
+              subtitle: AppText(
+                '共 ${translationService.catalogEntryCount} 条 · 内置 ${translationService.builtinTotalEntryCount} · API ${translationService.learnedEntryCount} · 用户 ${translationService.overrideEntryCount}',
               ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.pushNamed(AppRouteNames.translationCatalog),
@@ -381,34 +424,30 @@ class DownloadSettingsPage extends ConsumerWidget {
             ),
           ),
         ),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: const Text('仅使用 Wi-Fi 下载'),
-          subtitle: const Text('新建任务会等待符合条件的网络；已存在任务不被追溯修改。'),
+        SettingsSwitchField(
+          title: '仅使用 Wi-Fi 下载',
+          description: '新建任务会等待符合条件的网络；已存在任务不被追溯修改。',
           value: settings.wifiOnlyDownloads,
           onChanged: (value) {
             unawaited(_save(context, repository.setWifiOnlyDownloads(value)));
           },
         ),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          title: const Text('同时下载任务数'),
-          trailing: DropdownButton<int>(
-            value: settings.downloadConcurrentTasks,
-            items: [1, 2, 3, 4]
-                .map(
-                  (value) =>
-                      DropdownMenuItem(value: value, child: Text('$value')),
-                )
-                .toList(growable: false),
-            onChanged: (value) {
-              if (value != null) {
-                unawaited(
-                  _save(context, repository.setDownloadConcurrentTasks(value)),
-                );
-              }
-            },
-          ),
+        SettingsDropdownField<int>(
+          title: '同时下载任务数',
+          value: settings.downloadConcurrentTasks,
+          items: [1, 2, 3, 4]
+              .map(
+                (value) =>
+                    DropdownMenuItem(value: value, child: Text('$value')),
+              )
+              .toList(growable: false),
+          onChanged: (value) {
+            if (value != null) {
+              unawaited(
+                _save(context, repository.setDownloadConcurrentTasks(value)),
+              );
+            }
+          },
         ),
         const _InfoCard(
           icon: Icons.folder_outlined,
@@ -449,7 +488,7 @@ class _PrivacySettingsPageState extends ConsumerState<PrivacySettingsPage> {
     final settingsRepository = ref.watch(appSettingsRepositoryProvider);
     final searchHistory = ref.watch(searchHistoryRepositoryProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('隐私与数据')),
+      appBar: AppBar(title: const AppText('隐私与数据')),
       body: ListenableBuilder(
         listenable: settingsRepository,
         builder: (context, _) => AnimatedBuilder(
@@ -457,10 +496,9 @@ class _PrivacySettingsPageState extends ConsumerState<PrivacySettingsPage> {
           builder: (context, _) => ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text('保存搜索历史'),
-                subtitle: const Text('仅登录后按账号保存；关闭后不再记录新搜索。'),
+              SettingsSwitchField(
+                title: '保存搜索历史',
+                description: '仅登录后按账号保存；关闭后不再记录新搜索。',
                 value: settingsRepository.settings.saveSearchHistory,
                 onChanged: (value) => unawaited(
                   _save(
@@ -472,7 +510,7 @@ class _PrivacySettingsPageState extends ConsumerState<PrivacySettingsPage> {
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.manage_search_outlined),
-                  title: const Text('清除当前账号搜索历史'),
+                  title: const AppText('清除当前账号搜索历史'),
                   enabled: widget.api.sessionStore.isLoggedIn && !_clearing,
                   onTap: widget.api.sessionStore.isLoggedIn && !_clearing
                       ? () => _clearSearchHistory(searchHistory)
@@ -482,13 +520,13 @@ class _PrivacySettingsPageState extends ConsumerState<PrivacySettingsPage> {
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.image_outlined),
-                  title: const Text('清除图片缓存'),
-                  subtitle: const Text('不会删除下载的视频或账号数据。'),
+                  title: const AppText('清除图片缓存'),
+                  subtitle: const AppText('不会删除下载的视频或账号数据。'),
                   onTap: _clearing ? null : _clearImageCache,
                 ),
               ),
               const SizedBox(height: 12),
-              Text('应用日志', style: Theme.of(context).textTheme.titleMedium),
+              AppText('应用日志', style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
               Card(
                 child: Column(
@@ -499,26 +537,26 @@ class _PrivacySettingsPageState extends ConsumerState<PrivacySettingsPage> {
                         final info = snapshot.data;
                         final status = info == null
                             ? '正在读取日志信息…'
-                            : '${info.fileCount} 个文件 · ${info.formattedSize}';
+                            : info.formattedSize;
                         return ListTile(
                           leading: const Icon(Icons.article_outlined),
-                          title: const Text('本地诊断日志'),
-                          subtitle: Text('仅保存在本机，自动脱敏，保留最近 7 天。\n$status'),
+                          title: const AppText('本地诊断日志'),
+                          subtitle: AppText('仅保存在本机，自动脱敏，保留最近 7 天。\n$status'),
                         );
                       },
                     ),
                     const Divider(height: 1),
                     ListTile(
                       leading: const Icon(Icons.ios_share_outlined),
-                      title: const Text('导出日志'),
-                      subtitle: const Text('生成包含诊断信息和最近日志的文本文件。'),
+                      title: const AppText('导出日志'),
+                      subtitle: const AppText('生成包含诊断信息和最近日志的文本文件。'),
                       enabled: !_logBusy,
                       onTap: _logBusy ? null : _exportLogs,
                     ),
                     ListTile(
                       leading: const Icon(Icons.delete_sweep_outlined),
-                      title: const Text('清除日志'),
-                      subtitle: const Text('删除这台设备上的全部应用日志。'),
+                      title: const AppText('清除日志'),
+                      subtitle: const AppText('删除这台设备上的全部应用日志。'),
                       enabled: !_logBusy,
                       onTap: _logBusy ? null : _clearLogs,
                     ),
@@ -532,7 +570,7 @@ class _PrivacySettingsPageState extends ConsumerState<PrivacySettingsPage> {
                       ? null
                       : () => _confirmLogout(context, widget.api),
                   icon: const Icon(Icons.logout),
-                  label: const Text('退出当前账号'),
+                  label: const AppText('退出当前账号'),
                 ),
               ],
             ],
@@ -584,7 +622,7 @@ class _PrivacySettingsPageState extends ConsumerState<PrivacySettingsPage> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('导出日志失败，请稍后重试。')));
+        ).showSnackBar(const SnackBar(content: AppText('导出日志失败，请稍后重试。')));
       }
     } finally {
       if (mounted) {
@@ -597,16 +635,16 @@ class _PrivacySettingsPageState extends ConsumerState<PrivacySettingsPage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('清除应用日志？'),
-        content: const Text('将删除这台设备上的全部诊断日志，此操作无法撤销。'),
+        title: const AppText('清除应用日志？'),
+        content: const AppText('将删除这台设备上的全部诊断日志，此操作无法撤销。'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('取消'),
+            child: const AppText('取消'),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('清除'),
+            child: const AppText('清除'),
           ),
         ],
       ),
@@ -623,7 +661,7 @@ class _PrivacySettingsPageState extends ConsumerState<PrivacySettingsPage> {
       setState(_reloadLogInfo);
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('应用日志已清除。')));
+      ).showSnackBar(const SnackBar(content: AppText('应用日志已清除。')));
     } catch (error, stackTrace) {
       unawaited(
         ref
@@ -633,7 +671,7 @@ class _PrivacySettingsPageState extends ConsumerState<PrivacySettingsPage> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('清除日志失败，请稍后重试。')));
+        ).showSnackBar(const SnackBar(content: AppText('清除日志失败，请稍后重试。')));
       }
     } finally {
       if (mounted) {
@@ -651,13 +689,13 @@ class _PrivacySettingsPageState extends ConsumerState<PrivacySettingsPage> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('图片缓存已清除。')));
+        ).showSnackBar(const SnackBar(content: AppText('图片缓存已清除。')));
       }
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('清除图片缓存失败：$error')));
+        ).showSnackBar(SnackBar(content: AppText('清除图片缓存失败：$error')));
       }
     } finally {
       if (mounted) {
@@ -672,16 +710,16 @@ class _PrivacySettingsPageState extends ConsumerState<PrivacySettingsPage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('清除搜索历史？'),
-        content: const Text('只会删除当前账号在这台设备上的搜索记录。此操作无法撤销。'),
+        title: const AppText('清除搜索历史？'),
+        content: const AppText('只会删除当前账号在这台设备上的搜索记录。此操作无法撤销。'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('取消'),
+            child: const AppText('取消'),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('清除'),
+            child: const AppText('清除'),
           ),
         ],
       ),
@@ -695,13 +733,13 @@ class _PrivacySettingsPageState extends ConsumerState<PrivacySettingsPage> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('搜索历史已清除。')));
+        ).showSnackBar(const SnackBar(content: AppText('搜索历史已清除。')));
       }
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('清除搜索历史失败：$error')));
+        ).showSnackBar(SnackBar(content: AppText('清除搜索历史失败：$error')));
       }
     } finally {
       if (mounted) {
@@ -726,7 +764,7 @@ class _SettingsScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(title: AppText(title)),
       body: ListenableBuilder(
         listenable: repository,
         builder: (context, _) => ListView(
@@ -751,23 +789,20 @@ class _QualityTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text(title),
-      trailing: DropdownButton<VideoQualityPreference>(
-        value: value,
-        items: VideoQualityPreference.values
-            .map(
-              (quality) =>
-                  DropdownMenuItem(value: quality, child: Text(quality.label)),
-            )
-            .toList(growable: false),
-        onChanged: (next) {
-          if (next != null) {
-            unawaited(onChanged(next));
-          }
-        },
-      ),
+    return SettingsDropdownField<VideoQualityPreference>(
+      title: title,
+      value: value,
+      items: VideoQualityPreference.values
+          .map(
+            (quality) =>
+                DropdownMenuItem(value: quality, child: AppText(quality.label)),
+          )
+          .toList(growable: false),
+      onChanged: (next) {
+        if (next != null) {
+          unawaited(onChanged(next));
+        }
+      },
     );
   }
 }
@@ -806,23 +841,20 @@ class _DownloadQualityTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: const Text('下载清晰度'),
-      trailing: DropdownButton<_DownloadQualityChoice>(
-        value: value,
-        items: _DownloadQualityChoice.values
-            .map(
-              (choice) =>
-                  DropdownMenuItem(value: choice, child: Text(choice.label)),
-            )
-            .toList(growable: false),
-        onChanged: (next) {
-          if (next != null) {
-            unawaited(onChanged(next));
-          }
-        },
-      ),
+    return SettingsDropdownField<_DownloadQualityChoice>(
+      title: '下载清晰度',
+      value: value,
+      items: _DownloadQualityChoice.values
+          .map(
+            (choice) =>
+                DropdownMenuItem(value: choice, child: AppText(choice.label)),
+          )
+          .toList(growable: false),
+      onChanged: (next) {
+        if (next != null) {
+          unawaited(onChanged(next));
+        }
+      },
     );
   }
 }
@@ -843,7 +875,7 @@ class _InfoCard extends StatelessWidget {
           children: [
             Icon(icon),
             const SizedBox(width: 12),
-            Expanded(child: Text(text)),
+            Expanded(child: AppText(text)),
           ],
         ),
       ),
@@ -858,7 +890,7 @@ Future<void> _save(BuildContext context, Future<void> operation) async {
     if (context.mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('保存设置失败：$error')));
+      ).showSnackBar(SnackBar(content: AppText('保存设置失败：$error')));
     }
   }
 }
@@ -876,16 +908,16 @@ Future<void> _changePlaybackProgressSetting(
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('关闭记忆播放进度？'),
-      content: const Text('关闭后将清除全部本地播放进度。'),
+      title: const AppText('关闭记忆播放进度？'),
+      content: const AppText('关闭后将清除全部本地播放进度。'),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('取消'),
+          child: const AppText('取消'),
         ),
         FilledButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('关闭并清除'),
+          child: const AppText('关闭并清除'),
         ),
       ],
     ),
@@ -905,7 +937,7 @@ Future<void> _changePlaybackProgressSetting(
     if (context.mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('清除播放进度失败：$error')));
+      ).showSnackBar(SnackBar(content: AppText('清除播放进度失败：$error')));
     }
   }
 }
@@ -914,16 +946,16 @@ Future<void> _confirmLogout(BuildContext context, Rule34VideoApi api) async {
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('退出登录？'),
-      content: const Text('下载属于本机功能，退出登录不会取消下载或删除公共目录中的文件。'),
+      title: const AppText('退出登录？'),
+      content: const AppText('下载属于本机功能，退出登录不会取消下载或删除公共目录中的文件。'),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('取消'),
+          child: const AppText('取消'),
         ),
         FilledButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('退出'),
+          child: const AppText('退出'),
         ),
       ],
     ),
@@ -940,7 +972,7 @@ Future<void> _confirmLogout(BuildContext context, Rule34VideoApi api) async {
         : null;
     if (logoutError != null) {
       messenger?.showSnackBar(
-        const SnackBar(content: Text('网站退出请求失败，但本地登录状态已经清除。')),
+        const SnackBar(content: AppText('网站退出请求失败，但本地登录状态已经清除。')),
       );
     }
     if (context.mounted && Navigator.of(context).canPop()) {

@@ -18,6 +18,7 @@ import '../core/services/video_preview_service.dart';
 import '../core/services/translation_service.dart';
 import '../core/services/translation_provider_repository.dart';
 import '../core/services/translation_provider_router.dart';
+import '../core/services/source_language_detector.dart';
 import '../core/logging/app_log_service.dart';
 import '../shared/scroll_to_top_overlay.dart';
 import '../features/downloads/data/background_download_platform_service.dart';
@@ -88,6 +89,12 @@ final translationProviderRouterProvider = Provider<TranslationProviderRouter>((
   );
 });
 
+final sourceLanguageDetectorProvider = Provider<SourceLanguageDetector>((ref) {
+  final detector = MlKitSourceLanguageDetector();
+  ref.onDispose(() => unawaited(detector.dispose()));
+  return detector;
+});
+
 final cookieJarProvider = Provider<PersistCookieJar>((ref) {
   return PersistCookieJar(
     persistSession: true,
@@ -106,6 +113,7 @@ final translationServiceProvider = Provider<TranslationService>((ref) {
     settingsRepository: ref.watch(appSettingsRepositoryProvider),
     database: ref.watch(appDatabaseProvider),
     providerRouter: ref.watch(translationProviderRouterProvider),
+    sourceLanguageDetector: ref.watch(sourceLanguageDetectorProvider),
   );
   ref.onDispose(service.dispose);
   return service;

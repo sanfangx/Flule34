@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/router/route_names.dart';
@@ -200,7 +201,7 @@ class _DiscoveryDirectoryPageState extends State<DiscoveryDirectoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.spec.title)),
+      appBar: AppBar(title: AppText(widget.spec.title)),
       body: Column(
         children: [
           Padding(
@@ -247,7 +248,7 @@ class _DiscoveryDirectoryPageState extends State<DiscoveryDirectoryPage> {
           physics: const AlwaysScrollableScrollPhysics(),
           children: const [
             SizedBox(height: 160),
-            Center(child: Text('没有匹配的已加载内容。')),
+            Center(child: AppText('没有匹配的已加载内容。')),
           ],
         ),
       );
@@ -326,7 +327,7 @@ class _DiscoveryDirectoryPageState extends State<DiscoveryDirectoryPage> {
             OutlinedButton.icon(
               onPressed: () => unawaited(_load(reset: false)),
               icon: const Icon(Icons.refresh),
-              label: const Text('重试加载下一页'),
+              label: const AppText('重试加载下一页'),
             ),
           ],
         ),
@@ -334,7 +335,7 @@ class _DiscoveryDirectoryPageState extends State<DiscoveryDirectoryPage> {
     }
     return Padding(
       padding: const EdgeInsets.all(20),
-      child: Center(child: Text(_hasMore ? '继续向下滚动以加载更多' : '已经到底了')),
+      child: Center(child: AppText(_hasMore ? '继续向下滚动以加载更多' : '已经到底了')),
     );
   }
 }
@@ -364,8 +365,8 @@ class _DirectoryItem extends StatelessWidget {
             original: item.title,
           ),
           subtitle: item.total == null
-              ? Text(item.kind.label)
-              : Text('${item.total} 个视频'),
+              ? AppText(item.kind.label)
+              : AppText('${item.total} 个视频'),
           trailing: const Icon(Icons.chevron_right),
           onTap: () => context.pushNamed(
             AppRouteNames.collection,
@@ -395,7 +396,7 @@ class _DirectoryHint extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
-        child: Text(message, textAlign: TextAlign.center),
+        child: AppText(message, textAlign: TextAlign.center),
       ),
     );
   }
@@ -415,9 +416,9 @@ class _DirectoryMessage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(message, textAlign: TextAlign.center),
+            AppText(message, textAlign: TextAlign.center),
             const SizedBox(height: 12),
-            OutlinedButton(onPressed: onRetry, child: const Text('重试')),
+            OutlinedButton(onPressed: onRetry, child: const AppText('重试')),
           ],
         ),
       ),

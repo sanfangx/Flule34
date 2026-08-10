@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 
 import '../../core/models/video_models.dart';
+import '../../shared/transient_focus.dart';
 import 'data/local_library_repository.dart';
 import 'local_library_name_dialog.dart';
 
@@ -17,7 +19,7 @@ Future<String?> manageVideoLocalLibraries({
     final name = await showLocalLibraryNameDialog(
       context,
       title: '新建本地库',
-      hintText: '例如：喜欢的动画、待整理',
+      hintText: context.uiText('例如：喜欢的动画、待整理'),
     );
     if (name == null || !context.mounted) {
       return null;
@@ -33,33 +35,40 @@ Future<String?> manageVideoLocalLibraries({
   if (!context.mounted) {
     return null;
   }
-  final selected = await showModalBottomSheet<int>(
-    context: context,
-    showDragHandle: true,
-    builder: (context) => SafeArea(
-      child: ListView(
-        shrinkWrap: true,
-        padding: const EdgeInsets.only(bottom: 16),
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
-            child: Text('选择本地库', style: Theme.of(context).textTheme.titleLarge),
-          ),
-          for (final library in libraries)
-            ListTile(
-              leading: const Icon(Icons.video_library_outlined),
-              title: Text(library.name),
-              trailing: containedIds.contains(library.id)
-                  ? const Icon(Icons.check_circle)
-                  : null,
-              onTap: () => Navigator.of(context).pop(library.id),
+  final selected = await runWithoutRestoringInputFocus(
+    context,
+    () => showModalBottomSheet<int>(
+      context: context,
+      requestFocus: false,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          padding: const EdgeInsets.only(bottom: 16),
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
+              child: AppText(
+                '选择本地库',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
             ),
-          ListTile(
-            leading: const Icon(Icons.create_new_folder_outlined),
-            title: const Text('新建本地库'),
-            onTap: () => Navigator.of(context).pop(-1),
-          ),
-        ],
+            for (final library in libraries)
+              ListTile(
+                leading: const Icon(Icons.video_library_outlined),
+                title: Text(library.name),
+                trailing: containedIds.contains(library.id)
+                    ? const Icon(Icons.check_circle)
+                    : null,
+                onTap: () => Navigator.of(context).pop(library.id),
+              ),
+            ListTile(
+              leading: const Icon(Icons.create_new_folder_outlined),
+              title: const AppText('新建本地库'),
+              onTap: () => Navigator.of(context).pop(-1),
+            ),
+          ],
+        ),
       ),
     ),
   );
@@ -70,7 +79,7 @@ Future<String?> manageVideoLocalLibraries({
     final name = await showLocalLibraryNameDialog(
       context,
       title: '新建本地库',
-      hintText: '例如：喜欢的动画、待整理',
+      hintText: context.uiText('例如：喜欢的动画、待整理'),
     );
     if (name == null || !context.mounted) {
       return null;

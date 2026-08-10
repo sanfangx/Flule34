@@ -41,6 +41,10 @@ void main() {
     expect(parsed.entries.single.builtInTranslation, '内置译文');
     expect(parsed.entries.single.learned?.translation, 'API译文');
     expect(parsed.entries.single.userOverride?.translation, '用户译文');
+    expect(
+      parsed.entries.single.targetLanguage,
+      TranslationLanguage.simplifiedChinese,
+    );
   });
 
   test('翻译库安全合并不会覆盖本机用户译文', () async {
@@ -88,6 +92,57 @@ void main() {
     expect(result.skippedUserOverrides, 1);
     expect(service.lookupChinese('example', kind: DiscoveryKind.tag), '本机用户译文');
   });
+
+  test('旧版归档无损迁移为简体中文，新版归档保留目标语言', () {
+    const archiveService = TranslationCatalogArchiveService();
+    final legacy = archiveService.parseBytes(
+      Uint8List.fromList(
+        utf8.encode(
+          jsonEncode({
+            'format': TranslationCatalogArchiveService.format,
+            'schemaVersion': 1,
+            'entries': [
+              {
+                'kind': 'tag',
+                'canonicalName': 'example',
+                'sourceText': 'example',
+                'learned': {'translation': '示例'},
+              },
+            ],
+          }),
+        ),
+      ),
+    );
+    expect(
+      legacy.entries.single.targetLanguage,
+      TranslationLanguage.simplifiedChinese,
+    );
+    expect(legacy.entries.single.sourceLanguageCode, 'en');
+
+    final encoded = archiveService.encodeCatalog([
+      const TranslationCatalogItem(
+        sourceLanguageCode: 'en',
+        targetLanguage: TranslationLanguage.korean,
+        kind: TranslationCatalogKind.title,
+        canonicalName: 'video-1',
+        sourceText: 'Example',
+        videoSlug: 'example',
+        builtInTranslation: null,
+        learnedTranslation: '예시',
+        userTranslation: null,
+        learnedProviderName: 'AI',
+        learnedCreatedAt: null,
+        learnedUpdatedAt: null,
+        userUpdatedAt: null,
+        protectLearnedFromBuiltIn: false,
+      ),
+    ], appVersion: '1.5.0');
+    final parsed = archiveService.parseBytes(
+      Uint8List.fromList(utf8.encode(encoded)),
+    );
+    expect(parsed.entries.single.targetLanguage, TranslationLanguage.korean);
+    expect(parsed.entries.single.sourceLanguageCode, 'en');
+  });
 }
 
 final class _MemorySettingsStore implements AppSettingsStore {
@@ -97,7 +152,10 @@ final class _MemorySettingsStore implements AppSettingsStore {
   Future<bool?> readBool(String key) async => values[key] as bool?;
 
   @override
-  Future<String?> readString(String key) async => values[key] as String?;
+  Future<String?> readString(String key) async =>
+      key == 'flule34.settings.language'
+      ? 'simplifiedChinese'
+      : values[key] as String?;
 
   @override
   Future<void> writeBool(String key, bool value) async => values[key] = value;

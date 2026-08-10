@@ -36,7 +36,7 @@ void main() {
   test('翻译库排序标签明确说明排序方式', () {
     expect(TranslationCatalogSort.updatedDesc.label, '按最近更新排序');
     expect(TranslationCatalogSort.originalAsc.label, '按原文排序');
-    expect(TranslationCatalogSort.translationAsc.label, '按中文排序');
+    expect(TranslationCatalogSort.translationAsc.label, '按译文排序');
     expect(TranslationCatalogSort.source.label, '按来源排序');
   });
 }

@@ -1,12 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 
 import '../../core/api/rule34video_api.dart';
 import '../../core/models/video_models.dart';
 import '../../core/services/translation_service.dart';
 import '../../shared/editable_translation.dart';
 import '../../shared/localized_translation_text.dart';
+import '../../shared/settings_controls.dart';
+import '../../shared/transient_focus.dart';
 
 Future<SearchFilters?> showVideoFilterSheet({
   required BuildContext context,
@@ -14,17 +17,21 @@ Future<SearchFilters?> showVideoFilterSheet({
   required SearchFilters initialFilters,
   required TranslationService translationService,
 }) {
-  return showModalBottomSheet<SearchFilters>(
-    context: context,
-    isScrollControlled: true,
-    showDragHandle: true,
-    constraints: BoxConstraints(
-      maxHeight: MediaQuery.sizeOf(context).height * 0.94,
-    ),
-    builder: (context) => _VideoFilterSheet(
-      api: api,
-      initialFilters: initialFilters,
-      translationService: translationService,
+  return runWithoutRestoringInputFocus(
+    context,
+    () => showModalBottomSheet<SearchFilters>(
+      context: context,
+      requestFocus: false,
+      isScrollControlled: true,
+      showDragHandle: true,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.94,
+      ),
+      builder: (context) => _VideoFilterSheet(
+        api: api,
+        initialFilters: initialFilters,
+        translationService: translationService,
+      ),
     ),
   );
 }
@@ -57,7 +64,7 @@ class _VideoFilterSheetState extends State<_VideoFilterSheet> {
             child: Row(
               children: [
                 Expanded(
-                  child: Text(
+                  child: AppText(
                     '筛选与排序',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
@@ -65,7 +72,7 @@ class _VideoFilterSheetState extends State<_VideoFilterSheet> {
                 TextButton(
                   onPressed: () =>
                       setState(() => _draft = const SearchFilters()),
-                  child: const Text('全部清除'),
+                  child: const AppText('全部清除'),
                 ),
               ],
             ),
@@ -85,7 +92,7 @@ class _VideoFilterSheetState extends State<_VideoFilterSheet> {
                       .map(
                         (value) => DropdownMenuItem(
                           value: value,
-                          child: Text(value.label),
+                          child: AppText(value.label),
                         ),
                       )
                       .toList(growable: false),
@@ -97,7 +104,7 @@ class _VideoFilterSheetState extends State<_VideoFilterSheet> {
                 ),
                 const SizedBox(height: 24),
                 _title(context, '必须同时包含'),
-                const Text('同类条件和不同类型条件均取交集，每类最多选择 5 项。'),
+                const AppText('同类条件和不同类型条件均取交集，每类最多选择 5 项。'),
                 const SizedBox(height: 10),
                 _entitySection(SearchSuggestionKind.tag, excluded: false),
                 _entitySection(SearchSuggestionKind.model, excluded: false),
@@ -106,8 +113,8 @@ class _VideoFilterSheetState extends State<_VideoFilterSheet> {
                 ExpansionTile(
                   tilePadding: EdgeInsets.zero,
                   childrenPadding: EdgeInsets.zero,
-                  title: const Text('排除内容'),
-                  subtitle: const Text('命中任一排除条件的视频不会显示'),
+                  title: const AppText('排除内容'),
+                  subtitle: const AppText('命中任一排除条件的视频不会显示'),
                   children: [
                     _entitySection(SearchSuggestionKind.tag, excluded: true),
                     _entitySection(SearchSuggestionKind.model, excluded: true),
@@ -143,9 +150,8 @@ class _VideoFilterSheetState extends State<_VideoFilterSheet> {
                   onChanged: (value) =>
                       _draft = _draft.copyWith(duration: value),
                 ),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: const Text('仅显示已验证上传者'),
+                SettingsSwitchField(
+                  title: '仅显示已验证上传者',
                   value: _draft.verifiedOnly,
                   onChanged: (value) => setState(
                     () => _draft = _draft.copyWith(verifiedOnly: value),
@@ -153,7 +159,7 @@ class _VideoFilterSheetState extends State<_VideoFilterSheet> {
                 ),
                 const SizedBox(height: 18),
                 _title(context, '质量条件'),
-                const Text('点赞率必须配合投票数判断，避免少量投票造成虚高。'),
+                const AppText('点赞率必须配合投票数判断，避免少量投票造成虚高。'),
                 const SizedBox(height: 8),
                 _nullableIntDropdown(
                   title: '最低点赞率',
@@ -180,7 +186,7 @@ class _VideoFilterSheetState extends State<_VideoFilterSheet> {
               width: double.infinity,
               child: FilledButton(
                 onPressed: () => Navigator.of(context).pop(_draft),
-                child: Text(
+                child: AppText(
                   _draft.activeCount == 0
                       ? '应用（不限）'
                       : '应用 ${_draft.activeCount} 个条件',
@@ -196,7 +202,7 @@ class _VideoFilterSheetState extends State<_VideoFilterSheet> {
   Widget _title(BuildContext context, String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: Text(text, style: Theme.of(context).textTheme.titleMedium),
+      child: AppText(text, style: Theme.of(context).textTheme.titleMedium),
     );
   }
 
@@ -210,18 +216,18 @@ class _VideoFilterSheetState extends State<_VideoFilterSheet> {
         children: [
           Row(
             children: [
-              Expanded(child: Text(kind.label)),
+              Expanded(child: AppText(kind.label)),
               TextButton.icon(
                 onPressed: items.length >= 5
                     ? null
                     : () => _addEntity(kind, excluded: excluded),
                 icon: const Icon(Icons.add),
-                label: Text('$prefix${kind.label}'),
+                label: AppText('$prefix${kind.label}'),
               ),
             ],
           ),
           if (items.isEmpty)
-            Text(
+            AppText(
               excluded ? '未排除任何${kind.label}' : '尚未选择${kind.label}',
               style: Theme.of(context).textTheme.bodySmall,
             )
@@ -262,22 +268,20 @@ class _VideoFilterSheetState extends State<_VideoFilterSheet> {
     required String Function(T value) label,
     required ValueChanged<T> onChanged,
   }) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text(title),
-      trailing: DropdownButton<T>(
-        value: value,
-        items: values
-            .map(
-              (item) => DropdownMenuItem(value: item, child: Text(label(item))),
-            )
-            .toList(growable: false),
-        onChanged: (next) {
-          if (next != null) {
-            setState(() => onChanged(next));
-          }
-        },
-      ),
+    return SettingsDropdownField<T>(
+      title: title,
+      value: value,
+      items: values
+          .map(
+            (item) =>
+                DropdownMenuItem(value: item, child: AppText(label(item))),
+          )
+          .toList(growable: false),
+      onChanged: (next) {
+        if (next != null) {
+          setState(() => onChanged(next));
+        }
+      },
     );
   }
 
@@ -288,22 +292,19 @@ class _VideoFilterSheetState extends State<_VideoFilterSheet> {
     required String suffix,
     required ValueChanged<int?> onChanged,
   }) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text(title),
-      trailing: DropdownButton<int>(
-        value: value ?? 0,
-        items: [
-          const DropdownMenuItem(value: 0, child: Text('不限')),
-          ...values.map(
-            (item) =>
-                DropdownMenuItem(value: item, child: Text('$item$suffix')),
-          ),
-        ],
-        onChanged: (next) {
-          setState(() => onChanged(next == 0 ? null : next));
-        },
-      ),
+    return SettingsDropdownField<int>(
+      title: title,
+      value: value ?? 0,
+      items: [
+        const DropdownMenuItem(value: 0, child: AppText('不限')),
+        ...values.map(
+          (item) =>
+              DropdownMenuItem(value: item, child: AppText('$item$suffix')),
+        ),
+      ],
+      onChanged: (next) {
+        setState(() => onChanged(next == 0 ? null : next));
+      },
     );
   }
 
@@ -330,6 +331,7 @@ class _VideoFilterSheetState extends State<_VideoFilterSheet> {
       delegate: _SuggestionSearchDelegate(
         api: widget.api,
         kind: kind,
+        searchLabel: context.uiText('搜索${kind.label}'),
         translationService: widget.translationService,
       ),
     );
@@ -391,22 +393,24 @@ class _SuggestionSearchDelegate extends SearchDelegate<SearchSuggestion?> {
   _SuggestionSearchDelegate({
     required this.api,
     required this.kind,
+    required this.searchLabel,
     required this.translationService,
   });
 
   final Rule34VideoApi api;
   final SearchSuggestionKind kind;
+  final String searchLabel;
   final TranslationService translationService;
 
   @override
-  String get searchFieldLabel => '搜索${kind.label}';
+  String get searchFieldLabel => searchLabel;
 
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
       if (query.isNotEmpty)
         IconButton(
-          tooltip: '清空',
+          tooltip: context.uiText('清空'),
           onPressed: () => query = '',
           icon: const Icon(Icons.clear),
         ),
@@ -416,7 +420,7 @@ class _SuggestionSearchDelegate extends SearchDelegate<SearchSuggestion?> {
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
-      tooltip: '返回',
+      tooltip: context.uiText('返回'),
       onPressed: () => close(context, null),
       icon: const Icon(Icons.arrow_back),
     );
@@ -433,7 +437,7 @@ class _SuggestionSearchDelegate extends SearchDelegate<SearchSuggestion?> {
   Widget _buildSuggestions(BuildContext context) {
     final normalized = query.trim();
     if (normalized.length < 2) {
-      return const Center(child: Text('请至少输入 2 个字符。'));
+      return const Center(child: AppText('请至少输入 2 个字符。'));
     }
     return _DebouncedSuggestionResults(
       api: api,
@@ -524,11 +528,11 @@ class _DebouncedSuggestionResultsState
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) {
-          return Center(child: Text(snapshot.error.toString()));
+          return Center(child: AppText(snapshot.error.toString()));
         }
         final items = snapshot.data ?? const <SearchSuggestion>[];
         if (items.isEmpty) {
-          return Center(child: Text('没有找到匹配的${widget.kind.label}。'));
+          return Center(child: AppText('没有找到匹配的${widget.kind.label}。'));
         }
         return ListView.builder(
           itemCount: items.length,
@@ -544,7 +548,7 @@ class _DebouncedSuggestionResultsState
                   kind: widget.kind.discoveryKind,
                   original: item.title,
                 ),
-                subtitle: Text('${item.total} 个视频'),
+                subtitle: AppText('${item.total} 个视频'),
                 onTap: () => widget.onSelected(item),
               ),
             );

@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'translation_models.dart';
+
 enum TranslationProviderProtocol {
   openAiChat('OpenAI Chat Completions'),
   anthropicMessages('Anthropic Messages'),
@@ -140,10 +142,17 @@ final class TranslationProviderConfig {
 
 @immutable
 final class TranslationRequest {
-  const TranslationRequest({required this.kind, required this.text});
+  const TranslationRequest({
+    required this.kind,
+    required this.text,
+    this.sourceLanguageHint = TranslationLanguage.english,
+    this.targetLanguage = TranslationLanguage.simplifiedChinese,
+  });
 
   final TranslationContentKind kind;
   final String text;
+  final TranslationLanguage sourceLanguageHint;
+  final TranslationLanguage targetLanguage;
 }
 
 @immutable
@@ -152,9 +161,13 @@ final class TranslationProviderResult {
     required this.providerId,
     required this.providerName,
     required this.translation,
+    this.detectedSourceLanguage,
+    this.shouldPersist = true,
   });
 
   final String providerId;
   final String providerName;
   final String translation;
+  final TranslationLanguage? detectedSourceLanguage;
+  final bool shouldPersist;
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 
 import '../../core/models/video_models.dart';
 
@@ -9,16 +10,16 @@ Future<bool> confirmUnsubscribeSubscription(
   return await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('取消订阅'),
-          content: Text('确定取消订阅“${subscription.title}”吗？'),
+          title: const AppText('取消订阅'),
+          content: AppText('确定取消订阅“${subscription.title}”吗？'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('取消'),
+              child: const AppText('取消'),
             ),
             FilledButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('确定'),
+              child: const AppText('确定'),
             ),
           ],
         ),

@@ -16,6 +16,8 @@ import 'package:flule34/features/search/search_page.dart';
 import 'package:flule34/features/settings/data/app_settings_repository.dart';
 import 'package:flule34/features/settings/data/app_settings_store.dart';
 import 'package:flule34/shared/localized_translation_text.dart';
+import 'package:flule34/shared/settings_controls.dart';
+import 'package:flule34/l10n/generated/app_localizations.dart';
 
 import '../../helpers/test_session_harness.dart';
 
@@ -50,6 +52,9 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: SearchPage(
             api: api,
             prefetchService: _createPrefetch(api, harness.sessionStore),
@@ -98,6 +103,9 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: SearchPage(
             api: api,
             prefetchService: _createPrefetch(api, harness.sessionStore),
@@ -128,16 +136,12 @@ void main() {
       300,
       scrollable: find.byType(Scrollable).last,
     );
-    final uploadPeriodTile = find.ancestor(
-      of: find.text('发布时间'),
-      matching: find.byType(ListTile),
+    final uploadPeriodDropdown = find.byType(
+      DropdownButtonFormField<UploadPeriod>,
     );
-    await tester.tap(
-      find.descendant(
-        of: uploadPeriodTile,
-        matching: find.byType(DropdownButton<UploadPeriod>),
-      ),
-    );
+    await tester.ensureVisible(uploadPeriodDropdown);
+    await tester.pumpAndSettle();
+    await tester.tap(uploadPeriodDropdown);
     await tester.pumpAndSettle();
     await tester.tap(find.text('过去 1 周').last);
     await tester.pumpAndSettle();
@@ -147,13 +151,24 @@ void main() {
       300,
       scrollable: find.byType(Scrollable).last,
     );
-    await tester.tap(find.text('仅显示已验证上传者'));
+    final verifiedField = find.ancestor(
+      of: find.text('仅显示已验证上传者'),
+      matching: find.byType(SettingsSwitchField),
+    );
+    await tester.tap(
+      find.descendant(of: verifiedField, matching: find.byType(Switch)),
+    );
     await tester.scrollUntilVisible(
       find.text('最低点赞率'),
       300,
       scrollable: find.byType(Scrollable).last,
     );
     expect(find.text('最低点赞率'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('最低投票数'),
+      300,
+      scrollable: find.byType(Scrollable).last,
+    );
     expect(find.text('最低投票数'), findsOneWidget);
     await tester.tap(find.byType(FilledButton));
     await tester.pumpAndSettle();
@@ -216,6 +231,9 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: SearchPage(
             api: api,
             historyRepository: historyRepository,
@@ -282,12 +300,19 @@ void main() {
     );
     addTearDown(router.dispose);
 
-    await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+    await tester.pumpWidget(
+      MaterialApp.router(
+        locale: const Locale('zh'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        routerConfig: router,
+      ),
+    );
     await tester.enterText(find.byType(TextField), '足交');
-    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
 
     expect(find.text('足交 · footjob'), findsOneWidget);
-    expect(api.suggestionQueries, isEmpty);
+    expect(api.suggestionQueries, contains('足交'));
 
     await tester.tap(find.text('足交 · footjob'));
     await tester.pumpAndSettle();
@@ -330,6 +355,9 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: SearchPage(
               api: api,
@@ -362,7 +390,10 @@ final class _MemorySettingsStore implements AppSettingsStore {
   Future<bool?> readBool(String key) async => _values[key] as bool?;
 
   @override
-  Future<String?> readString(String key) async => _values[key] as String?;
+  Future<String?> readString(String key) async =>
+      key == 'flule34.settings.language'
+      ? 'simplifiedChinese'
+      : _values[key] as String?;
 
   @override
   Future<void> writeBool(String key, bool value) async {

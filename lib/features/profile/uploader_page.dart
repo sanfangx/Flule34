@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 
 import '../../core/api/rule34video_api.dart';
 import '../../core/models/account_models.dart';
@@ -156,9 +157,12 @@ class _UploaderPageState extends State<UploaderPage> {
     return subscribed
         ? OutlinedButton(
             onPressed: _toggleSubscription,
-            child: const Text('已订阅'),
+            child: const AppText('已订阅'),
           )
-        : FilledButton(onPressed: _toggleSubscription, child: const Text('订阅'));
+        : FilledButton(
+            onPressed: _toggleSubscription,
+            child: const AppText('订阅'),
+          );
   }
 
   Future<void> _toggleSubscription() async {
@@ -182,14 +186,14 @@ class _UploaderPageState extends State<UploaderPage> {
       if (mounted) {
         setState(() => _subscribed = !subscribed);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(subscribed ? '已取消订阅。' : '已订阅上传者。')),
+          SnackBar(content: AppText(subscribed ? '已取消订阅。' : '已订阅上传者。')),
         );
       }
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text(error.toString())));
+        ).showSnackBar(SnackBar(content: AppText(error.toString())));
       }
     } finally {
       if (mounted) {
@@ -211,8 +215,8 @@ class _ProfileError extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          Expanded(child: Text('上传者资料加载失败：$message')),
-          TextButton(onPressed: onRetry, child: const Text('重试')),
+          Expanded(child: AppText('上传者资料加载失败：$message')),
+          TextButton(onPressed: onRetry, child: const AppText('重试')),
         ],
       ),
     );

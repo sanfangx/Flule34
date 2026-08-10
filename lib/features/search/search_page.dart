@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/router/route_names.dart';
@@ -119,13 +120,11 @@ class _SearchPageState extends State<SearchPage> {
     if (mounted) {
       final query = _controller.text.trim();
       setState(() {
-        if (_containsCjk(query)) {
-          _localTagSuggestions = widget.translationService.searchTagAliases(
-            query,
-          );
-          _localTitleSuggestions = widget.translationService
-              .searchTitleTranslations(query);
-        }
+        _localTagSuggestions = widget.translationService.searchTagAliases(
+          query,
+        );
+        _localTitleSuggestions = widget.translationService
+            .searchTitleTranslations(query);
       });
     }
   }
@@ -140,25 +139,26 @@ class _SearchPageState extends State<SearchPage> {
   void _onChanged(String value) {
     _debounce?.cancel();
     final query = value.trim();
-    if (_containsCjk(query)) {
+    if (query.isEmpty) {
       _suggestionGeneration += 1;
       setState(() {
-        _localTagSuggestions = widget.translationService.searchTagAliases(
-          query,
-        );
-        _localTitleSuggestions = widget.translationService
-            .searchTitleTranslations(query);
+        _localTagSuggestions = const [];
+        _localTitleSuggestions = const [];
         _suggestions = const {};
         _suggestionError = null;
         _suggestionLoading = false;
       });
       return;
     }
-    if (query.length < 2) {
+    final localTags = widget.translationService.searchTagAliases(query);
+    final localTitles = widget.translationService.searchTitleTranslations(
+      query,
+    );
+    if (!_minimumSuggestionLengthMet(query)) {
       _suggestionGeneration += 1;
       setState(() {
-        _localTagSuggestions = const [];
-        _localTitleSuggestions = const [];
+        _localTagSuggestions = localTags;
+        _localTitleSuggestions = localTitles;
         _suggestions = const {};
         _suggestionError = null;
         _suggestionLoading = false;
@@ -175,8 +175,11 @@ class _SearchPageState extends State<SearchPage> {
     final generation = ++_suggestionGeneration;
     if (mounted) {
       setState(() {
-        _localTagSuggestions = const [];
-        _localTitleSuggestions = const [];
+        _localTagSuggestions = widget.translationService.searchTagAliases(
+          query,
+        );
+        _localTitleSuggestions = widget.translationService
+            .searchTitleTranslations(query);
         _suggestionLoading = true;
         _suggestionError = null;
       });
@@ -213,18 +216,15 @@ class _SearchPageState extends State<SearchPage> {
     if (text.isEmpty && _filters.isEmpty) {
       return;
     }
-    if (_containsCjk(text)) {
-      setState(() {
-        _localTagSuggestions = widget.translationService.searchTagAliases(
-          text,
-          limit: 20,
-        );
-        _localTitleSuggestions = widget.translationService
-            .searchTitleTranslations(text, limit: 20);
-        _suggestions = const {};
-        _suggestionError = null;
-      });
-    }
+    setState(() {
+      _localTagSuggestions = widget.translationService.searchTagAliases(
+        text,
+        limit: 20,
+      );
+      _localTitleSuggestions = widget.translationService
+          .searchTitleTranslations(text, limit: 20);
+      _suggestionError = null;
+    });
     _controller.value = TextEditingValue(
       text: text,
       selection: TextSelection.collapsed(offset: text.length),
@@ -238,7 +238,9 @@ class _SearchPageState extends State<SearchPage> {
     });
     if (text.isNotEmpty) {
       unawaited(_recordHistory(text));
-      if (!_containsCjk(text)) unawaited(_loadSuggestions(text));
+      if (_minimumSuggestionLengthMet(text)) {
+        unawaited(_loadSuggestions(text));
+      }
     }
   }
 
@@ -249,7 +251,7 @@ class _SearchPageState extends State<SearchPage> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('搜索成功，但历史记录保存失败。')));
+        ).showSnackBar(const SnackBar(content: AppText('搜索成功，但历史记录保存失败。')));
       }
     }
   }
@@ -266,10 +268,10 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('搜索'),
+        title: const AppText('搜索'),
         actions: [
           IconButton(
-            tooltip: '筛选与排序',
+            tooltip: context.uiText('筛选与排序'),
             onPressed: _openFilterSheet,
             icon: Badge(
               isLabelVisible: !_filters.isEmpty,
@@ -302,14 +304,14 @@ class _SearchPageState extends State<SearchPage> {
         onSubmitted: (_) => _search(),
         textInputAction: TextInputAction.search,
         decoration: InputDecoration(
-          hintText: '搜索视频、标签、分类或艺术家',
+          hintText: context.uiText('搜索视频、标签、分类或艺术家'),
           prefixIcon: const Icon(Icons.search),
           suffixIcon: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               if (_controller.text.isNotEmpty)
                 IconButton(
-                  tooltip: '清空',
+                  tooltip: context.uiText('清空'),
                   onPressed: () {
                     _controller.clear();
                     _onChanged('');
@@ -319,7 +321,7 @@ class _SearchPageState extends State<SearchPage> {
                   icon: const Icon(Icons.clear),
                 ),
               IconButton(
-                tooltip: '搜索',
+                tooltip: context.uiText('搜索'),
                 onPressed: _search,
                 icon: const Icon(Icons.arrow_forward),
               ),
@@ -343,10 +345,10 @@ class _SearchPageState extends State<SearchPage> {
         _localTitleSuggestions.isNotEmpty ||
         _suggestions.values.any((items) => items.isNotEmpty);
     if (!hasItems && _suggestionError == null) {
-      if (_containsCjk(_controller.text)) {
+      if (_controller.text.trim().isNotEmpty) {
         return const Padding(
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Text('没有找到对应的中文标签或已学习标题。'),
+          child: AppText('没有找到对应的本地标签译文或已学习标题译文。'),
         );
       }
       return const SizedBox.shrink();
@@ -396,7 +398,7 @@ class _SearchPageState extends State<SearchPage> {
     if (_filters.sort != VideoSort.relevance) {
       chips.add(
         InputChip(
-          label: Text('排序：${_filters.sort.label}'),
+          label: AppText('排序：${_filters.sort.label}'),
           onDeleted: () =>
               _applyFilters(_filters.copyWith(sort: VideoSort.relevance)),
         ),
@@ -405,7 +407,7 @@ class _SearchPageState extends State<SearchPage> {
     if (_filters.orientation != ContentOrientation.all) {
       chips.add(
         InputChip(
-          label: Text('取向：${_filters.orientation.label}'),
+          label: AppText('取向：${_filters.orientation.label}'),
           onDeleted: () => _applyFilters(
             _filters.copyWith(orientation: ContentOrientation.all),
           ),
@@ -415,7 +417,7 @@ class _SearchPageState extends State<SearchPage> {
     if (_filters.uploadPeriod != UploadPeriod.anytime) {
       chips.add(
         InputChip(
-          label: Text(_filters.uploadPeriod.label),
+          label: AppText(_filters.uploadPeriod.label),
           onDeleted: () => _applyFilters(
             _filters.copyWith(uploadPeriod: UploadPeriod.anytime),
           ),
@@ -425,7 +427,7 @@ class _SearchPageState extends State<SearchPage> {
     if (_filters.duration != VideoDurationPreset.any) {
       chips.add(
         InputChip(
-          label: Text(_filters.duration.label),
+          label: AppText(_filters.duration.label),
           onDeleted: () => _applyFilters(
             _filters.copyWith(duration: VideoDurationPreset.any),
           ),
@@ -435,7 +437,7 @@ class _SearchPageState extends State<SearchPage> {
     if (_filters.verifiedOnly) {
       chips.add(
         InputChip(
-          label: const Text('已验证上传者'),
+          label: const AppText('已验证上传者'),
           onDeleted: () =>
               _applyFilters(_filters.copyWith(verifiedOnly: false)),
         ),
@@ -491,7 +493,7 @@ class _SearchPageState extends State<SearchPage> {
     if (_filters.minRating != null) {
       chips.add(
         InputChip(
-          label: Text('点赞率 ≥ ${_filters.minRating}%'),
+          label: AppText('点赞率 ≥ ${_filters.minRating}%'),
           onDeleted: () => _applyFilters(_filters.copyWith(minRating: null)),
         ),
       );
@@ -499,7 +501,7 @@ class _SearchPageState extends State<SearchPage> {
     if (_filters.minRatingVotes != null) {
       chips.add(
         InputChip(
-          label: Text('投票数 ≥ ${_filters.minRatingVotes}'),
+          label: AppText('投票数 ≥ ${_filters.minRatingVotes}'),
           onDeleted: () =>
               _applyFilters(_filters.copyWith(minRatingVotes: null)),
         ),
@@ -531,7 +533,7 @@ class _SearchPageState extends State<SearchPage> {
         itemBuilder: (context, index) {
           final scope = SearchResultScope.values[index];
           return ChoiceChip(
-            label: Text(scope.label),
+            label: AppText(scope.label),
             selected: scope == _scope,
             onSelected: (_) => setState(() => _scope = scope),
           );
@@ -546,7 +548,7 @@ class _SearchPageState extends State<SearchPage> {
       children: [
         _buildHistory(),
         const SizedBox(height: 24),
-        Text('热门标签', style: Theme.of(context).textTheme.titleMedium),
+        AppText('热门标签', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         FutureBuilder<List<ContentCollectionItem>>(
           future: _popularTags,
@@ -562,19 +564,19 @@ class _SearchPageState extends State<SearchPage> {
             if (snapshot.hasError) {
               return Row(
                 children: [
-                  const Expanded(child: Text('热门标签暂时不可用。')),
+                  const Expanded(child: AppText('热门标签暂时不可用。')),
                   TextButton.icon(
                     onPressed: () {
                       setState(() => _popularTags = _loadPopularTags());
                     },
                     icon: const Icon(Icons.refresh),
-                    label: const Text('重试'),
+                    label: const AppText('重试'),
                   ),
                 ],
               );
             }
             if (snapshot.data?.isEmpty ?? true) {
-              return const Text('暂时没有可展示的热门标签。');
+              return const AppText('暂时没有可展示的热门标签。');
             }
             return Wrap(
               spacing: 8,
@@ -616,7 +618,7 @@ class _SearchPageState extends State<SearchPage> {
             Row(
               children: [
                 Expanded(
-                  child: Text(
+                  child: AppText(
                     '搜索历史',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
@@ -624,16 +626,16 @@ class _SearchPageState extends State<SearchPage> {
                 if (history.isNotEmpty)
                   TextButton(
                     onPressed: _confirmClearHistory,
-                    child: const Text('清空'),
+                    child: const AppText('清空'),
                   ),
               ],
             ),
             if (!loggedIn)
-              const Text('登录后，搜索历史会按账号安全保存。')
+              const AppText('登录后，搜索历史会按账号安全保存。')
             else if (snapshot.connectionState == ConnectionState.waiting)
               const LinearProgressIndicator()
             else if (history.isEmpty)
-              const Text('还没有搜索记录。')
+              const AppText('还没有搜索记录。')
             else
               Wrap(
                 spacing: 8,
@@ -705,10 +707,6 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<List<VideoItem>> _loadVideoSearchPage(int page) async {
-    if (!_containsCjk(_activeQuery)) {
-      return widget.api.searchVideos(_activeQuery, page, filters: _filters);
-    }
-
     final titleMatches = widget.translationService.searchTitleTranslations(
       _activeQuery,
       limit: 6,
@@ -776,7 +774,7 @@ class _SearchPageState extends State<SearchPage> {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(32),
-          child: Text(_suggestionError ?? '没有找到相关${kind.label}。'),
+          child: AppText(_suggestionError ?? '没有找到相关${kind.label}。'),
         ),
       );
     }
@@ -797,7 +795,7 @@ class _SearchPageState extends State<SearchPage> {
                 kind: kind.discoveryKind,
                 original: item.title,
               ),
-              subtitle: Text('${formatCount(item.total)} 个视频'),
+              subtitle: AppText('${formatCount(item.total)} 个视频'),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => _openSuggestionCollection(item),
             ),
@@ -823,16 +821,16 @@ class _SearchPageState extends State<SearchPage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('清空搜索历史？'),
-        content: const Text('只会清除当前账号在这台设备上的搜索记录。'),
+        title: const AppText('清空搜索历史？'),
+        content: const AppText('只会清除当前账号在这台设备上的搜索记录。'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('取消'),
+            child: const AppText('取消'),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('清空'),
+            child: const AppText('清空'),
           ),
         ],
       ),
@@ -844,7 +842,7 @@ class _SearchPageState extends State<SearchPage> {
         if (mounted) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(const SnackBar(content: Text('搜索历史清空失败，请稍后重试。')));
+          ).showSnackBar(const SnackBar(content: AppText('搜索历史清空失败，请稍后重试。')));
         }
       }
     }
@@ -857,7 +855,7 @@ class _SearchPageState extends State<SearchPage> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('搜索记录删除失败，请稍后重试。')));
+        ).showSnackBar(const SnackBar(content: AppText('搜索记录删除失败，请稍后重试。')));
       }
     }
   }
@@ -974,7 +972,7 @@ class _LocalTagSuggestionList extends StatelessWidget {
               leading: const Icon(Icons.tag),
               title: Text('${item.displayChinese} · ${item.english}'),
               subtitle: item.matchedAlternateAlias
-                  ? Text('匹配译名：${item.matchedAlias}')
+                  ? AppText('匹配译名：${item.matchedAlias}')
                   : null,
               trailing: const Icon(Icons.chevron_right),
               onTap: () => onSelected(item),
@@ -1004,7 +1002,7 @@ class _LocalTitleSuggestionList extends StatelessWidget {
               dense: true,
               leading: const Icon(Icons.movie_outlined),
               title: Text(item.displayChinese),
-              subtitle: Text('已学习标题 · ${item.english}'),
+              subtitle: AppText('已学习标题 · ${item.english}'),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => onSelected(item),
             ),
@@ -1035,7 +1033,7 @@ class _SuggestionRow extends StatelessWidget {
         children: [
           SizedBox(
             width: 52,
-            child: Text(
+            child: AppText(
               kind.label,
               style: Theme.of(context).textTheme.labelMedium,
             ),
@@ -1075,12 +1073,16 @@ class _SuggestionRow extends StatelessWidget {
   }
 }
 
-bool _containsCjk(String value) {
-  return RegExp(r'[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]').hasMatch(value);
+bool _usesSingleCharacterSuggestions(String value) {
+  return RegExp(
+    r'[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uac00-\ud7af\uf900-\ufaff]',
+  ).hasMatch(value);
 }
 
 bool _minimumSuggestionLengthMet(String query) {
-  return _containsCjk(query) ? query.isNotEmpty : query.length >= 2;
+  return _usesSingleCharacterSuggestions(query)
+      ? query.isNotEmpty
+      : query.length >= 2;
 }
 
 String _canonicalEnglish(String value) {

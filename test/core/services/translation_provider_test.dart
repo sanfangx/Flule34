@@ -12,6 +12,7 @@ import 'package:flule34/core/models/video_models.dart';
 import 'package:flule34/core/services/translation_provider_repository.dart';
 import 'package:flule34/core/services/translation_provider_router.dart';
 import 'package:flule34/core/services/translation_service.dart';
+import 'package:flule34/core/services/source_language_detector.dart';
 import 'package:flule34/core/session/secret_store.dart';
 import 'package:flule34/features/settings/data/app_settings_repository.dart';
 import 'package:flule34/features/settings/data/app_settings_store.dart';
@@ -184,7 +185,7 @@ void main() {
     expect(firstBody, contains('footjob'));
     expect(firstBody, contains('成人视频软件 Flule34'));
     expect(firstBody, contains('当前翻译类型：标签'));
-    expect(firstBody, contains('含义明确且有自然中文表达'));
+    expect(firstBody, contains('含义明确且在目标语言中有自然表达'));
     expect(firstBody, contains('作者名、画师名、制作方名称'));
     expect(firstBody, isNot(contains('下面的英文')));
     expect(firstBody, isNot(contains('artist')));
@@ -333,7 +334,7 @@ void main() {
   test('AI 提示词会按标题、分类和标签应用不同翻译规则', () async {
     final cases = <(TranslationContentKind, String)>[
       (TranslationContentKind.title, '标题末尾可能通过“by”'),
-      (TranslationContentKind.category, '已有通行中文名时，优先使用通行中文名'),
+      (TranslationContentKind.category, '已有通行译名时，优先使用通行译名'),
       (TranslationContentKind.tag, '数字、型号、技术术语、通用缩写'),
     ];
 
@@ -375,7 +376,7 @@ void main() {
   test('DeepL 定制指令使用受支持的字符串数组并覆盖三类规则', () async {
     final cases = <(TranslationContentKind, String)>[
       (TranslationContentKind.title, '标题末尾可能通过“by”'),
-      (TranslationContentKind.category, '已有常见中文名时优先使用'),
+      (TranslationContentKind.category, '已有目标语言常见译名时优先使用'),
       (TranslationContentKind.tag, '通用缩写'),
     ];
 
@@ -418,6 +419,226 @@ void main() {
       expect(instructions.join('\n'), contains('作者名、画师名、制作方名称'));
       repository.dispose();
     }
+  });
+
+  test('Provider 使用请求指定的目标语言且不强制声明 DeepL 源语言', () async {
+    final repository = TranslationProviderRepository(
+      store: _MemorySettingsStore(),
+      secrets: _MemorySecretStore(),
+    );
+    addTearDown(repository.dispose);
+    await repository.load();
+    await repository.upsert(
+      const TranslationProviderConfig(
+        id: 'deepl-ja',
+        name: 'DeepL',
+        protocol: TranslationProviderProtocol.deepL,
+        baseUrl: 'https://provider.test',
+        enabled: true,
+      ),
+      apiKey: 'secret',
+    );
+    final adapter = _SingleResponseAdapter(
+      '{"translations":[{"detected_source_language":"EN","text":"例"}]}',
+    );
+    final router = TranslationProviderRouter(
+      repository: repository,
+      dio: Dio()..httpClientAdapter = adapter,
+    );
+
+    await router.translate(
+      const TranslationRequest(
+        kind: TranslationContentKind.title,
+        text: 'English 中文 mixed title',
+        targetLanguage: TranslationLanguage.japanese,
+      ),
+    );
+
+    final data = adapter.request?.data as Map;
+    expect(data['target_lang'], 'JA');
+    expect(data, isNot(contains('source_lang')));
+    expect(data['context'], contains('目标语言是日本語'));
+  });
+
+  test('目标语言与高置信度原文相同时不请求 API 且不写入翻译库', () async {
+    final store = _MemorySettingsStore();
+    final secrets = _MemorySecretStore();
+    final repository = TranslationProviderRepository(
+      store: store,
+      secrets: secrets,
+    );
+    addTearDown(repository.dispose);
+    await repository.load();
+    await repository.upsert(
+      const TranslationProviderConfig(
+        id: 'ai',
+        name: 'AI',
+        protocol: TranslationProviderProtocol.openAiChat,
+        baseUrl: 'https://provider.test/v1',
+        model: 'model-a',
+        enabled: true,
+      ),
+      apiKey: 'secret',
+    );
+    final adapter = _SingleResponseAdapter(
+      '{"choices":[{"message":{"content":"不应被调用"}}]}',
+    );
+    final settings = AppSettingsRepository(store);
+    addTearDown(settings.dispose);
+    await settings.load();
+    await settings.setTranslationTarget(TranslationTargetPreference.english);
+    final database = AppDatabase(NativeDatabase.memory());
+    addTearDown(database.close);
+    final detector = _FakeSourceLanguageDetector(TranslationLanguage.english);
+    final service = TranslationService.fromDictionary(
+      settingsRepository: settings,
+      database: database,
+      providerRouter: TranslationProviderRouter(
+        repository: repository,
+        dio: Dio()..httpClientAdapter = adapter,
+      ),
+      sourceLanguageDetector: detector,
+      dictionary: const {},
+    );
+    addTearDown(service.dispose);
+    await service.initialize();
+
+    final first = await service.translateTitleWithProvider(
+      'Sleepy Opportunity',
+      videoId: 'sleepy-opportunity',
+    );
+    final second = await service.translateTitleWithProvider(
+      'Sleepy Opportunity',
+      videoId: 'sleepy-opportunity',
+    );
+
+    expect(first.translation, 'Sleepy Opportunity');
+    expect(first.shouldPersist, isFalse);
+    expect(second.translation, 'Sleepy Opportunity');
+    expect(detector.requestCount, 1);
+    expect(adapter.requestCount, 0);
+    expect(service.learnedEntryCount, 0);
+  });
+
+  test('中日韩目标始终请求 API 并保存与原文相同的译文', () async {
+    final store = _MemorySettingsStore();
+    final secrets = _MemorySecretStore();
+    final repository = TranslationProviderRepository(
+      store: store,
+      secrets: secrets,
+    );
+    addTearDown(repository.dispose);
+    await repository.load();
+    await repository.upsert(
+      const TranslationProviderConfig(
+        id: 'ai',
+        name: 'AI',
+        protocol: TranslationProviderProtocol.openAiChat,
+        baseUrl: 'https://provider.test/v1',
+        model: 'model-a',
+        enabled: true,
+      ),
+      apiKey: 'secret',
+    );
+    final adapter = _SingleResponseAdapter(
+      '{"choices":[{"message":{"content":"3D"}}]}',
+    );
+    final settings = AppSettingsRepository(store);
+    addTearDown(settings.dispose);
+    await settings.load();
+    await settings.setTranslationTarget(
+      TranslationTargetPreference.simplifiedChinese,
+    );
+    final database = AppDatabase(NativeDatabase.memory());
+    addTearDown(database.close);
+    final detector = _FakeSourceLanguageDetector(
+      TranslationLanguage.simplifiedChinese,
+    );
+    final service = TranslationService.fromDictionary(
+      settingsRepository: settings,
+      database: database,
+      providerRouter: TranslationProviderRouter(
+        repository: repository,
+        dio: Dio()..httpClientAdapter = adapter,
+      ),
+      sourceLanguageDetector: detector,
+      dictionary: const {},
+    );
+    addTearDown(service.dispose);
+    await service.initialize();
+
+    final result = await service.translateTitleWithProvider(
+      '3D',
+      videoId: 'three-d',
+    );
+
+    expect(result.translation, '3D');
+    expect(result.shouldPersist, isTrue);
+    expect(detector.requestCount, 0);
+    expect(adapter.requestCount, 1);
+    expect(service.learnedEntryCount, 1);
+    expect(service.resolveTitle('three-d', '3D').hasResult, isTrue);
+    expect(service.renderTitle('three-d', '3D'), '3D | 3D');
+  });
+
+  test('AI 对同语种内容的解释性回答只保留末尾原文且不持久化', () async {
+    final store = _MemorySettingsStore();
+    final secrets = _MemorySecretStore();
+    final repository = TranslationProviderRepository(
+      store: store,
+      secrets: secrets,
+    );
+    addTearDown(repository.dispose);
+    await repository.load();
+    await repository.upsert(
+      const TranslationProviderConfig(
+        id: 'ai',
+        name: 'AI',
+        protocol: TranslationProviderProtocol.openAiChat,
+        baseUrl: 'https://provider.test/v1',
+        model: 'model-a',
+        enabled: true,
+      ),
+      apiKey: 'secret',
+    );
+    final adapter = _SingleResponseAdapter(
+      jsonEncode({
+        'choices': [
+          {
+            'message': {
+              'content':
+                  'I will translate the title into English. No translation is needed.\n\nSleepy Opportunity',
+            },
+          },
+        ],
+      }),
+    );
+    final settings = AppSettingsRepository(store);
+    addTearDown(settings.dispose);
+    await settings.load();
+    await settings.setTranslationTarget(TranslationTargetPreference.english);
+    final database = AppDatabase(NativeDatabase.memory());
+    addTearDown(database.close);
+    final service = TranslationService.fromDictionary(
+      settingsRepository: settings,
+      database: database,
+      providerRouter: TranslationProviderRouter(
+        repository: repository,
+        dio: Dio()..httpClientAdapter = adapter,
+      ),
+      dictionary: const {},
+    );
+    addTearDown(service.dispose);
+    await service.initialize();
+
+    final result = await service.translateTitleWithProvider(
+      'Sleepy Opportunity',
+      videoId: 'sleepy-opportunity',
+    );
+
+    expect(result.translation, 'Sleepy Opportunity');
+    expect(service.learnedEntryCount, 0);
+    expect(jsonEncode(adapter.request?.data), contains('必须逐字返回原文'));
   });
 
   test('自动翻译会并发去重并作为已学习译文跨启动恢复', () async {
@@ -662,6 +883,22 @@ final class _SingleResponseAdapter implements HttpClientAdapter {
 
   @override
   void close({bool force = false}) {}
+}
+
+final class _FakeSourceLanguageDetector implements SourceLanguageDetector {
+  _FakeSourceLanguageDetector(this.language);
+
+  final TranslationLanguage? language;
+  int requestCount = 0;
+
+  @override
+  Future<TranslationLanguage?> detect(String text) async {
+    requestCount += 1;
+    return language;
+  }
+
+  @override
+  Future<void> dispose() async {}
 }
 
 final class _ReasoningFallbackAdapter implements HttpClientAdapter {

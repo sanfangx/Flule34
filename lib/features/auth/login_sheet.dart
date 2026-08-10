@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 
 import '../../core/api/rule34video_api.dart';
 import '../../core/services/external_link_service.dart';
@@ -96,15 +97,16 @@ class _LoginSheetState extends State<_LoginSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('登录', style: Theme.of(context).textTheme.headlineSmall),
+              AppText('登录', style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 autofillHints: const [AutofillHints.username],
-                decoration: const InputDecoration(labelText: '注册邮箱'),
-                validator: (value) =>
-                    value == null || value.trim().isEmpty ? '请输入注册邮箱。' : null,
+                decoration: InputDecoration(labelText: context.uiText('注册邮箱')),
+                validator: (value) => value == null || value.trim().isEmpty
+                    ? context.uiText('请输入注册邮箱。')
+                    : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
@@ -112,9 +114,9 @@ class _LoginSheetState extends State<_LoginSheet> {
                 obscureText: _obscurePassword,
                 autofillHints: const [AutofillHints.password],
                 decoration: InputDecoration(
-                  labelText: '密码',
+                  labelText: context.uiText('密码'),
                   suffixIcon: IconButton(
-                    tooltip: _obscurePassword ? '显示密码' : '隐藏密码',
+                    tooltip: context.uiText(_obscurePassword ? '显示密码' : '隐藏密码'),
                     onPressed: _submitting
                         ? null
                         : () => setState(
@@ -128,8 +130,9 @@ class _LoginSheetState extends State<_LoginSheet> {
                   ),
                 ),
                 onFieldSubmitted: (_) => _submit(),
-                validator: (value) =>
-                    value == null || value.isEmpty ? '请输入密码。' : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? context.uiText('请输入密码。')
+                    : null,
               ),
               if (_error != null) ...[
                 const SizedBox(height: 12),
@@ -147,7 +150,7 @@ class _LoginSheetState extends State<_LoginSheet> {
                         width: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Text('登录'),
+                    : const AppText('登录'),
               ),
               const SizedBox(height: 4),
               Row(
@@ -159,7 +162,7 @@ class _LoginSheetState extends State<_LoginSheet> {
                         : () => _openWebsite(
                             Uri.parse('https://rule34video.com/signup/'),
                           ),
-                    child: const Text('注册账号'),
+                    child: const AppText('注册账号'),
                   ),
                   TextButton(
                     onPressed: _submitting
@@ -169,7 +172,7 @@ class _LoginSheetState extends State<_LoginSheet> {
                               'https://rule34video.com/reset-password/',
                             ),
                           ),
-                    child: const Text('忘记密码'),
+                    child: const AppText('忘记密码'),
                   ),
                 ],
               ),

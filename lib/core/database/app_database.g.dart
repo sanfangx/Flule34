@@ -3641,6 +3641,40 @@ class $TranslationOverridesTable extends TranslationOverrides
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $TranslationOverridesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _siteIdMeta = const VerificationMeta('siteId');
+  @override
+  late final GeneratedColumn<String> siteId = GeneratedColumn<String>(
+    'site_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('rule34video'),
+  );
+  static const VerificationMeta _sourceLanguageMeta = const VerificationMeta(
+    'sourceLanguage',
+  );
+  @override
+  late final GeneratedColumn<String> sourceLanguage = GeneratedColumn<String>(
+    'source_language',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('en'),
+  );
+  static const VerificationMeta _targetLanguageMeta = const VerificationMeta(
+    'targetLanguage',
+  );
+  @override
+  late final GeneratedColumn<String> targetLanguage = GeneratedColumn<String>(
+    'target_language',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('zh-Hans'),
+  );
   static const VerificationMeta _kindMeta = const VerificationMeta('kind');
   @override
   late final GeneratedColumn<String> kind = GeneratedColumn<String>(
@@ -3708,6 +3742,9 @@ class $TranslationOverridesTable extends TranslationOverrides
   );
   @override
   List<GeneratedColumn> get $columns => [
+    siteId,
+    sourceLanguage,
+    targetLanguage,
     kind,
     canonicalName,
     sourceText,
@@ -3727,6 +3764,30 @@ class $TranslationOverridesTable extends TranslationOverrides
   }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
+    if (data.containsKey('site_id')) {
+      context.handle(
+        _siteIdMeta,
+        siteId.isAcceptableOrUnknown(data['site_id']!, _siteIdMeta),
+      );
+    }
+    if (data.containsKey('source_language')) {
+      context.handle(
+        _sourceLanguageMeta,
+        sourceLanguage.isAcceptableOrUnknown(
+          data['source_language']!,
+          _sourceLanguageMeta,
+        ),
+      );
+    }
+    if (data.containsKey('target_language')) {
+      context.handle(
+        _targetLanguageMeta,
+        targetLanguage.isAcceptableOrUnknown(
+          data['target_language']!,
+          _targetLanguageMeta,
+        ),
+      );
+    }
     if (data.containsKey('kind')) {
       context.handle(
         _kindMeta,
@@ -3779,11 +3840,28 @@ class $TranslationOverridesTable extends TranslationOverrides
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {kind, canonicalName};
+  Set<GeneratedColumn> get $primaryKey => {
+    siteId,
+    kind,
+    canonicalName,
+    targetLanguage,
+  };
   @override
   TranslationOverride map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return TranslationOverride(
+      siteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}site_id'],
+      )!,
+      sourceLanguage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_language'],
+      )!,
+      targetLanguage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target_language'],
+      )!,
       kind: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}kind'],
@@ -3819,6 +3897,9 @@ class $TranslationOverridesTable extends TranslationOverrides
 
 class TranslationOverride extends DataClass
     implements Insertable<TranslationOverride> {
+  final String siteId;
+  final String sourceLanguage;
+  final String targetLanguage;
   final String kind;
   final String canonicalName;
   final String? sourceText;
@@ -3826,6 +3907,9 @@ class TranslationOverride extends DataClass
   final String translation;
   final DateTime updatedAt;
   const TranslationOverride({
+    required this.siteId,
+    required this.sourceLanguage,
+    required this.targetLanguage,
     required this.kind,
     required this.canonicalName,
     this.sourceText,
@@ -3836,6 +3920,9 @@ class TranslationOverride extends DataClass
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    map['site_id'] = Variable<String>(siteId);
+    map['source_language'] = Variable<String>(sourceLanguage);
+    map['target_language'] = Variable<String>(targetLanguage);
     map['kind'] = Variable<String>(kind);
     map['canonical_name'] = Variable<String>(canonicalName);
     if (!nullToAbsent || sourceText != null) {
@@ -3851,6 +3938,9 @@ class TranslationOverride extends DataClass
 
   TranslationOverridesCompanion toCompanion(bool nullToAbsent) {
     return TranslationOverridesCompanion(
+      siteId: Value(siteId),
+      sourceLanguage: Value(sourceLanguage),
+      targetLanguage: Value(targetLanguage),
       kind: Value(kind),
       canonicalName: Value(canonicalName),
       sourceText: sourceText == null && nullToAbsent
@@ -3870,6 +3960,9 @@ class TranslationOverride extends DataClass
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return TranslationOverride(
+      siteId: serializer.fromJson<String>(json['siteId']),
+      sourceLanguage: serializer.fromJson<String>(json['sourceLanguage']),
+      targetLanguage: serializer.fromJson<String>(json['targetLanguage']),
       kind: serializer.fromJson<String>(json['kind']),
       canonicalName: serializer.fromJson<String>(json['canonicalName']),
       sourceText: serializer.fromJson<String?>(json['sourceText']),
@@ -3882,6 +3975,9 @@ class TranslationOverride extends DataClass
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
+      'siteId': serializer.toJson<String>(siteId),
+      'sourceLanguage': serializer.toJson<String>(sourceLanguage),
+      'targetLanguage': serializer.toJson<String>(targetLanguage),
       'kind': serializer.toJson<String>(kind),
       'canonicalName': serializer.toJson<String>(canonicalName),
       'sourceText': serializer.toJson<String?>(sourceText),
@@ -3892,6 +3988,9 @@ class TranslationOverride extends DataClass
   }
 
   TranslationOverride copyWith({
+    String? siteId,
+    String? sourceLanguage,
+    String? targetLanguage,
     String? kind,
     String? canonicalName,
     Value<String?> sourceText = const Value.absent(),
@@ -3899,6 +3998,9 @@ class TranslationOverride extends DataClass
     String? translation,
     DateTime? updatedAt,
   }) => TranslationOverride(
+    siteId: siteId ?? this.siteId,
+    sourceLanguage: sourceLanguage ?? this.sourceLanguage,
+    targetLanguage: targetLanguage ?? this.targetLanguage,
     kind: kind ?? this.kind,
     canonicalName: canonicalName ?? this.canonicalName,
     sourceText: sourceText.present ? sourceText.value : this.sourceText,
@@ -3908,6 +4010,13 @@ class TranslationOverride extends DataClass
   );
   TranslationOverride copyWithCompanion(TranslationOverridesCompanion data) {
     return TranslationOverride(
+      siteId: data.siteId.present ? data.siteId.value : this.siteId,
+      sourceLanguage: data.sourceLanguage.present
+          ? data.sourceLanguage.value
+          : this.sourceLanguage,
+      targetLanguage: data.targetLanguage.present
+          ? data.targetLanguage.value
+          : this.targetLanguage,
       kind: data.kind.present ? data.kind.value : this.kind,
       canonicalName: data.canonicalName.present
           ? data.canonicalName.value
@@ -3926,6 +4035,9 @@ class TranslationOverride extends DataClass
   @override
   String toString() {
     return (StringBuffer('TranslationOverride(')
+          ..write('siteId: $siteId, ')
+          ..write('sourceLanguage: $sourceLanguage, ')
+          ..write('targetLanguage: $targetLanguage, ')
           ..write('kind: $kind, ')
           ..write('canonicalName: $canonicalName, ')
           ..write('sourceText: $sourceText, ')
@@ -3938,6 +4050,9 @@ class TranslationOverride extends DataClass
 
   @override
   int get hashCode => Object.hash(
+    siteId,
+    sourceLanguage,
+    targetLanguage,
     kind,
     canonicalName,
     sourceText,
@@ -3949,6 +4064,9 @@ class TranslationOverride extends DataClass
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is TranslationOverride &&
+          other.siteId == this.siteId &&
+          other.sourceLanguage == this.sourceLanguage &&
+          other.targetLanguage == this.targetLanguage &&
           other.kind == this.kind &&
           other.canonicalName == this.canonicalName &&
           other.sourceText == this.sourceText &&
@@ -3959,6 +4077,9 @@ class TranslationOverride extends DataClass
 
 class TranslationOverridesCompanion
     extends UpdateCompanion<TranslationOverride> {
+  final Value<String> siteId;
+  final Value<String> sourceLanguage;
+  final Value<String> targetLanguage;
   final Value<String> kind;
   final Value<String> canonicalName;
   final Value<String?> sourceText;
@@ -3967,6 +4088,9 @@ class TranslationOverridesCompanion
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
   const TranslationOverridesCompanion({
+    this.siteId = const Value.absent(),
+    this.sourceLanguage = const Value.absent(),
+    this.targetLanguage = const Value.absent(),
     this.kind = const Value.absent(),
     this.canonicalName = const Value.absent(),
     this.sourceText = const Value.absent(),
@@ -3976,6 +4100,9 @@ class TranslationOverridesCompanion
     this.rowid = const Value.absent(),
   });
   TranslationOverridesCompanion.insert({
+    this.siteId = const Value.absent(),
+    this.sourceLanguage = const Value.absent(),
+    this.targetLanguage = const Value.absent(),
     required String kind,
     required String canonicalName,
     this.sourceText = const Value.absent(),
@@ -3987,6 +4114,9 @@ class TranslationOverridesCompanion
        canonicalName = Value(canonicalName),
        translation = Value(translation);
   static Insertable<TranslationOverride> custom({
+    Expression<String>? siteId,
+    Expression<String>? sourceLanguage,
+    Expression<String>? targetLanguage,
     Expression<String>? kind,
     Expression<String>? canonicalName,
     Expression<String>? sourceText,
@@ -3996,6 +4126,9 @@ class TranslationOverridesCompanion
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
+      if (siteId != null) 'site_id': siteId,
+      if (sourceLanguage != null) 'source_language': sourceLanguage,
+      if (targetLanguage != null) 'target_language': targetLanguage,
       if (kind != null) 'kind': kind,
       if (canonicalName != null) 'canonical_name': canonicalName,
       if (sourceText != null) 'source_text': sourceText,
@@ -4007,6 +4140,9 @@ class TranslationOverridesCompanion
   }
 
   TranslationOverridesCompanion copyWith({
+    Value<String>? siteId,
+    Value<String>? sourceLanguage,
+    Value<String>? targetLanguage,
     Value<String>? kind,
     Value<String>? canonicalName,
     Value<String?>? sourceText,
@@ -4016,6 +4152,9 @@ class TranslationOverridesCompanion
     Value<int>? rowid,
   }) {
     return TranslationOverridesCompanion(
+      siteId: siteId ?? this.siteId,
+      sourceLanguage: sourceLanguage ?? this.sourceLanguage,
+      targetLanguage: targetLanguage ?? this.targetLanguage,
       kind: kind ?? this.kind,
       canonicalName: canonicalName ?? this.canonicalName,
       sourceText: sourceText ?? this.sourceText,
@@ -4029,6 +4168,15 @@ class TranslationOverridesCompanion
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    if (siteId.present) {
+      map['site_id'] = Variable<String>(siteId.value);
+    }
+    if (sourceLanguage.present) {
+      map['source_language'] = Variable<String>(sourceLanguage.value);
+    }
+    if (targetLanguage.present) {
+      map['target_language'] = Variable<String>(targetLanguage.value);
+    }
     if (kind.present) {
       map['kind'] = Variable<String>(kind.value);
     }
@@ -4056,6 +4204,9 @@ class TranslationOverridesCompanion
   @override
   String toString() {
     return (StringBuffer('TranslationOverridesCompanion(')
+          ..write('siteId: $siteId, ')
+          ..write('sourceLanguage: $sourceLanguage, ')
+          ..write('targetLanguage: $targetLanguage, ')
           ..write('kind: $kind, ')
           ..write('canonicalName: $canonicalName, ')
           ..write('sourceText: $sourceText, ')
@@ -4074,6 +4225,40 @@ class $LearnedTranslationsTable extends LearnedTranslations
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $LearnedTranslationsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _siteIdMeta = const VerificationMeta('siteId');
+  @override
+  late final GeneratedColumn<String> siteId = GeneratedColumn<String>(
+    'site_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('rule34video'),
+  );
+  static const VerificationMeta _sourceLanguageMeta = const VerificationMeta(
+    'sourceLanguage',
+  );
+  @override
+  late final GeneratedColumn<String> sourceLanguage = GeneratedColumn<String>(
+    'source_language',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('en'),
+  );
+  static const VerificationMeta _targetLanguageMeta = const VerificationMeta(
+    'targetLanguage',
+  );
+  @override
+  late final GeneratedColumn<String> targetLanguage = GeneratedColumn<String>(
+    'target_language',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('zh-Hans'),
+  );
   static const VerificationMeta _kindMeta = const VerificationMeta('kind');
   @override
   late final GeneratedColumn<String> kind = GeneratedColumn<String>(
@@ -4175,6 +4360,9 @@ class $LearnedTranslationsTable extends LearnedTranslations
   );
   @override
   List<GeneratedColumn> get $columns => [
+    siteId,
+    sourceLanguage,
+    targetLanguage,
     kind,
     canonicalName,
     sourceText,
@@ -4197,6 +4385,30 @@ class $LearnedTranslationsTable extends LearnedTranslations
   }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
+    if (data.containsKey('site_id')) {
+      context.handle(
+        _siteIdMeta,
+        siteId.isAcceptableOrUnknown(data['site_id']!, _siteIdMeta),
+      );
+    }
+    if (data.containsKey('source_language')) {
+      context.handle(
+        _sourceLanguageMeta,
+        sourceLanguage.isAcceptableOrUnknown(
+          data['source_language']!,
+          _sourceLanguageMeta,
+        ),
+      );
+    }
+    if (data.containsKey('target_language')) {
+      context.handle(
+        _targetLanguageMeta,
+        targetLanguage.isAcceptableOrUnknown(
+          data['target_language']!,
+          _targetLanguageMeta,
+        ),
+      );
+    }
     if (data.containsKey('kind')) {
       context.handle(
         _kindMeta,
@@ -4272,11 +4484,28 @@ class $LearnedTranslationsTable extends LearnedTranslations
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {kind, canonicalName};
+  Set<GeneratedColumn> get $primaryKey => {
+    siteId,
+    kind,
+    canonicalName,
+    targetLanguage,
+  };
   @override
   LearnedTranslation map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return LearnedTranslation(
+      siteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}site_id'],
+      )!,
+      sourceLanguage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_language'],
+      )!,
+      targetLanguage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target_language'],
+      )!,
       kind: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}kind'],
@@ -4324,6 +4553,9 @@ class $LearnedTranslationsTable extends LearnedTranslations
 
 class LearnedTranslation extends DataClass
     implements Insertable<LearnedTranslation> {
+  final String siteId;
+  final String sourceLanguage;
+  final String targetLanguage;
   final String kind;
   final String canonicalName;
   final String sourceText;
@@ -4334,6 +4566,9 @@ class LearnedTranslation extends DataClass
   final DateTime createdAt;
   final DateTime updatedAt;
   const LearnedTranslation({
+    required this.siteId,
+    required this.sourceLanguage,
+    required this.targetLanguage,
     required this.kind,
     required this.canonicalName,
     required this.sourceText,
@@ -4347,6 +4582,9 @@ class LearnedTranslation extends DataClass
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    map['site_id'] = Variable<String>(siteId);
+    map['source_language'] = Variable<String>(sourceLanguage);
+    map['target_language'] = Variable<String>(targetLanguage);
     map['kind'] = Variable<String>(kind);
     map['canonical_name'] = Variable<String>(canonicalName);
     map['source_text'] = Variable<String>(sourceText);
@@ -4367,6 +4605,9 @@ class LearnedTranslation extends DataClass
 
   LearnedTranslationsCompanion toCompanion(bool nullToAbsent) {
     return LearnedTranslationsCompanion(
+      siteId: Value(siteId),
+      sourceLanguage: Value(sourceLanguage),
+      targetLanguage: Value(targetLanguage),
       kind: Value(kind),
       canonicalName: Value(canonicalName),
       sourceText: Value(sourceText),
@@ -4391,6 +4632,9 @@ class LearnedTranslation extends DataClass
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return LearnedTranslation(
+      siteId: serializer.fromJson<String>(json['siteId']),
+      sourceLanguage: serializer.fromJson<String>(json['sourceLanguage']),
+      targetLanguage: serializer.fromJson<String>(json['targetLanguage']),
       kind: serializer.fromJson<String>(json['kind']),
       canonicalName: serializer.fromJson<String>(json['canonicalName']),
       sourceText: serializer.fromJson<String>(json['sourceText']),
@@ -4406,6 +4650,9 @@ class LearnedTranslation extends DataClass
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
+      'siteId': serializer.toJson<String>(siteId),
+      'sourceLanguage': serializer.toJson<String>(sourceLanguage),
+      'targetLanguage': serializer.toJson<String>(targetLanguage),
       'kind': serializer.toJson<String>(kind),
       'canonicalName': serializer.toJson<String>(canonicalName),
       'sourceText': serializer.toJson<String>(sourceText),
@@ -4419,6 +4666,9 @@ class LearnedTranslation extends DataClass
   }
 
   LearnedTranslation copyWith({
+    String? siteId,
+    String? sourceLanguage,
+    String? targetLanguage,
     String? kind,
     String? canonicalName,
     String? sourceText,
@@ -4429,6 +4679,9 @@ class LearnedTranslation extends DataClass
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => LearnedTranslation(
+    siteId: siteId ?? this.siteId,
+    sourceLanguage: sourceLanguage ?? this.sourceLanguage,
+    targetLanguage: targetLanguage ?? this.targetLanguage,
     kind: kind ?? this.kind,
     canonicalName: canonicalName ?? this.canonicalName,
     sourceText: sourceText ?? this.sourceText,
@@ -4441,6 +4694,13 @@ class LearnedTranslation extends DataClass
   );
   LearnedTranslation copyWithCompanion(LearnedTranslationsCompanion data) {
     return LearnedTranslation(
+      siteId: data.siteId.present ? data.siteId.value : this.siteId,
+      sourceLanguage: data.sourceLanguage.present
+          ? data.sourceLanguage.value
+          : this.sourceLanguage,
+      targetLanguage: data.targetLanguage.present
+          ? data.targetLanguage.value
+          : this.targetLanguage,
       kind: data.kind.present ? data.kind.value : this.kind,
       canonicalName: data.canonicalName.present
           ? data.canonicalName.value
@@ -4466,6 +4726,9 @@ class LearnedTranslation extends DataClass
   @override
   String toString() {
     return (StringBuffer('LearnedTranslation(')
+          ..write('siteId: $siteId, ')
+          ..write('sourceLanguage: $sourceLanguage, ')
+          ..write('targetLanguage: $targetLanguage, ')
           ..write('kind: $kind, ')
           ..write('canonicalName: $canonicalName, ')
           ..write('sourceText: $sourceText, ')
@@ -4481,6 +4744,9 @@ class LearnedTranslation extends DataClass
 
   @override
   int get hashCode => Object.hash(
+    siteId,
+    sourceLanguage,
+    targetLanguage,
     kind,
     canonicalName,
     sourceText,
@@ -4495,6 +4761,9 @@ class LearnedTranslation extends DataClass
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is LearnedTranslation &&
+          other.siteId == this.siteId &&
+          other.sourceLanguage == this.sourceLanguage &&
+          other.targetLanguage == this.targetLanguage &&
           other.kind == this.kind &&
           other.canonicalName == this.canonicalName &&
           other.sourceText == this.sourceText &&
@@ -4507,6 +4776,9 @@ class LearnedTranslation extends DataClass
 }
 
 class LearnedTranslationsCompanion extends UpdateCompanion<LearnedTranslation> {
+  final Value<String> siteId;
+  final Value<String> sourceLanguage;
+  final Value<String> targetLanguage;
   final Value<String> kind;
   final Value<String> canonicalName;
   final Value<String> sourceText;
@@ -4518,6 +4790,9 @@ class LearnedTranslationsCompanion extends UpdateCompanion<LearnedTranslation> {
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
   const LearnedTranslationsCompanion({
+    this.siteId = const Value.absent(),
+    this.sourceLanguage = const Value.absent(),
+    this.targetLanguage = const Value.absent(),
     this.kind = const Value.absent(),
     this.canonicalName = const Value.absent(),
     this.sourceText = const Value.absent(),
@@ -4530,6 +4805,9 @@ class LearnedTranslationsCompanion extends UpdateCompanion<LearnedTranslation> {
     this.rowid = const Value.absent(),
   });
   LearnedTranslationsCompanion.insert({
+    this.siteId = const Value.absent(),
+    this.sourceLanguage = const Value.absent(),
+    this.targetLanguage = const Value.absent(),
     required String kind,
     required String canonicalName,
     required String sourceText,
@@ -4545,6 +4823,9 @@ class LearnedTranslationsCompanion extends UpdateCompanion<LearnedTranslation> {
        sourceText = Value(sourceText),
        translation = Value(translation);
   static Insertable<LearnedTranslation> custom({
+    Expression<String>? siteId,
+    Expression<String>? sourceLanguage,
+    Expression<String>? targetLanguage,
     Expression<String>? kind,
     Expression<String>? canonicalName,
     Expression<String>? sourceText,
@@ -4557,6 +4838,9 @@ class LearnedTranslationsCompanion extends UpdateCompanion<LearnedTranslation> {
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
+      if (siteId != null) 'site_id': siteId,
+      if (sourceLanguage != null) 'source_language': sourceLanguage,
+      if (targetLanguage != null) 'target_language': targetLanguage,
       if (kind != null) 'kind': kind,
       if (canonicalName != null) 'canonical_name': canonicalName,
       if (sourceText != null) 'source_text': sourceText,
@@ -4571,6 +4855,9 @@ class LearnedTranslationsCompanion extends UpdateCompanion<LearnedTranslation> {
   }
 
   LearnedTranslationsCompanion copyWith({
+    Value<String>? siteId,
+    Value<String>? sourceLanguage,
+    Value<String>? targetLanguage,
     Value<String>? kind,
     Value<String>? canonicalName,
     Value<String>? sourceText,
@@ -4583,6 +4870,9 @@ class LearnedTranslationsCompanion extends UpdateCompanion<LearnedTranslation> {
     Value<int>? rowid,
   }) {
     return LearnedTranslationsCompanion(
+      siteId: siteId ?? this.siteId,
+      sourceLanguage: sourceLanguage ?? this.sourceLanguage,
+      targetLanguage: targetLanguage ?? this.targetLanguage,
       kind: kind ?? this.kind,
       canonicalName: canonicalName ?? this.canonicalName,
       sourceText: sourceText ?? this.sourceText,
@@ -4599,6 +4889,15 @@ class LearnedTranslationsCompanion extends UpdateCompanion<LearnedTranslation> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    if (siteId.present) {
+      map['site_id'] = Variable<String>(siteId.value);
+    }
+    if (sourceLanguage.present) {
+      map['source_language'] = Variable<String>(sourceLanguage.value);
+    }
+    if (targetLanguage.present) {
+      map['target_language'] = Variable<String>(targetLanguage.value);
+    }
     if (kind.present) {
       map['kind'] = Variable<String>(kind.value);
     }
@@ -4635,6 +4934,9 @@ class LearnedTranslationsCompanion extends UpdateCompanion<LearnedTranslation> {
   @override
   String toString() {
     return (StringBuffer('LearnedTranslationsCompanion(')
+          ..write('siteId: $siteId, ')
+          ..write('sourceLanguage: $sourceLanguage, ')
+          ..write('targetLanguage: $targetLanguage, ')
           ..write('kind: $kind, ')
           ..write('canonicalName: $canonicalName, ')
           ..write('sourceText: $sourceText, ')
@@ -4656,6 +4958,40 @@ class $BuiltInTranslationStatesTable extends BuiltInTranslationStates
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $BuiltInTranslationStatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _siteIdMeta = const VerificationMeta('siteId');
+  @override
+  late final GeneratedColumn<String> siteId = GeneratedColumn<String>(
+    'site_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('rule34video'),
+  );
+  static const VerificationMeta _sourceLanguageMeta = const VerificationMeta(
+    'sourceLanguage',
+  );
+  @override
+  late final GeneratedColumn<String> sourceLanguage = GeneratedColumn<String>(
+    'source_language',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('en'),
+  );
+  static const VerificationMeta _targetLanguageMeta = const VerificationMeta(
+    'targetLanguage',
+  );
+  @override
+  late final GeneratedColumn<String> targetLanguage = GeneratedColumn<String>(
+    'target_language',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('zh-Hans'),
+  );
   static const VerificationMeta _kindMeta = const VerificationMeta('kind');
   @override
   late final GeneratedColumn<String> kind = GeneratedColumn<String>(
@@ -4715,6 +5051,9 @@ class $BuiltInTranslationStatesTable extends BuiltInTranslationStates
   );
   @override
   List<GeneratedColumn> get $columns => [
+    siteId,
+    sourceLanguage,
+    targetLanguage,
     kind,
     canonicalName,
     introducedPackVersion,
@@ -4733,6 +5072,30 @@ class $BuiltInTranslationStatesTable extends BuiltInTranslationStates
   }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
+    if (data.containsKey('site_id')) {
+      context.handle(
+        _siteIdMeta,
+        siteId.isAcceptableOrUnknown(data['site_id']!, _siteIdMeta),
+      );
+    }
+    if (data.containsKey('source_language')) {
+      context.handle(
+        _sourceLanguageMeta,
+        sourceLanguage.isAcceptableOrUnknown(
+          data['source_language']!,
+          _sourceLanguageMeta,
+        ),
+      );
+    }
+    if (data.containsKey('target_language')) {
+      context.handle(
+        _targetLanguageMeta,
+        targetLanguage.isAcceptableOrUnknown(
+          data['target_language']!,
+          _targetLanguageMeta,
+        ),
+      );
+    }
     if (data.containsKey('kind')) {
       context.handle(
         _kindMeta,
@@ -4782,7 +5145,12 @@ class $BuiltInTranslationStatesTable extends BuiltInTranslationStates
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {kind, canonicalName};
+  Set<GeneratedColumn> get $primaryKey => {
+    siteId,
+    kind,
+    canonicalName,
+    targetLanguage,
+  };
   @override
   BuiltInTranslationState map(
     Map<String, dynamic> data, {
@@ -4790,6 +5158,18 @@ class $BuiltInTranslationStatesTable extends BuiltInTranslationStates
   }) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return BuiltInTranslationState(
+      siteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}site_id'],
+      )!,
+      sourceLanguage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_language'],
+      )!,
+      targetLanguage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target_language'],
+      )!,
       kind: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}kind'],
@@ -4821,12 +5201,18 @@ class $BuiltInTranslationStatesTable extends BuiltInTranslationStates
 
 class BuiltInTranslationState extends DataClass
     implements Insertable<BuiltInTranslationState> {
+  final String siteId;
+  final String sourceLanguage;
+  final String targetLanguage;
   final String kind;
   final String canonicalName;
   final int introducedPackVersion;
   final bool protectExistingLearned;
   final DateTime updatedAt;
   const BuiltInTranslationState({
+    required this.siteId,
+    required this.sourceLanguage,
+    required this.targetLanguage,
     required this.kind,
     required this.canonicalName,
     required this.introducedPackVersion,
@@ -4836,6 +5222,9 @@ class BuiltInTranslationState extends DataClass
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    map['site_id'] = Variable<String>(siteId);
+    map['source_language'] = Variable<String>(sourceLanguage);
+    map['target_language'] = Variable<String>(targetLanguage);
     map['kind'] = Variable<String>(kind);
     map['canonical_name'] = Variable<String>(canonicalName);
     map['introduced_pack_version'] = Variable<int>(introducedPackVersion);
@@ -4846,6 +5235,9 @@ class BuiltInTranslationState extends DataClass
 
   BuiltInTranslationStatesCompanion toCompanion(bool nullToAbsent) {
     return BuiltInTranslationStatesCompanion(
+      siteId: Value(siteId),
+      sourceLanguage: Value(sourceLanguage),
+      targetLanguage: Value(targetLanguage),
       kind: Value(kind),
       canonicalName: Value(canonicalName),
       introducedPackVersion: Value(introducedPackVersion),
@@ -4860,6 +5252,9 @@ class BuiltInTranslationState extends DataClass
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return BuiltInTranslationState(
+      siteId: serializer.fromJson<String>(json['siteId']),
+      sourceLanguage: serializer.fromJson<String>(json['sourceLanguage']),
+      targetLanguage: serializer.fromJson<String>(json['targetLanguage']),
       kind: serializer.fromJson<String>(json['kind']),
       canonicalName: serializer.fromJson<String>(json['canonicalName']),
       introducedPackVersion: serializer.fromJson<int>(
@@ -4875,6 +5270,9 @@ class BuiltInTranslationState extends DataClass
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
+      'siteId': serializer.toJson<String>(siteId),
+      'sourceLanguage': serializer.toJson<String>(sourceLanguage),
+      'targetLanguage': serializer.toJson<String>(targetLanguage),
       'kind': serializer.toJson<String>(kind),
       'canonicalName': serializer.toJson<String>(canonicalName),
       'introducedPackVersion': serializer.toJson<int>(introducedPackVersion),
@@ -4884,12 +5282,18 @@ class BuiltInTranslationState extends DataClass
   }
 
   BuiltInTranslationState copyWith({
+    String? siteId,
+    String? sourceLanguage,
+    String? targetLanguage,
     String? kind,
     String? canonicalName,
     int? introducedPackVersion,
     bool? protectExistingLearned,
     DateTime? updatedAt,
   }) => BuiltInTranslationState(
+    siteId: siteId ?? this.siteId,
+    sourceLanguage: sourceLanguage ?? this.sourceLanguage,
+    targetLanguage: targetLanguage ?? this.targetLanguage,
     kind: kind ?? this.kind,
     canonicalName: canonicalName ?? this.canonicalName,
     introducedPackVersion: introducedPackVersion ?? this.introducedPackVersion,
@@ -4901,6 +5305,13 @@ class BuiltInTranslationState extends DataClass
     BuiltInTranslationStatesCompanion data,
   ) {
     return BuiltInTranslationState(
+      siteId: data.siteId.present ? data.siteId.value : this.siteId,
+      sourceLanguage: data.sourceLanguage.present
+          ? data.sourceLanguage.value
+          : this.sourceLanguage,
+      targetLanguage: data.targetLanguage.present
+          ? data.targetLanguage.value
+          : this.targetLanguage,
       kind: data.kind.present ? data.kind.value : this.kind,
       canonicalName: data.canonicalName.present
           ? data.canonicalName.value
@@ -4918,6 +5329,9 @@ class BuiltInTranslationState extends DataClass
   @override
   String toString() {
     return (StringBuffer('BuiltInTranslationState(')
+          ..write('siteId: $siteId, ')
+          ..write('sourceLanguage: $sourceLanguage, ')
+          ..write('targetLanguage: $targetLanguage, ')
           ..write('kind: $kind, ')
           ..write('canonicalName: $canonicalName, ')
           ..write('introducedPackVersion: $introducedPackVersion, ')
@@ -4929,6 +5343,9 @@ class BuiltInTranslationState extends DataClass
 
   @override
   int get hashCode => Object.hash(
+    siteId,
+    sourceLanguage,
+    targetLanguage,
     kind,
     canonicalName,
     introducedPackVersion,
@@ -4939,6 +5356,9 @@ class BuiltInTranslationState extends DataClass
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is BuiltInTranslationState &&
+          other.siteId == this.siteId &&
+          other.sourceLanguage == this.sourceLanguage &&
+          other.targetLanguage == this.targetLanguage &&
           other.kind == this.kind &&
           other.canonicalName == this.canonicalName &&
           other.introducedPackVersion == this.introducedPackVersion &&
@@ -4948,6 +5368,9 @@ class BuiltInTranslationState extends DataClass
 
 class BuiltInTranslationStatesCompanion
     extends UpdateCompanion<BuiltInTranslationState> {
+  final Value<String> siteId;
+  final Value<String> sourceLanguage;
+  final Value<String> targetLanguage;
   final Value<String> kind;
   final Value<String> canonicalName;
   final Value<int> introducedPackVersion;
@@ -4955,6 +5378,9 @@ class BuiltInTranslationStatesCompanion
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
   const BuiltInTranslationStatesCompanion({
+    this.siteId = const Value.absent(),
+    this.sourceLanguage = const Value.absent(),
+    this.targetLanguage = const Value.absent(),
     this.kind = const Value.absent(),
     this.canonicalName = const Value.absent(),
     this.introducedPackVersion = const Value.absent(),
@@ -4963,6 +5389,9 @@ class BuiltInTranslationStatesCompanion
     this.rowid = const Value.absent(),
   });
   BuiltInTranslationStatesCompanion.insert({
+    this.siteId = const Value.absent(),
+    this.sourceLanguage = const Value.absent(),
+    this.targetLanguage = const Value.absent(),
     required String kind,
     required String canonicalName,
     required int introducedPackVersion,
@@ -4973,6 +5402,9 @@ class BuiltInTranslationStatesCompanion
        canonicalName = Value(canonicalName),
        introducedPackVersion = Value(introducedPackVersion);
   static Insertable<BuiltInTranslationState> custom({
+    Expression<String>? siteId,
+    Expression<String>? sourceLanguage,
+    Expression<String>? targetLanguage,
     Expression<String>? kind,
     Expression<String>? canonicalName,
     Expression<int>? introducedPackVersion,
@@ -4981,6 +5413,9 @@ class BuiltInTranslationStatesCompanion
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
+      if (siteId != null) 'site_id': siteId,
+      if (sourceLanguage != null) 'source_language': sourceLanguage,
+      if (targetLanguage != null) 'target_language': targetLanguage,
       if (kind != null) 'kind': kind,
       if (canonicalName != null) 'canonical_name': canonicalName,
       if (introducedPackVersion != null)
@@ -4993,6 +5428,9 @@ class BuiltInTranslationStatesCompanion
   }
 
   BuiltInTranslationStatesCompanion copyWith({
+    Value<String>? siteId,
+    Value<String>? sourceLanguage,
+    Value<String>? targetLanguage,
     Value<String>? kind,
     Value<String>? canonicalName,
     Value<int>? introducedPackVersion,
@@ -5001,6 +5439,9 @@ class BuiltInTranslationStatesCompanion
     Value<int>? rowid,
   }) {
     return BuiltInTranslationStatesCompanion(
+      siteId: siteId ?? this.siteId,
+      sourceLanguage: sourceLanguage ?? this.sourceLanguage,
+      targetLanguage: targetLanguage ?? this.targetLanguage,
       kind: kind ?? this.kind,
       canonicalName: canonicalName ?? this.canonicalName,
       introducedPackVersion:
@@ -5015,6 +5456,15 @@ class BuiltInTranslationStatesCompanion
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    if (siteId.present) {
+      map['site_id'] = Variable<String>(siteId.value);
+    }
+    if (sourceLanguage.present) {
+      map['source_language'] = Variable<String>(sourceLanguage.value);
+    }
+    if (targetLanguage.present) {
+      map['target_language'] = Variable<String>(targetLanguage.value);
+    }
     if (kind.present) {
       map['kind'] = Variable<String>(kind.value);
     }
@@ -5043,6 +5493,9 @@ class BuiltInTranslationStatesCompanion
   @override
   String toString() {
     return (StringBuffer('BuiltInTranslationStatesCompanion(')
+          ..write('siteId: $siteId, ')
+          ..write('sourceLanguage: $sourceLanguage, ')
+          ..write('targetLanguage: $targetLanguage, ')
           ..write('kind: $kind, ')
           ..write('canonicalName: $canonicalName, ')
           ..write('introducedPackVersion: $introducedPackVersion, ')
@@ -7970,6 +8423,9 @@ typedef $$LocalLibraryVideosTableProcessedTableManager =
     >;
 typedef $$TranslationOverridesTableCreateCompanionBuilder =
     TranslationOverridesCompanion Function({
+      Value<String> siteId,
+      Value<String> sourceLanguage,
+      Value<String> targetLanguage,
       required String kind,
       required String canonicalName,
       Value<String?> sourceText,
@@ -7980,6 +8436,9 @@ typedef $$TranslationOverridesTableCreateCompanionBuilder =
     });
 typedef $$TranslationOverridesTableUpdateCompanionBuilder =
     TranslationOverridesCompanion Function({
+      Value<String> siteId,
+      Value<String> sourceLanguage,
+      Value<String> targetLanguage,
       Value<String> kind,
       Value<String> canonicalName,
       Value<String?> sourceText,
@@ -7998,6 +8457,21 @@ class $$TranslationOverridesTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  ColumnFilters<String> get siteId => $composableBuilder(
+    column: $table.siteId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceLanguage => $composableBuilder(
+    column: $table.sourceLanguage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get targetLanguage => $composableBuilder(
+    column: $table.targetLanguage,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get kind => $composableBuilder(
     column: $table.kind,
     builder: (column) => ColumnFilters(column),
@@ -8038,6 +8512,21 @@ class $$TranslationOverridesTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  ColumnOrderings<String> get siteId => $composableBuilder(
+    column: $table.siteId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceLanguage => $composableBuilder(
+    column: $table.sourceLanguage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get targetLanguage => $composableBuilder(
+    column: $table.targetLanguage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get kind => $composableBuilder(
     column: $table.kind,
     builder: (column) => ColumnOrderings(column),
@@ -8078,6 +8567,19 @@ class $$TranslationOverridesTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  GeneratedColumn<String> get siteId =>
+      $composableBuilder(column: $table.siteId, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceLanguage => $composableBuilder(
+    column: $table.sourceLanguage,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get targetLanguage => $composableBuilder(
+    column: $table.targetLanguage,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get kind =>
       $composableBuilder(column: $table.kind, builder: (column) => column);
 
@@ -8146,6 +8648,9 @@ class $$TranslationOverridesTableTableManager
               ),
           updateCompanionCallback:
               ({
+                Value<String> siteId = const Value.absent(),
+                Value<String> sourceLanguage = const Value.absent(),
+                Value<String> targetLanguage = const Value.absent(),
                 Value<String> kind = const Value.absent(),
                 Value<String> canonicalName = const Value.absent(),
                 Value<String?> sourceText = const Value.absent(),
@@ -8154,6 +8659,9 @@ class $$TranslationOverridesTableTableManager
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TranslationOverridesCompanion(
+                siteId: siteId,
+                sourceLanguage: sourceLanguage,
+                targetLanguage: targetLanguage,
                 kind: kind,
                 canonicalName: canonicalName,
                 sourceText: sourceText,
@@ -8164,6 +8672,9 @@ class $$TranslationOverridesTableTableManager
               ),
           createCompanionCallback:
               ({
+                Value<String> siteId = const Value.absent(),
+                Value<String> sourceLanguage = const Value.absent(),
+                Value<String> targetLanguage = const Value.absent(),
                 required String kind,
                 required String canonicalName,
                 Value<String?> sourceText = const Value.absent(),
@@ -8172,6 +8683,9 @@ class $$TranslationOverridesTableTableManager
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TranslationOverridesCompanion.insert(
+                siteId: siteId,
+                sourceLanguage: sourceLanguage,
+                targetLanguage: targetLanguage,
                 kind: kind,
                 canonicalName: canonicalName,
                 sourceText: sourceText,
@@ -8211,6 +8725,9 @@ typedef $$TranslationOverridesTableProcessedTableManager =
     >;
 typedef $$LearnedTranslationsTableCreateCompanionBuilder =
     LearnedTranslationsCompanion Function({
+      Value<String> siteId,
+      Value<String> sourceLanguage,
+      Value<String> targetLanguage,
       required String kind,
       required String canonicalName,
       required String sourceText,
@@ -8224,6 +8741,9 @@ typedef $$LearnedTranslationsTableCreateCompanionBuilder =
     });
 typedef $$LearnedTranslationsTableUpdateCompanionBuilder =
     LearnedTranslationsCompanion Function({
+      Value<String> siteId,
+      Value<String> sourceLanguage,
+      Value<String> targetLanguage,
       Value<String> kind,
       Value<String> canonicalName,
       Value<String> sourceText,
@@ -8245,6 +8765,21 @@ class $$LearnedTranslationsTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  ColumnFilters<String> get siteId => $composableBuilder(
+    column: $table.siteId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceLanguage => $composableBuilder(
+    column: $table.sourceLanguage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get targetLanguage => $composableBuilder(
+    column: $table.targetLanguage,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get kind => $composableBuilder(
     column: $table.kind,
     builder: (column) => ColumnFilters(column),
@@ -8300,6 +8835,21 @@ class $$LearnedTranslationsTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  ColumnOrderings<String> get siteId => $composableBuilder(
+    column: $table.siteId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceLanguage => $composableBuilder(
+    column: $table.sourceLanguage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get targetLanguage => $composableBuilder(
+    column: $table.targetLanguage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get kind => $composableBuilder(
     column: $table.kind,
     builder: (column) => ColumnOrderings(column),
@@ -8355,6 +8905,19 @@ class $$LearnedTranslationsTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  GeneratedColumn<String> get siteId =>
+      $composableBuilder(column: $table.siteId, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceLanguage => $composableBuilder(
+    column: $table.sourceLanguage,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get targetLanguage => $composableBuilder(
+    column: $table.targetLanguage,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get kind =>
       $composableBuilder(column: $table.kind, builder: (column) => column);
 
@@ -8436,6 +8999,9 @@ class $$LearnedTranslationsTableTableManager
               ),
           updateCompanionCallback:
               ({
+                Value<String> siteId = const Value.absent(),
+                Value<String> sourceLanguage = const Value.absent(),
+                Value<String> targetLanguage = const Value.absent(),
                 Value<String> kind = const Value.absent(),
                 Value<String> canonicalName = const Value.absent(),
                 Value<String> sourceText = const Value.absent(),
@@ -8447,6 +9013,9 @@ class $$LearnedTranslationsTableTableManager
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LearnedTranslationsCompanion(
+                siteId: siteId,
+                sourceLanguage: sourceLanguage,
+                targetLanguage: targetLanguage,
                 kind: kind,
                 canonicalName: canonicalName,
                 sourceText: sourceText,
@@ -8460,6 +9029,9 @@ class $$LearnedTranslationsTableTableManager
               ),
           createCompanionCallback:
               ({
+                Value<String> siteId = const Value.absent(),
+                Value<String> sourceLanguage = const Value.absent(),
+                Value<String> targetLanguage = const Value.absent(),
                 required String kind,
                 required String canonicalName,
                 required String sourceText,
@@ -8471,6 +9043,9 @@ class $$LearnedTranslationsTableTableManager
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LearnedTranslationsCompanion.insert(
+                siteId: siteId,
+                sourceLanguage: sourceLanguage,
+                targetLanguage: targetLanguage,
                 kind: kind,
                 canonicalName: canonicalName,
                 sourceText: sourceText,
@@ -8513,6 +9088,9 @@ typedef $$LearnedTranslationsTableProcessedTableManager =
     >;
 typedef $$BuiltInTranslationStatesTableCreateCompanionBuilder =
     BuiltInTranslationStatesCompanion Function({
+      Value<String> siteId,
+      Value<String> sourceLanguage,
+      Value<String> targetLanguage,
       required String kind,
       required String canonicalName,
       required int introducedPackVersion,
@@ -8522,6 +9100,9 @@ typedef $$BuiltInTranslationStatesTableCreateCompanionBuilder =
     });
 typedef $$BuiltInTranslationStatesTableUpdateCompanionBuilder =
     BuiltInTranslationStatesCompanion Function({
+      Value<String> siteId,
+      Value<String> sourceLanguage,
+      Value<String> targetLanguage,
       Value<String> kind,
       Value<String> canonicalName,
       Value<int> introducedPackVersion,
@@ -8539,6 +9120,21 @@ class $$BuiltInTranslationStatesTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  ColumnFilters<String> get siteId => $composableBuilder(
+    column: $table.siteId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceLanguage => $composableBuilder(
+    column: $table.sourceLanguage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get targetLanguage => $composableBuilder(
+    column: $table.targetLanguage,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get kind => $composableBuilder(
     column: $table.kind,
     builder: (column) => ColumnFilters(column),
@@ -8574,6 +9170,21 @@ class $$BuiltInTranslationStatesTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  ColumnOrderings<String> get siteId => $composableBuilder(
+    column: $table.siteId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceLanguage => $composableBuilder(
+    column: $table.sourceLanguage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get targetLanguage => $composableBuilder(
+    column: $table.targetLanguage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get kind => $composableBuilder(
     column: $table.kind,
     builder: (column) => ColumnOrderings(column),
@@ -8609,6 +9220,19 @@ class $$BuiltInTranslationStatesTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  GeneratedColumn<String> get siteId =>
+      $composableBuilder(column: $table.siteId, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceLanguage => $composableBuilder(
+    column: $table.sourceLanguage,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get targetLanguage => $composableBuilder(
+    column: $table.targetLanguage,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get kind =>
       $composableBuilder(column: $table.kind, builder: (column) => column);
 
@@ -8677,6 +9301,9 @@ class $$BuiltInTranslationStatesTableTableManager
               ),
           updateCompanionCallback:
               ({
+                Value<String> siteId = const Value.absent(),
+                Value<String> sourceLanguage = const Value.absent(),
+                Value<String> targetLanguage = const Value.absent(),
                 Value<String> kind = const Value.absent(),
                 Value<String> canonicalName = const Value.absent(),
                 Value<int> introducedPackVersion = const Value.absent(),
@@ -8684,6 +9311,9 @@ class $$BuiltInTranslationStatesTableTableManager
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => BuiltInTranslationStatesCompanion(
+                siteId: siteId,
+                sourceLanguage: sourceLanguage,
+                targetLanguage: targetLanguage,
                 kind: kind,
                 canonicalName: canonicalName,
                 introducedPackVersion: introducedPackVersion,
@@ -8693,6 +9323,9 @@ class $$BuiltInTranslationStatesTableTableManager
               ),
           createCompanionCallback:
               ({
+                Value<String> siteId = const Value.absent(),
+                Value<String> sourceLanguage = const Value.absent(),
+                Value<String> targetLanguage = const Value.absent(),
                 required String kind,
                 required String canonicalName,
                 required int introducedPackVersion,
@@ -8700,6 +9333,9 @@ class $$BuiltInTranslationStatesTableTableManager
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => BuiltInTranslationStatesCompanion.insert(
+                siteId: siteId,
+                sourceLanguage: sourceLanguage,
+                targetLanguage: targetLanguage,
                 kind: kind,
                 canonicalName: canonicalName,
                 introducedPackVersion: introducedPackVersion,

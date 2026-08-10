@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:video_player/video_player.dart';
 
@@ -294,7 +295,7 @@ class _VideoPreviewPanelState extends State<_VideoPreviewPanel> {
                         const SizedBox(height: 4),
                         TextButton(
                           onPressed: () => unawaited(_load()),
-                          child: const Text('重试'),
+                          child: const AppText('重试'),
                         ),
                       ],
                     ),

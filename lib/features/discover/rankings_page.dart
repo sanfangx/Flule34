@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/router/route_names.dart';
@@ -10,7 +11,7 @@ class RankingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('排行榜')),
+      appBar: AppBar(title: const AppText('排行榜')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -95,8 +96,8 @@ class _RankingTile extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: Icon(icon),
-        title: Text(title),
-        subtitle: Text(subtitle),
+        title: AppText(title),
+        subtitle: AppText(subtitle),
         trailing: const Icon(Icons.chevron_right),
         onTap: onTap,
       ),

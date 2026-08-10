@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 
 import '../../core/api/rule34video_api.dart';
 import '../../core/models/video_models.dart';
@@ -40,7 +41,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                     ),
                   )
                 : IconButton(
-                    tooltip: '取消订阅',
+                    tooltip: context.uiText('取消订阅'),
                     onPressed: _unsubscribe,
                     icon: const Icon(Icons.notifications_off_outlined),
                   ),
@@ -70,12 +71,12 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       }
       final messenger = ScaffoldMessenger.of(context);
       Navigator.of(context).pop(true);
-      messenger.showSnackBar(const SnackBar(content: Text('已取消订阅。')));
+      messenger.showSnackBar(const SnackBar(content: AppText('已取消订阅。')));
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text(error.toString())));
+        ).showSnackBar(SnackBar(content: AppText(error.toString())));
       }
     } finally {
       if (mounted) {

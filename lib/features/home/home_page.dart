@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flule34/l10n/ui_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -8,6 +9,7 @@ import '../../core/api/rule34video_api.dart';
 import '../../core/models/video_models.dart';
 import '../../core/services/predictive_prefetch_service.dart';
 import '../../shared/video_feed.dart';
+import '../../shared/transient_focus.dart';
 import '../auth/login_sheet.dart';
 import '../settings/data/app_settings_repository.dart';
 
@@ -77,7 +79,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             child: SearchBar(
               readOnly: true,
               leading: const Icon(Icons.search),
-              hintText: '搜索视频、标签、分类或艺术家',
+              hintText: context.uiText('搜索视频、标签、分类或艺术家'),
               onTap: () {
                 ref
                     .read(predictivePrefetchServiceProvider)
@@ -95,7 +97,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     (channel) => Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: ChoiceChip(
-                        label: Text(channel.label),
+                        label: AppText(channel.label),
                         selected: _channel == channel,
                         onSelected: (_) => setState(() => _channel = channel),
                       ),
@@ -230,7 +232,7 @@ class _FollowingProgress extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            AppText(
               '正在整理关注内容 $scanned/$total',
               style: theme.textTheme.labelMedium,
             ),
@@ -263,19 +265,25 @@ class _FilterMenu<T> extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: PopupMenuButton<T>(
+        requestFocus: false,
         initialValue: value,
-        onSelected: onSelected,
+        onOpened: dismissInputFocus,
+        onCanceled: dismissInputFocus,
+        onSelected: (value) {
+          dismissInputFocus();
+          onSelected(value);
+        },
         itemBuilder: (context) => values
             .map(
               (item) => CheckedPopupMenuItem<T>(
                 value: item,
                 checked: item == value,
-                child: Text(labelFor(item)),
+                child: AppText(labelFor(item)),
               ),
             )
             .toList(growable: false),
         child: Chip(
-          label: Text(label),
+          label: AppText(label),
           avatar: const Icon(Icons.tune, size: 16),
         ),
       ),
@@ -298,9 +306,9 @@ class _FollowingSignedOut extends StatelessWidget {
           children: [
             const Icon(Icons.notifications_none, size: 52),
             const SizedBox(height: 16),
-            Text('登录后查看关注内容', style: Theme.of(context).textTheme.titleLarge),
+            AppText('登录后查看关注内容', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 8),
-            const Text(
+            const AppText(
               '关注频道会汇总你在网站订阅的分类、艺术家、用户和播放列表。',
               textAlign: TextAlign.center,
             ),
@@ -308,7 +316,7 @@ class _FollowingSignedOut extends StatelessWidget {
             FilledButton.icon(
               onPressed: onLogin,
               icon: const Icon(Icons.login),
-              label: const Text('登录'),
+              label: const AppText('登录'),
             ),
           ],
         ),

@@ -113,7 +113,10 @@ final class _MemorySettingsStore implements AppSettingsStore {
   Future<bool?> readBool(String key) async => _values[key] as bool?;
 
   @override
-  Future<String?> readString(String key) async => _values[key] as String?;
+  Future<String?> readString(String key) async =>
+      key == 'flule34.settings.language'
+      ? 'simplifiedChinese'
+      : _values[key] as String?;
 
   @override
   Future<void> writeBool(String key, bool value) async => _values[key] = value;

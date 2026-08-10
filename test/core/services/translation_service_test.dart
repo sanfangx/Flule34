@@ -289,6 +289,71 @@ void main() {
     expect(await database.loadLearnedTranslations(), isEmpty);
     expect(await database.loadTranslationOverrides(), hasLength(1));
   });
+
+  test('不同目标语言的译文独立保存且内置词表只用于简体中文', () async {
+    final database = AppDatabase(NativeDatabase.memory());
+    addTearDown(database.close);
+    final settings = AppSettingsRepository(_MemorySettingsStore());
+    addTearDown(settings.dispose);
+    await settings.load();
+    final service = TranslationService.fromDictionary(
+      settingsRepository: settings,
+      database: database,
+      dictionary: const {'footjob': '足交'},
+    );
+    addTearDown(service.dispose);
+    await service.initialize();
+
+    await service.setOverride(
+      DiscoveryKind.tag,
+      'example',
+      '示例',
+      language: TranslationLanguage.simplifiedChinese,
+    );
+    await service.setOverride(
+      DiscoveryKind.tag,
+      'example',
+      '例',
+      language: TranslationLanguage.japanese,
+    );
+
+    expect(
+      service.lookupChinese(
+        'example',
+        language: TranslationLanguage.simplifiedChinese,
+      ),
+      '示例',
+    );
+    expect(
+      service.lookupChinese('example', language: TranslationLanguage.japanese),
+      '例',
+    );
+    expect(
+      service.lookupChinese('footjob', language: TranslationLanguage.japanese),
+      isNull,
+    );
+    expect(
+      service.catalogItems().where((item) => item.canonicalName == 'example'),
+      hasLength(2),
+    );
+
+    await settings.setTranslationTarget(TranslationTargetPreference.japanese);
+    expect(service.renderMetadata(DiscoveryKind.tag, 'example'), 'example | 例');
+    expect(service.renderMetadata(DiscoveryKind.tag, 'footjob'), 'footjob');
+    expect(service.searchTagAliases('例').single.english, 'example');
+  });
+
+  test('译文与原文相同时仍保留并显示双语结果', () {
+    const value = LocalizedTranslation(
+      original: '3D',
+      translation: '3D',
+      mode: TranslationDisplayMode.bilingual,
+    );
+
+    expect(value.hasTranslation, isFalse);
+    expect(value.hasResult, isTrue);
+    expect(value.plainText, '3D | 3D');
+  });
 }
 
 final class _MemorySettingsStore implements AppSettingsStore {
@@ -298,7 +363,10 @@ final class _MemorySettingsStore implements AppSettingsStore {
   Future<bool?> readBool(String key) async => _values[key] as bool?;
 
   @override
-  Future<String?> readString(String key) async => _values[key] as String?;
+  Future<String?> readString(String key) async =>
+      key == 'flule34.settings.language'
+      ? 'simplifiedChinese'
+      : _values[key] as String?;
 
   @override
   Future<void> writeBool(String key, bool value) async => _values[key] = value;
