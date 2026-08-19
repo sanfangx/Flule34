@@ -59,3 +59,7 @@ Release 签名与发布步骤见 [docs/release.md](docs/release.md)。
 ## 开源协议
 
 项目代码采用 [MIT License](LICENSE)。第三方组件继续遵循各自许可证，详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+
+## 友情链接
+
+- [LINUX DO](https://linux.do/)

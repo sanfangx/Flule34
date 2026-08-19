@@ -59,3 +59,7 @@ flutter build apk --release --split-per-abi --target-platform android-arm64 --no
 ## 라이선스
 
 프로젝트는 [MIT License](LICENSE)로 배포됩니다. 서드파티 고지는 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)를 참조하세요.
+
+## 관련 링크
+
+- [LINUX DO](https://linux.do/)

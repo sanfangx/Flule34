@@ -2237,7 +2237,7 @@ class Rule34VideoApi {
       responseType: ResponseType.plain,
       followRedirects: false,
       headers: const {
-        'User-Agent': 'HaRu Android/2.0.0',
+        'User-Agent': 'HaRu Android/2.0.1',
         'Accept':
             'text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8',
       },

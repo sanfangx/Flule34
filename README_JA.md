@@ -59,3 +59,7 @@ flutter build apk --release --split-per-abi --target-platform android-arm64 --no
 ## ライセンス
 
 本プロジェクトは [MIT License](LICENSE) で公開されています。サードパーティの通知は [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) を参照してください。
+
+## 関連リンク
+
+- [LINUX DO](https://linux.do/)

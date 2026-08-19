@@ -14,14 +14,14 @@ class SiteAvatar extends StatelessWidget {
 
   static const _rule34Headers = <String, String>{
     'Referer': 'https://rule34video.com/',
-    'User-Agent': 'HaRu Android/2.0.0',
+    'User-Agent': 'HaRu Android/2.0.1',
   };
 
   // hanime 的头像/封面托管在 vdownload.hembed.com，需要 hanime1 的
   // Referer 才会返回（与媒体请求同源策略）。
   static const _hanimeHeaders = <String, String>{
     'Referer': 'https://hanime1.me/',
-    'User-Agent': 'HaRu Android/2.0.0',
+    'User-Agent': 'HaRu Android/2.0.1',
   };
 
   final String? imageUrl;
