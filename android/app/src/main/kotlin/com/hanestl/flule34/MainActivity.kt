@@ -82,6 +82,24 @@ class MainActivity : FlutterActivity() {
             }
         }
 
+        MethodChannel(messenger, WEBVIEW_COOKIE_CHANNEL).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "getCookies" -> {
+                    val url = call.argument<String>("url")
+                    if (url.isNullOrBlank()) {
+                        result.error("INVALID_URL", "URL 不能为空", null)
+                    } else {
+                        // 返回原始字符串，避免 Flutter 插件截断含 '=' 的 Cookie 值。
+                        result.success(
+                            android.webkit.CookieManager.getInstance().getCookie(url) ?: "",
+                        )
+                    }
+                }
+
+                else -> result.notImplemented()
+            }
+        }
+
     }
 
     private fun inspectFile(uri: Uri): Map<String, Any?> {
@@ -241,6 +259,7 @@ class MainActivity : FlutterActivity() {
     private companion object {
         const val STORAGE_CHANNEL = "com.hanestl.flule34/storage_access"
         const val MEDIA_VOLUME_CHANNEL = "com.hanestl.flule34/media_volume"
+        const val WEBVIEW_COOKIE_CHANNEL = "com.hanestl.flule34/webview_cookie"
         const val DOWNLOAD_NOTIFICATION_CHANNEL = "background_downloader"
         const val MEDIA_NOTIFICATION_CHANNEL = "flule34_media_private"
         const val PLAYER_SERVICE_NOTIFICATION_CHANNEL = "better_player_channel"

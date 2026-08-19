@@ -29,6 +29,11 @@ class VideoFeed extends ConsumerStatefulWidget {
     this.active = true,
     this.onItemsLoaded,
     this.prefetchService,
+    this.contextActionLabel,
+    this.onContextAction,
+    this.filterOptions = const VideoListFilterOptions(),
+    this.loadFilteredPage,
+    this.serverSideSorts = const {},
   });
 
   final Future<List<VideoItem>> Function(int page) loadPage;
@@ -42,6 +47,12 @@ class VideoFeed extends ConsumerStatefulWidget {
   final bool active;
   final ValueChanged<List<VideoItem>>? onItemsLoaded;
   final PredictivePrefetchService? prefetchService;
+  final String? contextActionLabel;
+  final Future<void> Function(VideoItem video)? onContextAction;
+  final VideoListFilterOptions filterOptions;
+  final Future<List<VideoItem>> Function(int page, VideoListFilters filters)?
+  loadFilteredPage;
+  final Set<VideoListSort> serverSideSorts;
 
   @override
   ConsumerState<VideoFeed> createState() => _VideoFeedState();
@@ -54,6 +65,7 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
   final List<VideoItem> _videos = [];
   var _page = 1;
   var _loading = false;
+  var _hasLoadedOnce = false;
   var _hasMore = true;
   String? _error;
   String _query = '';
@@ -76,7 +88,12 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
   @override
   void didUpdateWidget(covariant VideoFeed oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!oldWidget.active && widget.active && _videos.isEmpty) {
+    if (_videos.isEmpty &&
+        oldWidget.initialItems.isEmpty &&
+        widget.initialItems.isNotEmpty) {
+      _videos.addAll(widget.initialItems);
+    }
+    if (!oldWidget.active && widget.active && !_hasLoadedOnce) {
       _load(reset: true);
     }
   }
@@ -131,7 +148,8 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
         final page =
             await (firstResetPage && forceRefresh && widget.refreshPage != null
                 ? widget.refreshPage!(_page)
-                : widget.loadPage(_page));
+                : widget.loadFilteredPage?.call(_page, _filters) ??
+                      widget.loadPage(_page));
         if (!mounted) {
           return;
         }
@@ -142,6 +160,7 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
             .where((item) => existingIds.add(item.id))
             .toList(growable: false);
         setState(() {
+          _hasLoadedOnce = true;
           if (firstResetPage) {
             _videos.clear();
           }
@@ -274,6 +293,18 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
     return VideoCard(
       video: video,
       compact: compact,
+      contextActionLabel: widget.contextActionLabel,
+      onContextAction: widget.onContextAction == null
+          ? null
+          : () async {
+              await widget.onContextAction!(video);
+              if (!mounted) return;
+              setState(() {
+                _videos.removeWhere(
+                  (item) => item.contentKey == video.contentKey,
+                );
+              });
+            },
       onTap: () {
         final PredictivePrefetchService prefetch =
             widget.prefetchService ??
@@ -281,11 +312,12 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
               predictivePrefetchServiceProvider,
             );
         prefetch.prioritizeForeground(
-          adoptKey: PredictivePrefetchKey.video(video.id),
+          adoptKey: PredictivePrefetchKey.video(video.id, siteId: video.siteId),
         );
         context.pushNamed(
           AppRouteNames.video,
           pathParameters: {'id': video.id, 'slug': video.slug},
+          queryParameters: {'site': video.siteId},
           extra: video,
         );
       },
@@ -345,7 +377,10 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
     if (!widget.showSearchAndFilters) {
       return source;
     }
-    return filterAndSortVideos(source, query: _query, filters: _filters);
+    final localFilters = widget.serverSideSorts.contains(_filters.sort)
+        ? _filters.copyWith(sort: VideoListSort.sourceOrder)
+        : _filters;
+    return filterAndSortVideos(source, query: _query, filters: localFilters);
   }
 
   Future<void> _showFilters() async {
@@ -353,12 +388,21 @@ class _VideoFeedState extends ConsumerState<VideoFeed>
       context,
       initialValue: _filters,
       title: '筛选视频',
-      defaultSortLabel: '网站顺序',
+      options: widget.filterOptions,
     );
     if (selected == null || !mounted) {
       return;
     }
+    final needsServerReload =
+        widget.loadFilteredPage != null &&
+        (widget.serverSideSorts.contains(_filters.sort) ||
+            widget.serverSideSorts.contains(selected.sort)) &&
+        selected.sort != _filters.sort;
     setState(() => _filters = selected);
+    if (needsServerReload) {
+      await _load(reset: true, forceRefresh: true);
+      return;
+    }
     if (_visibleVideos().length < 8) {
       unawaited(_load(reset: false));
     }

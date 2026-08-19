@@ -2,22 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:flule34/l10n/ui_localization.dart';
 
 import '../../core/api/rule34video_api.dart';
+import '../../core/models/content_source.dart';
 import '../../core/services/external_link_service.dart';
+import '../../shared/site_badge.dart';
 
-Future<bool> showLoginSheet(BuildContext context, Rule34VideoApi api) async {
+Future<bool> showLoginSheet(
+  BuildContext context,
+  Rule34VideoApi api, {
+  ContentSite site = ContentSite.rule34video,
+}) async {
   final result = await showModalBottomSheet<bool>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
-    builder: (_) => _LoginSheet(api: api),
+    builder: (_) => _LoginSheet(api: api, site: site),
   );
   return result ?? false;
 }
 
 class _LoginSheet extends StatefulWidget {
-  const _LoginSheet({required this.api});
+  const _LoginSheet({required this.api, required this.site});
 
   final Rule34VideoApi api;
+  final ContentSite site;
 
   @override
   State<_LoginSheet> createState() => _LoginSheetState();
@@ -44,8 +51,12 @@ class _LoginSheetState extends State<_LoginSheet> {
     _loadSavedCredentials();
   }
 
+  bool get _isHanime => widget.site == ContentSite.hanime1;
+
   Future<void> _loadSavedCredentials() async {
-    final credentials = await widget.api.sessionStore.loadCredentials();
+    final credentials = _isHanime
+        ? await widget.api.sessionStore.loadHanimeCredentials()
+        : await widget.api.sessionStore.loadCredentials();
     if (!mounted || credentials == null) {
       return;
     }
@@ -66,10 +77,13 @@ class _LoginSheetState extends State<_LoginSheet> {
       _error = null;
     });
     try {
-      await widget.api.login(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
+      final email = _emailController.text;
+      final password = _passwordController.text;
+      if (_isHanime) {
+        await widget.api.hanime1Api.login(email: email, password: password);
+      } else {
+        await widget.api.login(email: email, password: password);
+      }
       if (mounted) {
         Navigator.of(context).pop(true);
       }
@@ -97,7 +111,17 @@ class _LoginSheetState extends State<_LoginSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              AppText('登录', style: Theme.of(context).textTheme.headlineSmall),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SiteBadge(site: widget.site, size: 28),
+                  const SizedBox(width: 10),
+                  AppText(
+                    _isHanime ? '登录 Hanime' : '登录 Rule34Video',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                ],
+              ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _emailController,
@@ -160,7 +184,9 @@ class _LoginSheetState extends State<_LoginSheet> {
                     onPressed: _submitting
                         ? null
                         : () => _openWebsite(
-                            Uri.parse('https://rule34video.com/signup/'),
+                            _isHanime
+                                ? Uri.parse('${widget.site.baseUrl}/register')
+                                : Uri.parse('https://rule34video.com/signup/'),
                           ),
                     child: const AppText('注册账号'),
                   ),
@@ -168,9 +194,13 @@ class _LoginSheetState extends State<_LoginSheet> {
                     onPressed: _submitting
                         ? null
                         : () => _openWebsite(
-                            Uri.parse(
-                              'https://rule34video.com/reset-password/',
-                            ),
+                            _isHanime
+                                ? Uri.parse(
+                                    '${widget.site.baseUrl}/password/reset',
+                                  )
+                                : Uri.parse(
+                                    'https://rule34video.com/reset-password/',
+                                  ),
                           ),
                     child: const AppText('忘记密码'),
                   ),

@@ -49,6 +49,54 @@ void main() {
     expect(record?.taskId, startsWith('${id}_'));
   });
 
+  test('不同站点的同 ID 视频使用独立下载记录、任务和文件名', () async {
+    final harness = TestSessionHarness.create();
+    addTearDown(harness.dispose);
+    await harness.sessionStore.load();
+    final platform = _FakeDownloadPlatformService();
+    final settings = await _createSettings();
+    final repository = DownloadRepository(
+      harness.database,
+      _FakeRule34VideoApi(harness.sessionStore),
+      platform,
+      settings,
+    );
+    addTearDown(repository.dispose);
+    addTearDown(settings.dispose);
+    await repository.initialize();
+    final hanimeDetails = VideoDetails(
+      video: _details.video.copyWith(siteId: 'hanime1'),
+      sources: _details.sources,
+      categories: const [],
+      tags: const [],
+      models: const [],
+      isFavorite: false,
+    );
+
+    final rule34Id = await repository.enqueueVideo(
+      details: _details,
+      source: _details.sources.single,
+    );
+    final hanimeId = await repository.enqueueVideo(
+      details: hanimeDetails,
+      source: hanimeDetails.sources.single,
+    );
+
+    expect(rule34Id, 'flule34_4505897_720p');
+    expect(hanimeId, 'flule34_hanime1_4505897_720p');
+    expect(platform.requests, hasLength(2));
+    expect(platform.requests[0].filename, '测试视频_4505897_720p.mp4');
+    expect(platform.requests[1].filename, '测试视频_hanime1_4505897_720p.mp4');
+    expect(
+      await harness.database.findVideoDownload(
+        userId: '__flule34_device__',
+        videoId: 'hanime1:4505897',
+        quality: '720p',
+      ),
+      isNotNull,
+    );
+  });
+
   test('同一视频和清晰度并发提交时只会建立一个平台任务', () async {
     final harness = TestSessionHarness.create();
     addTearDown(harness.dispose);
@@ -612,7 +660,7 @@ final class _FakeRule34VideoApi extends Rule34VideoApi {
   Future<VideoDetails> loadVideoDetails(VideoItem video) async {
     detailLoads += 1;
     return VideoDetails(
-      video: _details.video,
+      video: video,
       sources: [
         VideoSource(
           label: '720p',

@@ -153,6 +153,49 @@ void main() {
     expect(find.text('移出此库'), findsOneWidget);
   });
 
+  testWidgets('Hanime 操作菜单提供点赞、稍后观看与本机能力', (tester) async {
+    final harness = TestSessionHarness.create();
+    addTearDown(harness.dispose);
+    await harness.sessionStore.load();
+    final api = _DelayedRule34VideoApi(harness.sessionStore);
+    final container = ProviderContainer(
+      overrides: [
+        rule34VideoApiProvider.overrideWithValue(api),
+        appSettingsStoreProvider.overrideWithValue(_MemorySettingsStore()),
+        translationServiceProvider.overrideWith(_memoryTranslationService),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const MaterialApp(
+          home: Scaffold(
+            body: VideoCard(
+              video: VideoItem(
+                id: '123',
+                title: 'Hanime test',
+                slug: '123',
+                siteId: 'hanime1',
+              ),
+              onTap: _noop,
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.byTooltip('视频操作'));
+    await tester.pump();
+
+    expect(find.text('点赞'), findsOneWidget);
+    expect(find.text('稍后观看'), findsOneWidget);
+    expect(find.text('播放列表'), findsNothing);
+    expect(find.text('下载'), findsOneWidget);
+    expect(find.text('本地分类库'), findsOneWidget);
+    expect(find.text('分享'), findsOneWidget);
+  });
+
   testWidgets('标题显示用户译文且长按进入翻译编辑', (tester) async {
     late TranslationService translationService;
     final container = ProviderContainer(

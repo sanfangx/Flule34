@@ -1,76 +1,242 @@
 {
   "@@locale": "zh",
+  "ui45be8e30": "(\\d+)\\s*(秒|分钟|分鐘|小时|小時|天|周|週|个月|個月|月|年)\\s*前",
+  "@ui45be8e30": {
+    "description": "HaRu UI: (\\d+)\\s*(秒|分钟|分鐘|小时|小時|天|周|週|个月|個月|月|年)\\s*前"
+  },
+  "ui7b86fa60": "2.5D動畫",
+  "@ui7b86fa60": {
+    "description": "HaRu UI: 2.5D動畫"
+  },
   "ui0aedf15f": "20–60 分钟",
   "@ui0aedf15f": {
-    "description": "Flule34 UI: 20–60 分钟"
+    "description": "HaRu UI: 20–60 分钟"
+  },
+  "ui4a1b4e68": "2D动画",
+  "@ui4a1b4e68": {
+    "description": "HaRu UI: 2D动画"
+  },
+  "ui31e98877": "2D動畫",
+  "@ui31e98877": {
+    "description": "HaRu UI: 2D動畫"
   },
   "ui4ebe1e15": "5 分钟以内",
   "@ui4ebe1e15": {
-    "description": "Flule34 UI: 5 分钟以内"
+    "description": "HaRu UI: 5 分钟以内"
   },
   "ui594005ec": "5–20 分钟",
   "@ui594005ec": {
-    "description": "Flule34 UI: 5–20 分钟"
+    "description": "HaRu UI: 5–20 分钟"
   },
   "ui0be8a2c8": "60 分钟以上",
   "@ui0be8a2c8": {
-    "description": "Flule34 UI: 60 分钟以上"
+    "description": "HaRu UI: 60 分钟以上"
   },
   "ui6e93de1b": "===== 最近 7 天日志 =====",
   "@ui6e93de1b": {
-    "description": "Flule34 UI: ===== 最近 7 天日志 ====="
+    "description": "HaRu UI: ===== 最近 7 天日志 ====="
   },
   "ui2e77e7e1": "===== 诊断信息 =====",
   "@ui2e77e7e1": {
-    "description": "Flule34 UI: ===== 诊断信息 ====="
+    "description": "HaRu UI: ===== 诊断信息 ====="
+  },
+  "ui43396a35": "AI生成",
+  "@ui43396a35": {
+    "description": "HaRu UI: AI生成"
   },
   "ui186386f2": "App 设置",
   "@ui186386f2": {
-    "description": "Flule34 UI: App 设置"
+    "description": "HaRu UI: App 设置"
+  },
+  "ui1bb6cf0e": "Cookie 名称={p0}",
+  "@ui1bb6cf0e": {
+    "description": "HaRu UI: Cookie 名称={p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
   },
   "ui14d5d228": "DeepL 套餐与端点",
   "@ui14d5d228": {
-    "description": "Flule34 UI: DeepL 套餐与端点"
-  },
-  "ui5532d8d0": "Flule34 本地诊断日志",
-  "@ui5532d8d0": {
-    "description": "Flule34 UI: Flule34 本地诊断日志"
-  },
-  "ui514d16fd": "Flule34 翻译库",
-  "@ui514d16fd": {
-    "description": "Flule34 UI: Flule34 翻译库"
+    "description": "HaRu UI: DeepL 套餐与端点"
   },
   "ui57e4db6c": "Git 提交",
   "@ui57e4db6c": {
-    "description": "Flule34 UI: Git 提交"
+    "description": "HaRu UI: Git 提交"
   },
   "ui4554eb7e": "GitHub 暂时拒绝了更新请求，请稍后重试或更换网络。",
   "@ui4554eb7e": {
-    "description": "Flule34 UI: GitHub 暂时拒绝了更新请求，请稍后重试或更换网络。"
+    "description": "HaRu UI: GitHub 暂时拒绝了更新请求，请稍后重试或更换网络。"
   },
   "ui1bcd541a": "GitHub 源代码",
   "@ui1bcd541a": {
-    "description": "Flule34 UI: GitHub 源代码"
+    "description": "HaRu UI: GitHub 源代码"
+  },
+  "ui20b6ac2f": "HaRu 本地诊断日志",
+  "@ui20b6ac2f": {
+    "description": "HaRu UI: HaRu 本地诊断日志"
+  },
+  "ui18362f38": "HaRu 翻译库",
+  "@ui18362f38": {
+    "description": "HaRu UI: HaRu 翻译库"
+  },
+  "ui2cd06f4c": "Hanime landing 选择分类；genre={p0}",
+  "@ui2cd06f4c": {
+    "description": "HaRu UI: Hanime landing 选择分类；genre={p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui3fd23b15": "Hanime 播放列表",
+  "@ui3fd23b15": {
+    "description": "HaRu UI: Hanime 播放列表"
+  },
+  "ui33a113c4": "Hanime 点赞",
+  "@ui33a113c4": {
+    "description": "HaRu UI: Hanime 点赞"
+  },
+  "ui12696fd4": "Hanime 筛选 sheet 应用；摘要={p0}",
+  "@ui12696fd4": {
+    "description": "HaRu UI: Hanime 筛选 sheet 应用；摘要={p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui0136f228": "Hanime 筛选与排序",
+  "@ui0136f228": {
+    "description": "HaRu UI: Hanime 筛选与排序"
+  },
+  "ui553f848b": "Hanime 筛选已应用；摘要={p0}",
+  "@ui553f848b": {
+    "description": "HaRu UI: Hanime 筛选已应用；摘要={p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui3b3b256b": "Hanime 订阅作者作品筛选；artist={p0}；page={p1}；",
+  "@ui3b3b256b": {
+    "description": "HaRu UI: Hanime 订阅作者作品筛选；artist={p0}；page={p1}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      },
+      "p1": {
+        "type": "String"
+      }
+    }
+  },
+  "ui3deb27cd": "Hanime 评论提交成功；video={p0}；reply={p1}",
+  "@ui3deb27cd": {
+    "description": "HaRu UI: Hanime 评论提交成功；video={p0}；reply={p1}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      },
+      "p1": {
+        "type": "String"
+      }
+    }
+  },
+  "ui73e7844e": "Hanime 详情页元数据点击；kind={p0}；",
+  "@ui73e7844e": {
+    "description": "HaRu UI: Hanime 详情页元数据点击；kind={p0}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui27638fa8": "Hanime 账号",
+  "@ui27638fa8": {
+    "description": "HaRu UI: Hanime 账号"
+  },
+  "ui081c5de6": "Hanime 首页切换频道；频道={p0}；索引={p1}；种子={p2}",
+  "@ui081c5de6": {
+    "description": "HaRu UI: Hanime 首页切换频道；频道={p0}；索引={p1}；种子={p2}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      },
+      "p1": {
+        "type": "String"
+      },
+      "p2": {
+        "type": "String"
+      }
+    }
+  },
+  "ui77cbd28c": "Hanime 验证",
+  "@ui77cbd28c": {
+    "description": "HaRu UI: Hanime 验证"
+  },
+  "ui4a1461a3": "Hanime={p0}；当前范围={p1}",
+  "@ui4a1461a3": {
+    "description": "HaRu UI: Hanime={p0}；当前范围={p1}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      },
+      "p1": {
+        "type": "String"
+      }
+    }
+  },
+  "ui042e6d42": "Hanime登录={p0}",
+  "@ui042e6d42": {
+    "description": "HaRu UI: Hanime登录={p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
   },
   "ui103930a8": "MyMemory 可用邮箱标识提高免费额度。",
   "@ui103930a8": {
-    "description": "Flule34 UI: MyMemory 可用邮箱标识提高免费额度。"
+    "description": "HaRu UI: MyMemory 可用邮箱标识提高免费额度。"
+  },
+  "ui35377097": "R34V登录={p0}；",
+  "@ui35377097": {
+    "description": "HaRu UI: R34V登录={p0}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
   },
   "ui2c98e3c6": "Rule34Video 账号",
   "@ui2c98e3c6": {
-    "description": "Flule34 UI: Rule34Video 账号"
+    "description": "HaRu UI: Rule34Video 账号"
   },
   "ui45943bf3": "Wi-Fi 使用默认清晰度，移动网络最高 480p",
   "@ui45943bf3": {
-    "description": "Flule34 UI: Wi-Fi 使用默认清晰度，移动网络最高 480p"
+    "description": "HaRu UI: Wi-Fi 使用默认清晰度，移动网络最高 480p"
   },
   "ui34eda443": "Wi-Fi 最高 720p，移动网络最高 360p",
   "@ui34eda443": {
-    "description": "Flule34 UI: Wi-Fi 最高 720p，移动网络最高 360p"
+    "description": "HaRu UI: Wi-Fi 最高 720p，移动网络最高 360p"
+  },
+  "ui0fed973b": "attempt={p0}；耗时={p1}ms",
+  "@ui0fed973b": {
+    "description": "HaRu UI: attempt={p0}；耗时={p1}ms",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      },
+      "p1": {
+        "type": "String"
+      }
+    }
   },
   "ui3bebb943": "{p0} · 已下载",
   "@ui3bebb943": {
-    "description": "Flule34 UI: {p0} · 已下载",
+    "description": "HaRu UI: {p0} · 已下载",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -79,7 +245,7 @@
   },
   "ui152a8991": "{p0} · 已失效",
   "@ui152a8991": {
-    "description": "Flule34 UI: {p0} · 已失效",
+    "description": "HaRu UI: {p0} · 已失效",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -88,7 +254,7 @@
   },
   "ui409b192f": "{p0} · 正在校验",
   "@ui409b192f": {
-    "description": "Flule34 UI: {p0} · 正在校验",
+    "description": "HaRu UI: {p0} · 正在校验",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -97,7 +263,7 @@
   },
   "ui1e263a03": "{p0} · 生效",
   "@ui1e263a03": {
-    "description": "Flule34 UI: {p0} · 生效",
+    "description": "HaRu UI: {p0} · 生效",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -106,7 +272,16 @@
   },
   "ui167ae392": "{p0} 个视频",
   "@ui167ae392": {
-    "description": "Flule34 UI: {p0} 个视频",
+    "description": "HaRu UI: {p0} 个视频",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui6aad5282": "{p0} 位订阅者",
+  "@ui6aad5282": {
+    "description": "HaRu UI: {p0} 位订阅者",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -115,7 +290,7 @@
   },
   "ui4e278fff": "{p0} 已加入下载队列。",
   "@ui4e278fff": {
-    "description": "Flule34 UI: {p0} 已加入下载队列。",
+    "description": "HaRu UI: {p0} 已加入下载队列。",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -124,7 +299,25 @@
   },
   "ui5e77ec72": "{p0} 已在下载管理中。",
   "@ui5e77ec72": {
-    "description": "Flule34 UI: {p0} 已在下载管理中。",
+    "description": "HaRu UI: {p0} 已在下载管理中。",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui4cc52a83": "{p0} 年",
+  "@ui4cc52a83": {
+    "description": "HaRu UI: {p0} 年",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui196d3c87": "{p0} 月",
+  "@ui196d3c87": {
+    "description": "HaRu UI: {p0} 月",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -133,7 +326,7 @@
   },
   "ui67c16b0b": "{p0} 次观看",
   "@ui67c16b0b": {
-    "description": "Flule34 UI: {p0} 次观看",
+    "description": "HaRu UI: {p0} 次观看",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -142,7 +335,7 @@
   },
   "ui3455223c": "{p0} 正在加入下载队列。",
   "@ui3455223c": {
-    "description": "Flule34 UI: {p0} 正在加入下载队列。",
+    "description": "HaRu UI: {p0} 正在加入下载队列。",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -151,7 +344,7 @@
   },
   "ui7025b0dd": "{p0} 票",
   "@ui7025b0dd": {
-    "description": "Flule34 UI: {p0} 票",
+    "description": "HaRu UI: {p0} 票",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -160,7 +353,16 @@
   },
   "ui69ba5039": "{p0} 连接成功",
   "@ui69ba5039": {
-    "description": "Flule34 UI: {p0} 连接成功",
+    "description": "HaRu UI: {p0} 连接成功",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui2f3746eb": "{p0} 部影片",
+  "@ui2f3746eb": {
+    "description": "HaRu UI: {p0} 部影片",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -169,7 +371,7 @@
   },
   "ui44f14c54": "{p0}% · {p1} 票",
   "@ui44f14c54": {
-    "description": "Flule34 UI: {p0}% · {p1} 票",
+    "description": "HaRu UI: {p0}% · {p1} 票",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -181,7 +383,7 @@
   },
   "ui278d8aed": "{p0}{p1}；译文：{p2}{p3}",
   "@ui278d8aed": {
-    "description": "Flule34 UI: {p0}{p1}；译文：{p2}{p3}",
+    "description": "HaRu UI: {p0}{p1}；译文：{p2}{p3}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -197,9 +399,21 @@
       }
     }
   },
+  "ui5d9cbb2c": "{p0}失败：{p1}",
+  "@ui5d9cbb2c": {
+    "description": "HaRu UI: {p0}失败：{p1}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      },
+      "p1": {
+        "type": "String"
+      }
+    }
+  },
   "ui581b1dd5": "{p0}（内置新增",
   "@ui581b1dd5": {
-    "description": "Flule34 UI: {p0}（内置新增",
+    "description": "HaRu UI: {p0}（内置新增",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -208,7 +422,7 @@
   },
   "ui5ab8d170": "{p0}（内置新增 v{p1}）",
   "@ui5ab8d170": {
-    "description": "Flule34 UI: {p0}（内置新增 v{p1}）",
+    "description": "HaRu UI: {p0}（内置新增 v{p1}）",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -220,7 +434,7 @@
   },
   "ui13d9e100": "{p0}（精选 {p1}）",
   "@ui13d9e100": {
-    "description": "Flule34 UI: {p0}（精选 {p1}）",
+    "description": "HaRu UI: {p0}（精选 {p1}）",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -230,21 +444,39 @@
       }
     }
   },
+  "ui3e04ce6a": "“{p0}”及其列表关系将被删除，视频本身不受影响。",
+  "@ui3e04ce6a": {
+    "description": "HaRu UI: “{p0}”及其列表关系将被删除，视频本身不受影响。",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
   "ui2046553b": "一列",
   "@ui2046553b": {
-    "description": "Flule34 UI: 一列"
+    "description": "HaRu UI: 一列"
   },
   "ui0b8ef7e3": "上一个",
   "@ui0b8ef7e3": {
-    "description": "Flule34 UI: 上一个"
+    "description": "HaRu UI: 上一个"
   },
   "ui5e2af7ea": "上传者",
   "@ui5e2af7ea": {
-    "description": "Flule34 UI: 上传者"
+    "description": "HaRu UI: 上传者"
   },
   "ui772dc31b": "上传者资料加载失败：{p0}",
   "@ui772dc31b": {
-    "description": "Flule34 UI: 上传者资料加载失败：{p0}",
+    "description": "HaRu UI: 上传者资料加载失败：{p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui29700171": "上传者：{p0}",
+  "@ui29700171": {
+    "description": "HaRu UI: 上传者：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -253,95 +485,128 @@
   },
   "ui58a06980": "下一个",
   "@ui58a06980": {
-    "description": "Flule34 UI: 下一个"
+    "description": "HaRu UI: 下一个"
   },
   "ui175900a0": "下载",
   "@ui175900a0": {
-    "description": "Flule34 UI: 下载"
+    "description": "HaRu UI: 下载"
   },
   "ui564d53e4": "下载任务已被系统中断，请重试。",
   "@ui564d53e4": {
-    "description": "Flule34 UI: 下载任务已被系统中断，请重试。"
+    "description": "HaRu UI: 下载任务已被系统中断，请重试。"
   },
   "ui5cfc38c2": "下载任务被系统中断，请重试。",
   "@ui5cfc38c2": {
-    "description": "Flule34 UI: 下载任务被系统中断，请重试。"
+    "description": "HaRu UI: 下载任务被系统中断，请重试。"
   },
   "ui16f20943": "下载失败",
   "@ui16f20943": {
-    "description": "Flule34 UI: 下载失败"
+    "description": "HaRu UI: 下载失败"
   },
   "ui07298d42": "下载属于本机功能，退出登录不会取消下载或删除公共目录中的文件。",
   "@ui07298d42": {
-    "description": "Flule34 UI: 下载属于本机功能，退出登录不会取消下载或删除公共目录中的文件。"
+    "description": "HaRu UI: 下载属于本机功能，退出登录不会取消下载或删除公共目录中的文件。"
   },
   "ui29e8ad9e": "下载文件",
   "@ui29e8ad9e": {
-    "description": "Flule34 UI: 下载文件"
+    "description": "HaRu UI: 下载文件"
   },
   "ui5ecf7c24": "下载文件和记录已删除。",
   "@ui5ecf7c24": {
-    "description": "Flule34 UI: 下载文件和记录已删除。"
+    "description": "HaRu UI: 下载文件和记录已删除。"
   },
   "ui7fc5cfeb": "下载文件已失效或没有可播放此 MP4 的应用。",
   "@ui7fc5cfeb": {
-    "description": "Flule34 UI: 下载文件已失效或没有可播放此 MP4 的应用。"
+    "description": "HaRu UI: 下载文件已失效或没有可播放此 MP4 的应用。"
+  },
+  "ui5cade6e1": "下载服务暂不可用。",
+  "@ui5cade6e1": {
+    "description": "HaRu UI: 下载服务暂不可用。"
   },
   "ui180a6fbf": "下载清晰度",
   "@ui180a6fbf": {
-    "description": "Flule34 UI: 下载清晰度"
+    "description": "HaRu UI: 下载清晰度"
   },
   "ui3187db03": "下载记录已删除。",
   "@ui3187db03": {
-    "description": "Flule34 UI: 下载记录已删除。"
+    "description": "HaRu UI: 下载记录已删除。"
   },
   "ui49483396": "下载设置",
   "@ui49483396": {
-    "description": "Flule34 UI: 下载设置"
+    "description": "HaRu UI: 下载设置"
   },
   "ui350fa41c": "不会删除下载的视频或账号数据。",
   "@ui350fa41c": {
-    "description": "Flule34 UI: 不会删除下载的视频或账号数据。"
+    "description": "HaRu UI: 不会删除下载的视频或账号数据。"
   },
   "ui10ebf8e5": "不存在",
   "@ui10ebf8e5": {
-    "description": "Flule34 UI: 不存在"
+    "description": "HaRu UI: 不存在"
   },
   "ui34e49ede": "不限",
   "@ui34e49ede": {
-    "description": "Flule34 UI: 不限"
+    "description": "HaRu UI: 不限"
   },
   "ui6c2ca0b8": "不限时长",
   "@ui6c2ca0b8": {
-    "description": "Flule34 UI: 不限时长"
+    "description": "HaRu UI: 不限时长"
   },
   "ui733128eb": "不限时间",
   "@ui733128eb": {
-    "description": "Flule34 UI: 不限时间"
+    "description": "HaRu UI: 不限时间"
   },
   "ui7447788f": "两列",
   "@ui7447788f": {
-    "description": "Flule34 UI: 两列"
+    "description": "HaRu UI: 两列"
+  },
+  "ui5fde6c76": "两次输入的新密码不一致。",
+  "@ui5fde6c76": {
+    "description": "HaRu UI: 两次输入的新密码不一致。"
+  },
+  "ui7d332b29": "个月",
+  "@ui7d332b29": {
+    "description": "HaRu UI: 个月"
   },
   "ui557a9537": "主题",
   "@ui557a9537": {
-    "description": "Flule34 UI: 主题"
+    "description": "HaRu UI: 主题"
   },
   "ui7b7ae9f2": "主题模式",
   "@ui7b7ae9f2": {
-    "description": "Flule34 UI: 主题模式"
+    "description": "HaRu UI: 主题模式"
+  },
+  "ui754aed9c": "举报",
+  "@ui754aed9c": {
+    "description": "HaRu UI: 举报"
+  },
+  "ui099fb842": "举报失败：{p0}",
+  "@ui099fb842": {
+    "description": "HaRu UI: 举报失败：{p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui0d483756": "举报已提交。",
+  "@ui0d483756": {
+    "description": "HaRu UI: 举报已提交。"
+  },
+  "ui72607f99": "举报评论",
+  "@ui72607f99": {
+    "description": "HaRu UI: 举报评论"
   },
   "ui11b84182": "仅 Wi-Fi 下载",
   "@ui11b84182": {
-    "description": "Flule34 UI: 仅 Wi-Fi 下载"
+    "description": "HaRu UI: 仅 Wi-Fi 下载"
   },
   "ui3d863311": "仅使用 Wi-Fi 下载",
   "@ui3d863311": {
-    "description": "Flule34 UI: 仅使用 Wi-Fi 下载"
+    "description": "HaRu UI: 仅使用 Wi-Fi 下载"
   },
   "ui49859040": "仅保存在本机，自动脱敏，保留最近 7 天。\n{p0}",
   "@ui49859040": {
-    "description": "Flule34 UI: 仅保存在本机，自动脱敏，保留最近 7 天。\n{p0}",
+    "description": "HaRu UI: 仅保存在本机，自动脱敏，保留最近 7 天。\n{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -350,47 +615,84 @@
   },
   "ui3bf7470b": "仅删除记录",
   "@ui3bf7470b": {
-    "description": "Flule34 UI: 仅删除记录"
+    "description": "HaRu UI: 仅删除记录"
   },
   "ui730f65d7": "仅在视频正在播放时生效，暂停或离开页面后自动恢复。",
   "@ui730f65d7": {
-    "description": "Flule34 UI: 仅在视频正在播放时生效，暂停或离开页面后自动恢复。"
+    "description": "HaRu UI: 仅在视频正在播放时生效，暂停或离开页面后自动恢复。"
   },
   "ui709d26fa": "仅显示已验证上传者",
   "@ui709d26fa": {
-    "description": "Flule34 UI: 仅显示已验证上传者"
+    "description": "HaRu UI: 仅显示已验证上传者"
   },
   "ui51418311": "仅登录后按账号保存；关闭后不再记录新搜索。",
   "@ui51418311": {
-    "description": "Flule34 UI: 仅登录后按账号保存；关闭后不再记录新搜索。"
+    "description": "HaRu UI: 仅登录后按账号保存；关闭后不再记录新搜索。"
+  },
+  "ui42cab9da": "今天",
+  "@ui42cab9da": {
+    "description": "HaRu UI: 今天"
   },
   "ui44ac200e": "从头连续播放",
   "@ui44ac200e": {
-    "description": "Flule34 UI: 从头连续播放"
+    "description": "HaRu UI: 从头连续播放"
+  },
+  "ui6d8b62f1": "从媒体库请求登录；范围=hanime1；section={p0}",
+  "@ui6d8b62f1": {
+    "description": "HaRu UI: 从媒体库请求登录；范围=hanime1；section={p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui4aca9b31": "从媒体库请求登录；范围={p0}；section={p1}",
+  "@ui4aca9b31": {
+    "description": "HaRu UI: 从媒体库请求登录；范围={p0}；section={p1}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      },
+      "p1": {
+        "type": "String"
+      }
+    }
+  },
+  "ui794510bf": "从播放列表移除",
+  "@ui794510bf": {
+    "description": "HaRu UI: 从播放列表移除"
+  },
+  "ui4da21b44": "他们在看",
+  "@ui4da21b44": {
+    "description": "HaRu UI: 他们在看"
+  },
+  "ui1c2804ab": "他們在看",
+  "@ui1c2804ab": {
+    "description": "HaRu UI: 他們在看"
   },
   "ui4a42f091": "你可以只删除下载记录并保留视频，也可以同时删除公共目录中的视频。",
   "@ui4a42f091": {
-    "description": "Flule34 UI: 你可以只删除下载记录并保留视频，也可以同时删除公共目录中的视频。"
+    "description": "HaRu UI: 你可以只删除下载记录并保留视频，也可以同时删除公共目录中的视频。"
   },
   "ui566537cc": "使用翻译服务",
   "@ui566537cc": {
-    "description": "Flule34 UI: 使用翻译服务"
+    "description": "HaRu UI: 使用翻译服务"
   },
   "ui65962099": "例如：喜欢的动画、待整理",
   "@ui65962099": {
-    "description": "Flule34 UI: 例如：喜欢的动画、待整理"
+    "description": "HaRu UI: 例如：喜欢的动画、待整理"
   },
   "ui29629697": "保存",
   "@ui29629697": {
-    "description": "Flule34 UI: 保存"
+    "description": "HaRu UI: 保存"
   },
   "ui76444c7d": "保存搜索历史",
   "@ui76444c7d": {
-    "description": "Flule34 UI: 保存搜索历史"
+    "description": "HaRu UI: 保存搜索历史"
   },
   "ui4dc6233e": "保存更新通道失败：{p0}",
   "@ui4dc6233e": {
-    "description": "Flule34 UI: 保存更新通道失败：{p0}",
+    "description": "HaRu UI: 保存更新通道失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -399,7 +701,7 @@
   },
   "ui69df41e4": "保存翻译失败：{p0}",
   "@ui69df41e4": {
-    "description": "Flule34 UI: 保存翻译失败：{p0}",
+    "description": "HaRu UI: 保存翻译失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -408,7 +710,7 @@
   },
   "ui696410b7": "保存翻译服务失败：{p0}",
   "@ui696410b7": {
-    "description": "Flule34 UI: 保存翻译服务失败：{p0}",
+    "description": "HaRu UI: 保存翻译服务失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -417,7 +719,7 @@
   },
   "ui3e44bdb9": "保存设置失败：{p0}",
   "@ui3e44bdb9": {
-    "description": "Flule34 UI: 保存设置失败：{p0}",
+    "description": "HaRu UI: 保存设置失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -426,39 +728,60 @@
   },
   "ui65d91d2b": "保持设备当前方向",
   "@ui65d91d2b": {
-    "description": "Flule34 UI: 保持设备当前方向"
+    "description": "HaRu UI: 保持设备当前方向"
   },
   "ui4f586a83": "保留已经下载到公共目录的视频",
   "@ui4f586a83": {
-    "description": "Flule34 UI: 保留已经下载到公共目录的视频"
+    "description": "HaRu UI: 保留已经下载到公共目录的视频"
+  },
+  "ui06b0c857": "修改",
+  "@ui06b0c857": {
+    "description": "HaRu UI: 修改"
+  },
+  "ui4ee78cab": "修改失败：{p0}",
+  "@ui4ee78cab": {
+    "description": "HaRu UI: 修改失败：{p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
   },
   "ui30350f33": "修改密码",
   "@ui30350f33": {
-    "description": "Flule34 UI: 修改密码"
+    "description": "HaRu UI: 修改密码"
+  },
+  "ui3daf2795": "修改显示名称与邮箱",
+  "@ui3daf2795": {
+    "description": "HaRu UI: 修改显示名称与邮箱"
   },
   "ui043de786": "修改邮箱",
   "@ui043de786": {
-    "description": "Flule34 UI: 修改邮箱"
+    "description": "HaRu UI: 修改邮箱"
+  },
+  "ui1d0485f9": "個月",
+  "@ui1d0485f9": {
+    "description": "HaRu UI: 個月"
   },
   "ui4fcf2a14": "全屏",
   "@ui4fcf2a14": {
-    "description": "Flule34 UI: 全屏"
+    "description": "HaRu UI: 全屏"
   },
   "ui784e54fd": "全屏方向",
   "@ui784e54fd": {
-    "description": "Flule34 UI: 全屏方向"
+    "description": "HaRu UI: 全屏方向"
   },
   "ui0e1cd927": "全部",
   "@ui0e1cd927": {
-    "description": "Flule34 UI: 全部"
+    "description": "HaRu UI: 全部"
   },
   "ui2a504352": "全部清除",
   "@ui2a504352": {
-    "description": "Flule34 UI: 全部清除"
+    "description": "HaRu UI: 全部清除"
   },
   "ui78d96dee": "共 {p0} 个任务 · 已完成 {p1} 个 · 约占用 {p2}",
   "@ui78d96dee": {
-    "description": "Flule34 UI: 共 {p0} 个任务 · 已完成 {p1} 个 · 约占用 {p2}",
+    "description": "HaRu UI: 共 {p0} 个任务 · 已完成 {p1} 个 · 约占用 {p2}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -473,7 +796,7 @@
   },
   "ui3b4a622d": "共 {p0} 条 · 内置 {p1} · API {p2} · 用户 {p3}",
   "@ui3b4a622d": {
-    "description": "Flule34 UI: 共 {p0} 条 · 内置 {p1} · API {p2} · 用户 {p3}",
+    "description": "HaRu UI: 共 {p0} 条 · 内置 {p1} · API {p2} · 用户 {p3}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -489,77 +812,106 @@
       }
     }
   },
-  "ui166298c5": "关于 Flule34",
-  "@ui166298c5": {
-    "description": "Flule34 UI: 关于 Flule34"
-  },
-  "ui13bc9fa5": "关注",
-  "@ui13bc9fa5": {
-    "description": "Flule34 UI: 关注"
-  },
-  "ui54d03562": "关注的分类、艺术家或用户暂时没有可展示的视频。",
-  "@ui54d03562": {
-    "description": "Flule34 UI: 关注的分类、艺术家或用户暂时没有可展示的视频。"
-  },
-  "ui47de51e1": "关注频道会汇总你在网站订阅的分类、艺术家、用户和播放列表。",
-  "@ui47de51e1": {
-    "description": "Flule34 UI: 关注频道会汇总你在网站订阅的分类、艺术家、用户和播放列表。"
+  "ui64efd37a": "关于 HaRu",
+  "@ui64efd37a": {
+    "description": "HaRu UI: 关于 HaRu"
   },
   "ui29c40c72": "关闭后将清除全部本地播放进度。",
   "@ui29c40c72": {
-    "description": "Flule34 UI: 关闭后将清除全部本地播放进度。"
+    "description": "HaRu UI: 关闭后将清除全部本地播放进度。"
   },
   "ui02e95068": "关闭并清除",
   "@ui02e95068": {
-    "description": "Flule34 UI: 关闭并清除"
+    "description": "HaRu UI: 关闭并清除"
   },
   "ui08354b81": "关闭记忆播放进度？",
   "@ui08354b81": {
-    "description": "Flule34 UI: 关闭记忆播放进度？"
+    "description": "HaRu UI: 关闭记忆播放进度？"
+  },
+  "ui19d54932": "其他举报理由",
+  "@ui19d54932": {
+    "description": "HaRu UI: 其他举报理由"
+  },
+  "ui25e3dc9e": "其他檢舉理由",
+  "@ui25e3dc9e": {
+    "description": "HaRu UI: 其他檢舉理由"
   },
   "ui2bbc0423": "内容取向",
   "@ui2bbc0423": {
-    "description": "Flule34 UI: 内容取向"
+    "description": "HaRu UI: 内容取向"
   },
   "ui4804490f": "内容设置",
   "@ui4804490f": {
-    "description": "Flule34 UI: 内容设置"
+    "description": "HaRu UI: 内容设置"
   },
   "ui38d59e4d": "内置",
   "@ui38d59e4d": {
-    "description": "Flule34 UI: 内置"
+    "description": "HaRu UI: 内置"
+  },
+  "ui4d75ae49": "准备下载；站点={p0}；视频={p1}；",
+  "@ui4d75ae49": {
+    "description": "HaRu UI: 准备下载；站点={p0}；视频={p1}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      },
+      "p1": {
+        "type": "String"
+      }
+    }
   },
   "ui2f5fd7d1": "分享",
   "@ui2f5fd7d1": {
-    "description": "Flule34 UI: 分享"
+    "description": "HaRu UI: 分享"
   },
   "ui55599ffb": "分类",
   "@ui55599ffb": {
-    "description": "Flule34 UI: 分类"
+    "description": "HaRu UI: 分类"
+  },
+  "ui685042ae": "分类：{p0}",
+  "@ui685042ae": {
+    "description": "HaRu UI: 分类：{p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui748ee6f9": "分鐘",
+  "@ui748ee6f9": {
+    "description": "HaRu UI: 分鐘"
+  },
+  "ui75929c3a": "分钟",
+  "@ui75929c3a": {
+    "description": "HaRu UI: 分钟"
   },
   "ui38fe9b1d": "列表循环",
   "@ui38fe9b1d": {
-    "description": "Flule34 UI: 列表循环"
+    "description": "HaRu UI: 列表循环"
   },
   "ui309e167e": "列表顺序",
   "@ui309e167e": {
-    "description": "Flule34 UI: 列表顺序"
+    "description": "HaRu UI: 列表顺序"
+  },
+  "ui542b3ce5": "创建",
+  "@ui542b3ce5": {
+    "description": "HaRu UI: 创建"
   },
   "ui0c2c660a": "创建自定义分类后，可以从任意视频的“本地分类库”按钮保存到这里。",
   "@ui0c2c660a": {
-    "description": "Flule34 UI: 创建自定义分类后，可以从任意视频的“本地分类库”按钮保存到这里。"
+    "description": "HaRu UI: 创建自定义分类后，可以从任意视频的“本地分类库”按钮保存到这里。"
   },
   "ui1ae0ab8e": "删除",
   "@ui1ae0ab8e": {
-    "description": "Flule34 UI: 删除"
+    "description": "HaRu UI: 删除"
   },
   "ui1cb9a6d7": "删除 API 译文",
   "@ui1cb9a6d7": {
-    "description": "Flule34 UI: 删除 API 译文"
+    "description": "HaRu UI: 删除 API 译文"
   },
   "ui2d23933f": "删除“{p0}”？",
   "@ui2d23933f": {
-    "description": "Flule34 UI: 删除“{p0}”？",
+    "description": "HaRu UI: 删除“{p0}”？",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -568,39 +920,47 @@
   },
   "ui3913a7a5": "删除下载？",
   "@ui3913a7a5": {
-    "description": "Flule34 UI: 删除下载？"
+    "description": "HaRu UI: 删除下载？"
   },
   "ui6beb71f2": "删除全部下载记录",
   "@ui6beb71f2": {
-    "description": "Flule34 UI: 删除全部下载记录"
+    "description": "HaRu UI: 删除全部下载记录"
   },
   "ui4e3e94a5": "删除全部下载记录及对应视频",
   "@ui4e3e94a5": {
-    "description": "Flule34 UI: 删除全部下载记录及对应视频"
+    "description": "HaRu UI: 删除全部下载记录及对应视频"
   },
   "ui32521bda": "删除全部下载记录，并删除公共目录中仍能对应上的视频。无法删除文件的记录会保留。",
   "@ui32521bda": {
-    "description": "Flule34 UI: 删除全部下载记录，并删除公共目录中仍能对应上的视频。无法删除文件的记录会保留。"
+    "description": "HaRu UI: 删除全部下载记录，并删除公共目录中仍能对应上的视频。无法删除文件的记录会保留。"
   },
   "ui499f4bf1": "删除全部失效下载记录",
   "@ui499f4bf1": {
-    "description": "Flule34 UI: 删除全部失效下载记录"
+    "description": "HaRu UI: 删除全部失效下载记录"
   },
   "ui7622d7c4": "删除全部已经找不到严格对应文件的下载记录，不会触碰外部文件。",
   "@ui7622d7c4": {
-    "description": "Flule34 UI: 删除全部已经找不到严格对应文件的下载记录，不会触碰外部文件。"
+    "description": "HaRu UI: 删除全部已经找不到严格对应文件的下载记录，不会触碰外部文件。"
+  },
+  "ui7a6fcf0e": "删除历史记录",
+  "@ui7a6fcf0e": {
+    "description": "HaRu UI: 删除历史记录"
   },
   "ui42079bac": "删除所选 API 译文？",
   "@ui42079bac": {
-    "description": "Flule34 UI: 删除所选 API 译文？"
+    "description": "HaRu UI: 删除所选 API 译文？"
+  },
+  "ui16040b00": "删除播放列表？",
+  "@ui16040b00": {
+    "description": "HaRu UI: 删除播放列表？"
   },
   "ui6882566e": "删除文件和记录",
   "@ui6882566e": {
-    "description": "Flule34 UI: 删除文件和记录"
+    "description": "HaRu UI: 删除文件和记录"
   },
   "ui13dbc37c": "删除翻译服务失败：{p0}",
   "@ui13dbc37c": {
-    "description": "Flule34 UI: 删除翻译服务失败：{p0}",
+    "description": "HaRu UI: 删除翻译服务失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -609,27 +969,27 @@
   },
   "ui377546a6": "删除翻译服务？",
   "@ui377546a6": {
-    "description": "Flule34 UI: 删除翻译服务？"
+    "description": "HaRu UI: 删除翻译服务？"
   },
   "ui58aa0fc9": "删除自定义翻译",
   "@ui58aa0fc9": {
-    "description": "Flule34 UI: 删除自定义翻译"
+    "description": "HaRu UI: 删除自定义翻译"
   },
   "ui59ee6b29": "删除这台设备上的全部应用日志。",
   "@ui59ee6b29": {
-    "description": "Flule34 UI: 删除这台设备上的全部应用日志。"
+    "description": "HaRu UI: 删除这台设备上的全部应用日志。"
   },
   "ui057a59bf": "刷新",
   "@ui057a59bf": {
-    "description": "Flule34 UI: 刷新"
+    "description": "HaRu UI: 刷新"
   },
   "ui1a88cf99": "刷新后仍未找到可播放的视频源。",
   "@ui1a88cf99": {
-    "description": "Flule34 UI: 刷新后仍未找到可播放的视频源。"
+    "description": "HaRu UI: 刷新后仍未找到可播放的视频源。"
   },
   "ui30d8aa7b": "刷新后已找不到 {p0} 下载源。",
   "@ui30d8aa7b": {
-    "description": "Flule34 UI: 刷新后已找不到 {p0} 下载源。",
+    "description": "HaRu UI: 刷新后已找不到 {p0} 下载源。",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -638,7 +998,7 @@
   },
   "ui1adad0d8": "刷新后已找不到 {p0} 下载源，请重新选择清晰度。",
   "@ui1adad0d8": {
-    "description": "Flule34 UI: 刷新后已找不到 {p0} 下载源，请重新选择清晰度。",
+    "description": "HaRu UI: 刷新后已找不到 {p0} 下载源，请重新选择清晰度。",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -647,7 +1007,7 @@
   },
   "ui1b5c10c1": "刷新视频地址失败：{p0}",
   "@ui1b5c10c1": {
-    "description": "Flule34 UI: 刷新视频地址失败：{p0}",
+    "description": "HaRu UI: 刷新视频地址失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -656,7 +1016,7 @@
   },
   "ui7050fd74": "加载下一视频失败：{p0}",
   "@ui7050fd74": {
-    "description": "Flule34 UI: 加载下一视频失败：{p0}",
+    "description": "HaRu UI: 加载下一视频失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -665,19 +1025,19 @@
   },
   "ui11255e4d": "加载视频失败。",
   "@ui11255e4d": {
-    "description": "Flule34 UI: 加载视频失败。"
+    "description": "HaRu UI: 加载视频失败。"
   },
   "ui2fbeba49": "勾选需要自动翻译的内容类型；仅在缺少本地译文且已配置可用翻译服务时请求。默认全部关闭。",
   "@ui2fbeba49": {
-    "description": "Flule34 UI: 勾选需要自动翻译的内容类型；仅在缺少本地译文且已配置可用翻译服务时请求。默认全部关闭。"
+    "description": "HaRu UI: 勾选需要自动翻译的内容类型；仅在缺少本地译文且已配置可用翻译服务时请求。默认全部关闭。"
   },
   "ui3caea101": "包名",
   "@ui3caea101": {
-    "description": "Flule34 UI: 包名"
+    "description": "HaRu UI: 包名"
   },
   "ui3c554cab": "匹配译名：{p0}",
   "@ui3c554cab": {
-    "description": "Flule34 UI: 匹配译名：{p0}",
+    "description": "HaRu UI: 匹配译名：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -686,44 +1046,65 @@
   },
   "ui71c021b7": "单集循环",
   "@ui71c021b7": {
-    "description": "Flule34 UI: 单集循环"
+    "description": "HaRu UI: 单集循环"
   },
   "ui1a330a72": "历史",
   "@ui1a330a72": {
-    "description": "Flule34 UI: 历史"
+    "description": "HaRu UI: 历史"
   },
   "ui51fa37c2": "历史累计最高评分艺术家",
   "@ui51fa37c2": {
-    "description": "Flule34 UI: 历史累计最高评分艺术家"
+    "description": "HaRu UI: 历史累计最高评分艺术家"
   },
   "ui6ffe0a80": "原文",
   "@ui6ffe0a80": {
-    "description": "Flule34 UI: 原文"
+    "description": "HaRu UI: 原文"
   },
   "ui54ec6c15": "双语",
   "@ui54ec6c15": {
-    "description": "Flule34 UI: 双语"
+    "description": "HaRu UI: 双语"
+  },
+  "ui6c687b2d": "发一条评论...",
+  "@ui6c687b2d": {
+    "description": "HaRu UI: 发一条评论..."
+  },
+  "ui2d79226f": "发布日期",
+  "@ui2d79226f": {
+    "description": "HaRu UI: 发布日期"
   },
   "ui2e2d0cb3": "发布时间",
   "@ui2e2d0cb3": {
-    "description": "Flule34 UI: 发布时间"
-  },
-  "ui0ccf8adf": "发现",
-  "@ui0ccf8adf": {
-    "description": "Flule34 UI: 发现"
+    "description": "HaRu UI: 发布时间"
   },
   "ui0e705d18": "发现新版本 {p0}。",
   "@ui0e705d18": {
-    "description": "Flule34 UI: 发现新版本 {p0}。",
+    "description": "HaRu UI: 发现新版本 {p0}。",
     "placeholders": {
       "p0": {
         "type": "String"
       }
     }
   },
+  "ui7d443475": "发表",
+  "@ui7d443475": {
+    "description": "HaRu UI: 发表"
+  },
+  "ui057b0ee1": "发表失败：{p0}",
+  "@ui057b0ee1": {
+    "description": "HaRu UI: 发表失败：{p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui7a5d619c": "发送",
+  "@ui7a5d619c": {
+    "description": "HaRu UI: 发送"
+  },
   "ui07cfc2d2": "取向：{p0}",
   "@ui07cfc2d2": {
-    "description": "Flule34 UI: 取向：{p0}",
+    "description": "HaRu UI: 取向：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -732,23 +1113,31 @@
   },
   "ui1cdb9be3": "取消",
   "@ui1cdb9be3": {
-    "description": "Flule34 UI: 取消"
+    "description": "HaRu UI: 取消"
+  },
+  "ui4c580a79": "取消回复",
+  "@ui4c580a79": {
+    "description": "HaRu UI: 取消回复"
   },
   "ui0d684dfd": "取消收藏",
   "@ui0d684dfd": {
-    "description": "Flule34 UI: 取消收藏"
+    "description": "HaRu UI: 取消收藏"
+  },
+  "ui20eeb984": "取消点赞",
+  "@ui20eeb984": {
+    "description": "HaRu UI: 取消点赞"
   },
   "ui5eb70fab": "取消订阅",
   "@ui5eb70fab": {
-    "description": "Flule34 UI: 取消订阅"
+    "description": "HaRu UI: 取消订阅"
   },
   "ui78c52651": "取消选择",
   "@ui78c52651": {
-    "description": "Flule34 UI: 取消选择"
+    "description": "HaRu UI: 取消选择"
   },
   "ui072ad981": "另有 {p0} 条内置译文，仅用于审计，",
   "@ui072ad981": {
-    "description": "Flule34 UI: 另有 {p0} 条内置译文，仅用于审计，",
+    "description": "HaRu UI: 另有 {p0} 条内置译文，仅用于审计，",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -757,107 +1146,166 @@
   },
   "ui62d7fea9": "只会删除当前账号在这台设备上的搜索记录。此操作无法撤销。",
   "@ui62d7fea9": {
-    "description": "Flule34 UI: 只会删除当前账号在这台设备上的搜索记录。此操作无法撤销。"
+    "description": "HaRu UI: 只会删除当前账号在这台设备上的搜索记录。此操作无法撤销。"
   },
   "ui35027352": "只会清除当前账号在这台设备上的搜索记录。",
   "@ui35027352": {
-    "description": "Flule34 UI: 只会清除当前账号在这台设备上的搜索记录。"
+    "description": "HaRu UI: 只会清除当前账号在这台设备上的搜索记录。"
   },
   "ui73b35752": "只删除 App 中的全部下载记录，已经保存到 Download/Flule34 的视频会保留。进行中的任务会先取消。",
   "@ui73b35752": {
-    "description": "Flule34 UI: 只删除 App 中的全部下载记录，已经保存到 Download/Flule34 的视频会保留。进行中的任务会先取消。"
+    "description": "HaRu UI: 只删除 App 中的全部下载记录，已经保存到 Download/Flule34 的视频会保留。进行中的任务会先取消。"
   },
   "ui5a6e7dac": "只删除本地分类记录，不会删除网站收藏、历史或已下载的视频。",
   "@ui5a6e7dac": {
-    "description": "Flule34 UI: 只删除本地分类记录，不会删除网站收藏、历史或已下载的视频。"
+    "description": "HaRu UI: 只删除本地分类记录，不会删除网站收藏、历史或已下载的视频。"
   },
   "ui4f2368e4": "只移除已经找不到对应文件的记录",
   "@ui4f2368e4": {
-    "description": "Flule34 UI: 只移除已经找不到对应文件的记录"
+    "description": "HaRu UI: 只移除已经找不到对应文件的记录"
   },
   "ui713b1fb0": "可以只移除 App 内记录，也可以尝试删除当前记录所指向的外部文件。",
   "@ui713b1fb0": {
-    "description": "Flule34 UI: 可以只移除 App 内记录，也可以尝试删除当前记录所指向的外部文件。"
+    "description": "HaRu UI: 可以只移除 App 内记录，也可以尝试删除当前记录所指向的外部文件。"
   },
   "ui76ae23ba": "可跟随界面语言，也可单独指定；不同目标语言的译文会分别保存。",
   "@ui76ae23ba": {
-    "description": "Flule34 UI: 可跟随界面语言，也可单独指定；不同目标语言的译文会分别保存。"
+    "description": "HaRu UI: 可跟随界面语言，也可单独指定；不同目标语言的译文会分别保存。"
   },
   "ui19e0d4bf": "同性",
   "@ui19e0d4bf": {
-    "description": "Flule34 UI: 同性"
+    "description": "HaRu UI: 同性"
   },
   "ui2b2e17e5": "同时下载任务数",
   "@ui2b2e17e5": {
-    "description": "Flule34 UI: 同时下载任务数"
+    "description": "HaRu UI: 同时下载任务数"
   },
   "ui09e67cd1": "同时删除公共目录中仍能对应上的视频",
   "@ui09e67cd1": {
-    "description": "Flule34 UI: 同时删除公共目录中仍能对应上的视频"
+    "description": "HaRu UI: 同时删除公共目录中仍能对应上的视频"
+  },
+  "ui30e251a0": "同步失败，已恢复原状态：{p0}",
+  "@ui30e251a0": {
+    "description": "HaRu UI: 同步失败，已恢复原状态：{p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
   },
   "ui3898538c": "同类条件和不同类型条件均取交集，每类最多选择 5 项。",
   "@ui3898538c": {
-    "description": "Flule34 UI: 同类条件和不同类型条件均取交集，每类最多选择 5 项。"
+    "description": "HaRu UI: 同类条件和不同类型条件均取交集，每类最多选择 5 项。"
   },
   "ui73f2614f": "名称",
   "@ui73f2614f": {
-    "description": "Flule34 UI: 名称"
+    "description": "HaRu UI: 名称"
+  },
+  "ui06e91ae0": "后台/前台",
+  "@ui06e91ae0": {
+    "description": "HaRu UI: 后台/前台"
   },
   "ui3a38a6d4": "后台任务进行中",
   "@ui3a38a6d4": {
-    "description": "Flule34 UI: 后台任务进行中"
+    "description": "HaRu UI: 后台任务进行中"
   },
   "ui7f54b07b": "后台播放",
   "@ui7f54b07b": {
-    "description": "Flule34 UI: 后台播放"
+    "description": "HaRu UI: 后台播放"
   },
   "ui4763b5c2": "否",
   "@ui4763b5c2": {
-    "description": "Flule34 UI: 否"
+    "description": "HaRu UI: 否"
+  },
+  "ui2f676191": "周",
+  "@ui2f676191": {
+    "description": "HaRu UI: 周"
   },
   "ui63f37124": "命中任一排除条件的视频不会显示",
   "@ui63f37124": {
-    "description": "Flule34 UI: 命中任一排除条件的视频不会显示"
+    "description": "HaRu UI: 命中任一排除条件的视频不会显示"
+  },
+  "ui7ff6d3a0": "品牌",
+  "@ui7ff6d3a0": {
+    "description": "HaRu UI: 品牌"
   },
   "ui3791c2b8": "回到顶部",
   "@ui3791c2b8": {
-    "description": "Flule34 UI: 回到顶部"
+    "description": "HaRu UI: 回到顶部"
+  },
+  "ui2c3700bb": "回复",
+  "@ui2c3700bb": {
+    "description": "HaRu UI: 回复"
+  },
+  "ui452cfc99": "回复 {p0}",
+  "@ui452cfc99": {
+    "description": "HaRu UI: 回复 {p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui1b8fd367": "回复...",
+  "@ui1b8fd367": {
+    "description": "HaRu UI: 回复..."
+  },
+  "ui24039614": "回复加载失败：{p0}",
+  "@ui24039614": {
+    "description": "HaRu UI: 回复加载失败：{p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui54c6440e": "回复已发表。",
+  "@ui54c6440e": {
+    "description": "HaRu UI: 回复已发表。"
+  },
+  "ui649f8b36": "图片",
+  "@ui649f8b36": {
+    "description": "HaRu UI: 图片"
   },
   "ui03a2a222": "图片缓存已清除。",
   "@ui03a2a222": {
-    "description": "Flule34 UI: 图片缓存已清除。"
+    "description": "HaRu UI: 图片缓存已清除。"
   },
   "ui796e3b4c": "在本机保存，与登录账号无关",
   "@ui796e3b4c": {
-    "description": "Flule34 UI: 在本机保存，与登录账号无关"
+    "description": "HaRu UI: 在本机保存，与登录账号无关"
+  },
+  "ui164112a2": "在线观看历史暂时为空。",
+  "@ui164112a2": {
+    "description": "HaRu UI: 在线观看历史暂时为空。"
   },
   "ui12562321": "在网站中修改头像、名称和公开资料",
   "@ui12562321": {
-    "description": "Flule34 UI: 在网站中修改头像、名称和公开资料"
+    "description": "HaRu UI: 在网站中修改头像、名称和公开资料"
   },
   "ui304779ae": "在网站中管理已上传的视频",
   "@ui304779ae": {
-    "description": "Flule34 UI: 在网站中管理已上传的视频"
+    "description": "HaRu UI: 在网站中管理已上传的视频"
   },
   "ui1f55def5": "基址",
   "@ui1f55def5": {
-    "description": "Flule34 UI: 基址"
+    "description": "HaRu UI: 基址"
   },
   "ui6bdfd846": "基础条件",
   "@ui6bdfd846": {
-    "description": "Flule34 UI: 基础条件"
+    "description": "HaRu UI: 基础条件"
   },
   "ui461541d8": "复制",
   "@ui461541d8": {
-    "description": "Flule34 UI: 复制"
+    "description": "HaRu UI: 复制"
   },
   "ui5dd6981a": "复制版本、设备和配置摘要，不包含 Cookie 或密码",
   "@ui5dd6981a": {
-    "description": "Flule34 UI: 复制版本、设备和配置摘要，不包含 Cookie 或密码"
+    "description": "HaRu UI: 复制版本、设备和配置摘要，不包含 Cookie 或密码"
   },
   "ui61570e3e": "复制翻译服务失败：{p0}",
   "@ui61570e3e": {
-    "description": "Flule34 UI: 复制翻译服务失败：{p0}",
+    "description": "HaRu UI: 复制翻译服务失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -866,47 +1314,151 @@
   },
   "ui0ca5a4ba": "复制诊断信息",
   "@ui0ca5a4ba": {
-    "description": "Flule34 UI: 复制诊断信息"
+    "description": "HaRu UI: 复制诊断信息"
   },
   "ui2a4866c9": "外部文件大小已发生变化。",
   "@ui2a4866c9": {
-    "description": "Flule34 UI: 外部文件大小已发生变化。"
+    "description": "HaRu UI: 外部文件大小已发生变化。"
   },
   "ui46887217": "外部文件已不存在。",
   "@ui46887217": {
-    "description": "Flule34 UI: 外部文件已不存在。"
+    "description": "HaRu UI: 外部文件已不存在。"
   },
   "ui510839e9": "外部文件已被改名。",
   "@ui510839e9": {
-    "description": "Flule34 UI: 外部文件已被改名。"
+    "description": "HaRu UI: 外部文件已被改名。"
   },
   "ui3be928a0": "外部文件当前无法读取。",
   "@ui3be928a0": {
-    "description": "Flule34 UI: 外部文件当前无法读取。"
+    "description": "HaRu UI: 外部文件当前无法读取。"
+  },
+  "ui31f6973f": "天",
+  "@ui31f6973f": {
+    "description": "HaRu UI: 天"
+  },
+  "ui281b9ca1": "头像已更新。",
+  "@ui281b9ca1": {
+    "description": "HaRu UI: 头像已更新。"
+  },
+  "ui5ea25aa8": "头像更新失败：{p0}",
+  "@ui5ea25aa8": {
+    "description": "HaRu UI: 头像更新失败：{p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
   },
   "ui158640ea": "始终使用默认清晰度",
   "@ui158640ea": {
-    "description": "Flule34 UI: 始终使用默认清晰度"
+    "description": "HaRu UI: 始终使用默认清晰度"
   },
   "ui17588e00": "媒体库",
   "@ui17588e00": {
-    "description": "Flule34 UI: 媒体库"
+    "description": "HaRu UI: 媒体库"
+  },
+  "ui38869fe7": "媒体库二级页切换；范围=hanime1；section={p0}",
+  "@ui38869fe7": {
+    "description": "HaRu UI: 媒体库二级页切换；范围=hanime1；section={p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui7a3a4547": "媒体库二级页切换；范围=local；section={p0}",
+  "@ui7a3a4547": {
+    "description": "HaRu UI: 媒体库二级页切换；范围=local；section={p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui1c3a6602": "媒体库二级页切换；范围=rule34video；section={p0}",
+  "@ui1c3a6602": {
+    "description": "HaRu UI: 媒体库二级页切换；范围=rule34video；section={p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui0ee3985f": "媒体库列表请求完成；范围=rule34video；section={p0}；",
+  "@ui0ee3985f": {
+    "description": "HaRu UI: 媒体库列表请求完成；范围=rule34video；section={p0}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui1e113600": "媒体库列表请求开始；范围=rule34video；section={p0}；",
+  "@ui1e113600": {
+    "description": "HaRu UI: 媒体库列表请求开始；范围=rule34video；section={p0}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui14cdfa21": "媒体库打开；范围={p0}；",
+  "@ui14cdfa21": {
+    "description": "HaRu UI: 媒体库打开；范围={p0}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui5e9a8d3f": "媒体库登录状态变化；R34V={p0}；",
+  "@ui5e9a8d3f": {
+    "description": "HaRu UI: 媒体库登录状态变化；R34V={p0}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui21db214e": "媒体库范围切换；from={p0}；to={p1}",
+  "@ui21db214e": {
+    "description": "HaRu UI: 媒体库范围切换；from={p0}；to={p1}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      },
+      "p1": {
+        "type": "String"
+      }
+    }
+  },
+  "ui2a120a57": "媒体库范围顺序",
+  "@ui2a120a57": {
+    "description": "HaRu UI: 媒体库范围顺序"
   },
   "ui344971fc": "存在",
   "@ui344971fc": {
-    "description": "Flule34 UI: 存在"
+    "description": "HaRu UI: 存在"
   },
   "ui60514b78": "安全合并",
   "@ui60514b78": {
-    "description": "Flule34 UI: 安全合并"
+    "description": "HaRu UI: 安全合并"
+  },
+  "ui2cfae1da": "宽泛搜索",
+  "@ui2cfae1da": {
+    "description": "HaRu UI: 宽泛搜索"
   },
   "ui5baf4155": "密码",
   "@ui5baf4155": {
-    "description": "Flule34 UI: 密码"
+    "description": "HaRu UI: 密码"
+  },
+  "ui0a68072d": "密码已更新。",
+  "@ui0a68072d": {
+    "description": "HaRu UI: 密码已更新。"
   },
   "ui65cceef6": "导入失败：{p0}",
   "@ui65cceef6": {
-    "description": "Flule34 UI: 导入失败：{p0}",
+    "description": "HaRu UI: 导入失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -915,31 +1467,31 @@
   },
   "ui4181e94a": "导入或导出",
   "@ui4181e94a": {
-    "description": "Flule34 UI: 导入或导出"
+    "description": "HaRu UI: 导入或导出"
   },
   "ui347e69e0": "导入文件优先",
   "@ui347e69e0": {
-    "description": "Flule34 UI: 导入文件优先"
+    "description": "HaRu UI: 导入文件优先"
   },
   "ui7b8b8627": "导入时会忽略。请选择冲突处理方式。",
   "@ui7b8b8627": {
-    "description": "Flule34 UI: 导入时会忽略。请选择冲突处理方式。"
+    "description": "HaRu UI: 导入时会忽略。请选择冲突处理方式。"
   },
   "ui3447243f": "导入翻译库",
   "@ui3447243f": {
-    "description": "Flule34 UI: 导入翻译库"
+    "description": "HaRu UI: 导入翻译库"
   },
   "ui29108110": "导出日志",
   "@ui29108110": {
-    "description": "Flule34 UI: 导出日志"
+    "description": "HaRu UI: 导出日志"
   },
   "ui561390c3": "导出日志失败，请稍后重试。",
   "@ui561390c3": {
-    "description": "Flule34 UI: 导出日志失败，请稍后重试。"
+    "description": "HaRu UI: 导出日志失败，请稍后重试。"
   },
   "ui4bddfd15": "导出时间：{p0}",
   "@ui4bddfd15": {
-    "description": "Flule34 UI: 导出时间：{p0}",
+    "description": "HaRu UI: 导出时间：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -948,45 +1500,57 @@
   },
   "ui1a3a31c6": "导出翻译库",
   "@ui1a3a31c6": {
-    "description": "Flule34 UI: 导出翻译库"
+    "description": "HaRu UI: 导出翻译库"
   },
   "ui2d28ccb0": "导出翻译库失败。",
   "@ui2d28ccb0": {
-    "description": "Flule34 UI: 导出翻译库失败。"
+    "description": "HaRu UI: 导出翻译库失败。"
   },
   "ui0d4b5d1d": "将删除“{p0}”及其本机密钥。",
   "@ui0d4b5d1d": {
-    "description": "Flule34 UI: 将删除“{p0}”及其本机密钥。",
+    "description": "HaRu UI: 将删除“{p0}”及其本机密钥。",
     "placeholders": {
       "p0": {
         "type": "String"
       }
     }
+  },
+  "ui410820fb": "将删除本机保存的 Hanime 账号、密码和登录会话。",
+  "@ui410820fb": {
+    "description": "HaRu UI: 将删除本机保存的 Hanime 账号、密码和登录会话。"
   },
   "ui5116cc17": "将删除本机保存的账号、密码和登录会话；设备下载与本地分类库不会受影响。",
   "@ui5116cc17": {
-    "description": "Flule34 UI: 将删除本机保存的账号、密码和登录会话；设备下载与本地分类库不会受影响。"
+    "description": "HaRu UI: 将删除本机保存的账号、密码和登录会话；设备下载与本地分类库不会受影响。"
   },
   "ui206e15fd": "将删除这台设备上的全部诊断日志，此操作无法撤销。",
   "@ui206e15fd": {
-    "description": "Flule34 UI: 将删除这台设备上的全部诊断日志，此操作无法撤销。"
+    "description": "HaRu UI: 将删除这台设备上的全部诊断日志，此操作无法撤销。"
   },
   "ui61998fc7": "将永久删除 {p0} 条 API 译文。用户手动译文和内置译文不会被删除。",
   "@ui61998fc7": {
-    "description": "Flule34 UI: 将永久删除 {p0} 条 API 译文。用户手动译文和内置译文不会被删除。",
+    "description": "HaRu UI: 将永久删除 {p0} 条 API 译文。用户手动译文和内置译文不会被删除。",
     "placeholders": {
       "p0": {
         "type": "String"
       }
     }
   },
+  "ui1ba660cc": "小时",
+  "@ui1ba660cc": {
+    "description": "HaRu UI: 小时"
+  },
+  "ui17aba12e": "小時",
+  "@ui17aba12e": {
+    "description": "HaRu UI: 小時"
+  },
   "ui2d851aa0": "尚未登录",
   "@ui2d851aa0": {
-    "description": "Flule34 UI: 尚未登录"
+    "description": "HaRu UI: 尚未登录"
   },
   "ui5a665aac": "尚未选择{p0}",
   "@ui5a665aac": {
-    "description": "Flule34 UI: 尚未选择{p0}",
+    "description": "HaRu UI: 尚未选择{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -995,15 +1559,19 @@
   },
   "ui7d437796": "尚未配置翻译服务。内置词表和用户手动译文仍可正常使用。",
   "@ui7d437796": {
-    "description": "Flule34 UI: 尚未配置翻译服务。内置词表和用户手动译文仍可正常使用。"
+    "description": "HaRu UI: 尚未配置翻译服务。内置词表和用户手动译文仍可正常使用。"
+  },
+  "ui59bc6fa1": "展开",
+  "@ui59bc6fa1": {
+    "description": "HaRu UI: 展开"
   },
   "ui0543d520": "已下载",
   "@ui0543d520": {
-    "description": "Flule34 UI: 已下载"
+    "description": "HaRu UI: 已下载"
   },
   "ui4c1b3a95": "已从“{p0}”移出。",
   "@ui4c1b3a95": {
-    "description": "Flule34 UI: 已从“{p0}”移出。",
+    "description": "HaRu UI: 已从“{p0}”移出。",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1012,7 +1580,7 @@
   },
   "ui228152d7": "已从播放列表“{p0}”移出。",
   "@ui228152d7": {
-    "description": "Flule34 UI: 已从播放列表“{p0}”移出。",
+    "description": "HaRu UI: 已从播放列表“{p0}”移出。",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1021,19 +1589,19 @@
   },
   "ui1fa11a46": "已从播放列表移出。",
   "@ui1fa11a46": {
-    "description": "Flule34 UI: 已从播放列表移出。"
+    "description": "HaRu UI: 已从播放列表移出。"
   },
   "ui64769355": "已从本地库移出。",
   "@ui64769355": {
-    "description": "Flule34 UI: 已从本地库移出。"
+    "description": "HaRu UI: 已从本地库移出。"
   },
   "ui55781737": "已关闭",
   "@ui55781737": {
-    "description": "Flule34 UI: 已关闭"
+    "description": "HaRu UI: 已关闭"
   },
   "ui69dc1173": "已删除 {p0} 条下载记录。",
   "@ui69dc1173": {
-    "description": "Flule34 UI: 已删除 {p0} 条下载记录。",
+    "description": "HaRu UI: 已删除 {p0} 条下载记录。",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1042,7 +1610,7 @@
   },
   "ui5ed2011c": "已删除 {p0} 条，{p1} 条未能删除。",
   "@ui5ed2011c": {
-    "description": "Flule34 UI: 已删除 {p0} 条，{p1} 条未能删除。",
+    "description": "HaRu UI: 已删除 {p0} 条，{p1} 条未能删除。",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1054,7 +1622,7 @@
   },
   "ui5846e503": "已加入“{p0}”。",
   "@ui5846e503": {
-    "description": "Flule34 UI: 已加入“{p0}”。",
+    "description": "HaRu UI: 已加入“{p0}”。",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1063,7 +1631,7 @@
   },
   "ui6b12697d": "已加入播放列表“{p0}”。",
   "@ui6b12697d": {
-    "description": "Flule34 UI: 已加入播放列表“{p0}”。",
+    "description": "HaRu UI: 已加入播放列表“{p0}”。",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1072,23 +1640,35 @@
   },
   "ui670889d8": "已加入收藏。",
   "@ui670889d8": {
-    "description": "Flule34 UI: 已加入收藏。"
+    "description": "HaRu UI: 已加入收藏。"
+  },
+  "ui0b279e7e": "已加入稍后观看。",
+  "@ui0b279e7e": {
+    "description": "HaRu UI: 已加入稍后观看。"
   },
   "ui37453e63": "已取消",
   "@ui37453e63": {
-    "description": "Flule34 UI: 已取消"
+    "description": "HaRu UI: 已取消"
   },
   "ui7bbd0e24": "已取消收藏。",
   "@ui7bbd0e24": {
-    "description": "Flule34 UI: 已取消收藏。"
+    "description": "HaRu UI: 已取消收藏。"
+  },
+  "ui5cbef487": "已取消点赞。",
+  "@ui5cbef487": {
+    "description": "HaRu UI: 已取消点赞。"
   },
   "ui34a0e3be": "已取消订阅。",
   "@ui34a0e3be": {
-    "description": "Flule34 UI: 已取消订阅。"
+    "description": "HaRu UI: 已取消订阅。"
+  },
+  "ui67f81f43": "已取消订阅艺术家。",
+  "@ui67f81f43": {
+    "description": "HaRu UI: 已取消订阅艺术家。"
   },
   "ui1db0bde1": "已学习标题 · {p0}",
   "@ui1db0bde1": {
-    "description": "Flule34 UI: 已学习标题 · {p0}",
+    "description": "HaRu UI: 已学习标题 · {p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1097,7 +1677,7 @@
   },
   "ui7a8ce229": "已导入 {p0} 层译文",
   "@ui7a8ce229": {
-    "description": "Flule34 UI: 已导入 {p0} 层译文",
+    "description": "HaRu UI: 已导入 {p0} 层译文",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1106,15 +1686,15 @@
   },
   "ui0de2ecda": "已开启",
   "@ui0de2ecda": {
-    "description": "Flule34 UI: 已开启"
+    "description": "HaRu UI: 已开启"
   },
   "ui0077d937": "已收藏",
   "@ui0077d937": {
-    "description": "Flule34 UI: 已收藏"
+    "description": "HaRu UI: 已收藏"
   },
   "ui2ce07361": "已新建并加入播放列表“{p0}”。",
   "@ui2ce07361": {
-    "description": "Flule34 UI: 已新建并加入播放列表“{p0}”。",
+    "description": "HaRu UI: 已新建并加入播放列表“{p0}”。",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1123,35 +1703,60 @@
   },
   "ui1a7827b1": "已暂停",
   "@ui1a7827b1": {
-    "description": "Flule34 UI: 已暂停"
+    "description": "HaRu UI: 已暂停"
+  },
+  "ui24c8bd29": "已点赞。",
+  "@ui24c8bd29": {
+    "description": "HaRu UI: 已点赞。"
+  },
+  "ui76ec3129": "已移出稍后观看。",
+  "@ui76ec3129": {
+    "description": "HaRu UI: 已移出稍后观看。"
+  },
+  "ui7acf6891": "已稍后观看",
+  "@ui7acf6891": {
+    "description": "HaRu UI: 已稍后观看"
   },
   "ui49531ef1": "已经到底了",
   "@ui49531ef1": {
-    "description": "Flule34 UI: 已经到底了"
+    "description": "HaRu UI: 已经到底了"
   },
   "ui15a96bf1": "已经存在同名的本地库。",
   "@ui15a96bf1": {
-    "description": "Flule34 UI: 已经存在同名的本地库。"
+    "description": "HaRu UI: 已经存在同名的本地库。"
   },
   "ui69288ef8": "已经是播放列表最后一个视频。",
   "@ui69288ef8": {
-    "description": "Flule34 UI: 已经是播放列表最后一个视频。"
+    "description": "HaRu UI: 已经是播放列表最后一个视频。"
   },
   "ui24d4c17d": "已订阅",
   "@ui24d4c17d": {
-    "description": "Flule34 UI: 已订阅"
+    "description": "HaRu UI: 已订阅"
   },
   "ui426dc524": "已订阅。",
   "@ui426dc524": {
-    "description": "Flule34 UI: 已订阅。"
+    "description": "HaRu UI: 已订阅。"
   },
   "ui59a2ec21": "已订阅上传者。",
   "@ui59a2ec21": {
-    "description": "Flule34 UI: 已订阅上传者。"
+    "description": "HaRu UI: 已订阅上传者。"
+  },
+  "ui7bf7bdc9": "已订阅艺术家。",
+  "@ui7bf7bdc9": {
+    "description": "HaRu UI: 已订阅艺术家。"
+  },
+  "ui1d63803b": "已选 {p0} 个",
+  "@ui1d63803b": {
+    "description": "HaRu UI: 已选 {p0} 个",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
   },
   "ui21a8fcc4": "已选择 {p0} 项",
   "@ui21a8fcc4": {
-    "description": "Flule34 UI: 已选择 {p0} 项",
+    "description": "HaRu UI: 已选择 {p0} 项",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1160,35 +1765,47 @@
   },
   "ui538facf2": "已重新加入下载队列。",
   "@ui538facf2": {
-    "description": "Flule34 UI: 已重新加入下载队列。"
+    "description": "HaRu UI: 已重新加入下载队列。"
   },
   "ui1d982807": "已验证上传者",
   "@ui1d982807": {
-    "description": "Flule34 UI: 已验证上传者"
+    "description": "HaRu UI: 已验证上传者"
   },
   "ui563d1236": "帮助与反馈",
   "@ui563d1236": {
-    "description": "Flule34 UI: 帮助与反馈"
+    "description": "HaRu UI: 帮助与反馈"
   },
   "ui62a81a58": "平台",
   "@ui62a81a58": {
-    "description": "Flule34 UI: 平台"
+    "description": "HaRu UI: 平台"
+  },
+  "ui4b2a99fd": "年",
+  "@ui4b2a99fd": {
+    "description": "HaRu UI: 年"
+  },
+  "ui25461fa7": "年份",
+  "@ui25461fa7": {
+    "description": "HaRu UI: 年份"
+  },
+  "ui1fb0206d": "广告内容或垃圾内容",
+  "@ui1fb0206d": {
+    "description": "HaRu UI: 广告内容或垃圾内容"
   },
   "ui70131201": "库名称",
   "@ui70131201": {
-    "description": "Flule34 UI: 库名称"
+    "description": "HaRu UI: 库名称"
   },
   "ui14bf4ac7": "库名称不能为空。",
   "@ui14bf4ac7": {
-    "description": "Flule34 UI: 库名称不能为空。"
+    "description": "HaRu UI: 库名称不能为空。"
   },
   "ui643b8cff": "应用",
   "@ui643b8cff": {
-    "description": "Flule34 UI: 应用"
+    "description": "HaRu UI: 应用"
   },
   "ui7be16f02": "应用 {p0} 个条件",
   "@ui7be16f02": {
-    "description": "Flule34 UI: 应用 {p0} 个条件",
+    "description": "HaRu UI: 应用 {p0} 个条件",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1197,63 +1814,87 @@
   },
   "ui103ff6bd": "应用初始化完成。",
   "@ui103ff6bd": {
-    "description": "Flule34 UI: 应用初始化完成。"
+    "description": "HaRu UI: 应用初始化完成。"
   },
   "ui75af3770": "应用日志",
   "@ui75af3770": {
-    "description": "Flule34 UI: 应用日志"
+    "description": "HaRu UI: 应用日志"
   },
   "ui38f27f7a": "应用日志已清除。",
   "@ui38f27f7a": {
-    "description": "Flule34 UI: 应用日志已清除。"
+    "description": "HaRu UI: 应用日志已清除。"
   },
   "ui390d6cf3": "应用（不限）",
   "@ui390d6cf3": {
-    "description": "Flule34 UI: 应用（不限）"
+    "description": "HaRu UI: 应用（不限）"
+  },
+  "ui37fc4085": "底部导航顺序",
+  "@ui37fc4085": {
+    "description": "HaRu UI: 底部导航顺序"
+  },
+  "ui68701249": "廣告內容或垃圾內容",
+  "@ui68701249": {
+    "description": "HaRu UI: 廣告內容或垃圾內容"
   },
   "ui0a663237": "开启后，切换应用或关闭屏幕时继续播放声音。",
   "@ui0a663237": {
-    "description": "Flule34 UI: 开启后，切换应用或关闭屏幕时继续播放声音。"
+    "description": "HaRu UI: 开启后，切换应用或关闭屏幕时继续播放声音。"
+  },
+  "ui08cdac2b": "开始视频预览；site={p0}；video={p1}；",
+  "@ui08cdac2b": {
+    "description": "HaRu UI: 开始视频预览；site={p0}；video={p1}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      },
+      "p1": {
+        "type": "String"
+      }
+    }
   },
   "ui13034753": "开源许可",
   "@ui13034753": {
-    "description": "Flule34 UI: 开源许可"
+    "description": "HaRu UI: 开源许可"
   },
   "ui1fbbcc39": "异性",
   "@ui1fbbcc39": {
-    "description": "Flule34 UI: 异性"
+    "description": "HaRu UI: 异性"
   },
   "ui573acdd9": "当前任务会先被取消。你可以只删除记录，也可以同时清理未完成文件。",
   "@ui573acdd9": {
-    "description": "Flule34 UI: 当前任务会先被取消。你可以只删除记录，也可以同时清理未完成文件。"
+    "description": "HaRu UI: 当前任务会先被取消。你可以只删除记录，也可以同时清理未完成文件。"
+  },
+  "ui2073fb01": "当前密码",
+  "@ui2073fb01": {
+    "description": "HaRu UI: 当前密码"
   },
   "ui3c131161": "当前已加载内容没有匹配项。",
   "@ui3c131161": {
-    "description": "Flule34 UI: 当前已加载内容没有匹配项。"
+    "description": "HaRu UI: 当前已加载内容没有匹配项。"
   },
   "ui73c532ff": "当前已是最新版本。",
   "@ui73c532ff": {
-    "description": "Flule34 UI: 当前已是最新版本。"
+    "description": "HaRu UI: 当前已是最新版本。"
   },
   "ui34a6f44b": "当前开发构建未配置更新源",
   "@ui34a6f44b": {
-    "description": "Flule34 UI: 当前开发构建未配置更新源"
+    "description": "HaRu UI: 当前开发构建未配置更新源"
   },
   "ui2c29265e": "当前开发构建未配置更新源。",
   "@ui2c29265e": {
-    "description": "Flule34 UI: 当前开发构建未配置更新源。"
+    "description": "HaRu UI: 当前开发构建未配置更新源。"
   },
   "ui309047a5": "当前未登录",
   "@ui309047a5": {
-    "description": "Flule34 UI: 当前未登录"
+    "description": "HaRu UI: 当前未登录"
   },
   "ui5cc85dd9": "当前构建未配置仓库地址",
   "@ui5cc85dd9": {
-    "description": "Flule34 UI: 当前构建未配置仓库地址"
+    "description": "HaRu UI: 当前构建未配置仓库地址"
   },
   "ui34dcc5aa": "当前版本：{p0}",
   "@ui34dcc5aa": {
-    "description": "Flule34 UI: 当前版本：{p0}",
+    "description": "HaRu UI: 当前版本：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1262,23 +1903,23 @@
   },
   "ui1ef7e413": "当前账号 ID",
   "@ui1ef7e413": {
-    "description": "Flule34 UI: 当前账号 ID"
+    "description": "HaRu UI: 当前账号 ID"
   },
   "ui4f25fec3": "循环播放",
   "@ui4f25fec3": {
-    "description": "Flule34 UI: 循环播放"
+    "description": "HaRu UI: 循环播放"
   },
   "ui761f6d4f": "必须同时包含",
   "@ui761f6d4f": {
-    "description": "Flule34 UI: 必须同时包含"
+    "description": "HaRu UI: 必须同时包含"
   },
   "ui5362cf1f": "忘记密码",
   "@ui5362cf1f": {
-    "description": "Flule34 UI: 忘记密码"
+    "description": "HaRu UI: 忘记密码"
   },
   "ui13e52148": "忽略内置 {p0}。",
   "@ui13e52148": {
-    "description": "Flule34 UI: 忽略内置 {p0}。",
+    "description": "HaRu UI: 忽略内置 {p0}。",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1287,35 +1928,44 @@
   },
   "ui1f9121af": "恢复内置翻译",
   "@ui1f9121af": {
-    "description": "Flule34 UI: 恢复内置翻译"
+    "description": "HaRu UI: 恢复内置翻译"
   },
   "ui608e380c": "恢复已学习翻译",
   "@ui608e380c": {
-    "description": "Flule34 UI: 恢复已学习翻译"
+    "description": "HaRu UI: 恢复已学习翻译"
+  },
+  "ui351ef4b1": "恢复播放，开始自动展开播放器；video={p0}；",
+  "@ui351ef4b1": {
+    "description": "HaRu UI: 恢复播放，开始自动展开播放器；video={p0}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
   },
   "ui67d3b06d": "我的",
   "@ui67d3b06d": {
-    "description": "Flule34 UI: 我的"
+    "description": "HaRu UI: 我的"
   },
   "ui1065acd3": "我的上传",
   "@ui1065acd3": {
-    "description": "Flule34 UI: 我的上传"
+    "description": "HaRu UI: 我的上传"
   },
   "ui3ae6be59": "所有网络都使用上方选择的清晰度",
   "@ui3ae6be59": {
-    "description": "Flule34 UI: 所有网络都使用上方选择的清晰度"
+    "description": "HaRu UI: 所有网络都使用上方选择的清晰度"
   },
   "ui2274fd3b": "所选本地库已经不存在。",
   "@ui2274fd3b": {
-    "description": "Flule34 UI: 所选本地库已经不存在。"
+    "description": "HaRu UI: 所选本地库已经不存在。"
   },
   "ui6fa5a093": "打开 GitHub 发布页",
   "@ui6fa5a093": {
-    "description": "Flule34 UI: 打开 GitHub 发布页"
+    "description": "HaRu UI: 打开 GitHub 发布页"
   },
   "ui6ae92059": "打开{p0}集合",
   "@ui6ae92059": {
-    "description": "Flule34 UI: 打开{p0}集合",
+    "description": "HaRu UI: 打开{p0}集合",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1324,7 +1974,7 @@
   },
   "ui580f715d": "打开下载失败：{p0}",
   "@ui580f715d": {
-    "description": "Flule34 UI: 打开下载失败：{p0}",
+    "description": "HaRu UI: 打开下载失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1333,27 +1983,31 @@
   },
   "ui02a64714": "打开官方网站",
   "@ui02a64714": {
-    "description": "Flule34 UI: 打开官方网站"
+    "description": "HaRu UI: 打开官方网站"
   },
   "ui0d472be2": "打开网站反馈表单",
   "@ui0d472be2": {
-    "description": "Flule34 UI: 打开网站反馈表单"
+    "description": "HaRu UI: 打开网站反馈表单"
   },
   "ui0fb6d05e": "打开网站消息中心",
   "@ui0fb6d05e": {
-    "description": "Flule34 UI: 打开网站消息中心"
+    "description": "HaRu UI: 打开网站消息中心"
+  },
+  "ui2d1cd088": "打开艺术家视频",
+  "@ui2d1cd088": {
+    "description": "HaRu UI: 打开艺术家视频"
   },
   "ui5c30a6ab": "扶她",
   "@ui5c30a6ab": {
-    "description": "Flule34 UI: 扶她"
+    "description": "HaRu UI: 扶她"
   },
   "ui52437893": "批量删除",
   "@ui52437893": {
-    "description": "Flule34 UI: 批量删除"
+    "description": "HaRu UI: 批量删除"
   },
   "ui41bd594d": "投票数 ≥ {p0}",
   "@ui41bd594d": {
-    "description": "Flule34 UI: 投票数 ≥ {p0}",
+    "description": "HaRu UI: 投票数 ≥ {p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1362,47 +2016,55 @@
   },
   "ui7069486d": "报告不包含 Cookie、密码、邮箱、用户 ID 值或 Android 设备标识符。发送前仍建议自行检查。",
   "@ui7069486d": {
-    "description": "Flule34 UI: 报告不包含 Cookie、密码、邮箱、用户 ID 值或 Android 设备标识符。发送前仍建议自行检查。"
+    "description": "HaRu UI: 报告不包含 Cookie、密码、邮箱、用户 ID 值或 Android 设备标识符。发送前仍建议自行检查。"
   },
   "ui7d6a579d": "拉取模型列表",
   "@ui7d6a579d": {
-    "description": "Flule34 UI: 拉取模型列表"
+    "description": "HaRu UI: 拉取模型列表"
+  },
+  "ui1a86336b": "拖动调整；冷启动时默认进入第一项。",
+  "@ui1a86336b": {
+    "description": "HaRu UI: 拖动调整；冷启动时默认进入第一项。"
+  },
+  "ui4c4f7a5b": "指定月份…",
+  "@ui4c4f7a5b": {
+    "description": "HaRu UI: 指定月份…"
   },
   "ui65af3a45": "按原文排序",
   "@ui65af3a45": {
-    "description": "Flule34 UI: 按原文排序"
+    "description": "HaRu UI: 按原文排序"
   },
   "ui55e84e41": "按名字",
   "@ui55e84e41": {
-    "description": "Flule34 UI: 按名字"
+    "description": "HaRu UI: 按名字"
   },
   "ui384e319d": "按最近更新排序",
   "@ui384e319d": {
-    "description": "Flule34 UI: 按最近更新排序"
+    "description": "HaRu UI: 按最近更新排序"
   },
   "ui7ab117f8": "按来源排序",
   "@ui7ab117f8": {
-    "description": "Flule34 UI: 按来源排序"
+    "description": "HaRu UI: 按来源排序"
   },
   "ui70c4de19": "按标签和内容主题探索",
   "@ui70c4de19": {
-    "description": "Flule34 UI: 按标签和内容主题探索"
+    "description": "HaRu UI: 按标签和内容主题探索"
   },
   "ui0db93df0": "按观看量浏览热门内容",
   "@ui0db93df0": {
-    "description": "Flule34 UI: 按观看量浏览热门内容"
+    "description": "HaRu UI: 按观看量浏览热门内容"
   },
   "ui05f1a141": "按译文排序",
   "@ui05f1a141": {
-    "description": "Flule34 UI: 按译文排序"
+    "description": "HaRu UI: 按译文排序"
   },
   "ui4f8317d3": "排序",
   "@ui4f8317d3": {
-    "description": "Flule34 UI: 排序"
+    "description": "HaRu UI: 排序"
   },
   "ui702bc146": "排序：{p0}",
   "@ui702bc146": {
-    "description": "Flule34 UI: 排序：{p0}",
+    "description": "HaRu UI: 排序：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1411,39 +2073,43 @@
   },
   "ui6b955ece": "排行榜",
   "@ui6b955ece": {
-    "description": "Flule34 UI: 排行榜"
+    "description": "HaRu UI: 排行榜"
   },
   "ui077c6159": "排除",
   "@ui077c6159": {
-    "description": "Flule34 UI: 排除"
+    "description": "HaRu UI: 排除"
   },
   "ui20d42365": "排除内容",
   "@ui20d42365": {
-    "description": "Flule34 UI: 排除内容"
+    "description": "HaRu UI: 排除内容"
   },
   "ui549d6c00": "排除：",
   "@ui549d6c00": {
-    "description": "Flule34 UI: 排除："
+    "description": "HaRu UI: 排除："
   },
   "ui3cca6594": "探索内容",
   "@ui3cca6594": {
-    "description": "Flule34 UI: 探索内容"
+    "description": "HaRu UI: 探索内容"
   },
   "ui6ec4c172": "接口类型",
   "@ui6ec4c172": {
-    "description": "Flule34 UI: 接口类型"
+    "description": "HaRu UI: 接口类型"
   },
   "ui7daaecfb": "接口类型或服务器已改变，请重新填写密钥",
   "@ui7daaecfb": {
-    "description": "Flule34 UI: 接口类型或服务器已改变，请重新填写密钥"
+    "description": "HaRu UI: 接口类型或服务器已改变，请重新填写密钥"
   },
   "ui4aa4bf66": "描述（可选）",
   "@ui4aa4bf66": {
-    "description": "Flule34 UI: 描述（可选）"
+    "description": "HaRu UI: 描述（可选）"
+  },
+  "ui1d31a7a0": "提交",
+  "@ui1d31a7a0": {
+    "description": "HaRu UI: 提交"
   },
   "ui0c0bc8f8": "提交后台下载任务失败：{p0}",
   "@ui0c0bc8f8": {
-    "description": "Flule34 UI: 提交后台下载任务失败：{p0}",
+    "description": "HaRu UI: 提交后台下载任务失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1452,15 +2118,15 @@
   },
   "ui48d043db": "提示：长按标题、分类或标签，可以手动添加或修改译文。",
   "@ui48d043db": {
-    "description": "Flule34 UI: 提示：长按标题、分类或标签，可以手动添加或修改译文。"
+    "description": "HaRu UI: 提示：长按标题、分类或标签，可以手动添加或修改译文。"
   },
   "ui7365d58c": "搜索",
   "@ui7365d58c": {
-    "description": "Flule34 UI: 搜索"
+    "description": "HaRu UI: 搜索"
   },
   "ui0726d620": "搜索{p0}",
   "@ui0726d620": {
-    "description": "Flule34 UI: 搜索{p0}",
+    "description": "HaRu UI: 搜索{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1469,7 +2135,7 @@
   },
   "ui35022cd6": "搜索全部{p0}",
   "@ui35022cd6": {
-    "description": "Flule34 UI: 搜索全部{p0}",
+    "description": "HaRu UI: 搜索全部{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1478,83 +2144,95 @@
   },
   "ui72dba787": "搜索历史",
   "@ui72dba787": {
-    "description": "Flule34 UI: 搜索历史"
+    "description": "HaRu UI: 搜索历史"
   },
   "ui60e69fcd": "搜索历史已清除。",
   "@ui60e69fcd": {
-    "description": "Flule34 UI: 搜索历史已清除。"
+    "description": "HaRu UI: 搜索历史已清除。"
   },
   "ui7dd406e9": "搜索历史清空失败，请稍后重试。",
   "@ui7dd406e9": {
-    "description": "Flule34 UI: 搜索历史清空失败，请稍后重试。"
+    "description": "HaRu UI: 搜索历史清空失败，请稍后重试。"
   },
   "ui358b0b68": "搜索原文、译文或翻译服务",
   "@ui358b0b68": {
-    "description": "Flule34 UI: 搜索原文、译文或翻译服务"
+    "description": "HaRu UI: 搜索原文、译文或翻译服务"
+  },
+  "ui7e4e2643": "搜索在线观看历史",
+  "@ui7e4e2643": {
+    "description": "HaRu UI: 搜索在线观看历史"
   },
   "ui6e169d07": "搜索已加载的视频",
   "@ui6e169d07": {
-    "description": "Flule34 UI: 搜索已加载的视频"
+    "description": "HaRu UI: 搜索已加载的视频"
   },
   "ui66473d1e": "搜索成功，但历史记录保存失败。",
   "@ui66473d1e": {
-    "description": "Flule34 UI: 搜索成功，但历史记录保存失败。"
+    "description": "HaRu UI: 搜索成功，但历史记录保存失败。"
   },
   "ui7f749006": "搜索播放列表",
   "@ui7f749006": {
-    "description": "Flule34 UI: 搜索播放列表"
+    "description": "HaRu UI: 搜索播放列表"
   },
   "ui6d63717d": "搜索播放列表中的视频",
   "@ui6d63717d": {
-    "description": "Flule34 UI: 搜索播放列表中的视频"
+    "description": "HaRu UI: 搜索播放列表中的视频"
   },
   "ui105d8758": "搜索收藏的视频",
   "@ui105d8758": {
-    "description": "Flule34 UI: 搜索收藏的视频"
+    "description": "HaRu UI: 搜索收藏的视频"
   },
   "ui7d976e17": "搜索本地库",
   "@ui7d976e17": {
-    "description": "Flule34 UI: 搜索本地库"
+    "description": "HaRu UI: 搜索本地库"
   },
   "ui342ff046": "搜索此库中的视频",
   "@ui342ff046": {
-    "description": "Flule34 UI: 搜索此库中的视频"
+    "description": "HaRu UI: 搜索此库中的视频"
   },
   "ui6cb88a74": "搜索此订阅中的视频",
   "@ui6cb88a74": {
-    "description": "Flule34 UI: 搜索此订阅中的视频"
+    "description": "HaRu UI: 搜索此订阅中的视频"
+  },
+  "ui6a8599b3": "搜索点赞的视频",
+  "@ui6a8599b3": {
+    "description": "HaRu UI: 搜索点赞的视频"
+  },
+  "ui43f9c5a0": "搜索稍后观看",
+  "@ui43f9c5a0": {
+    "description": "HaRu UI: 搜索稍后观看"
   },
   "ui35231688": "搜索观看历史",
   "@ui35231688": {
-    "description": "Flule34 UI: 搜索观看历史"
+    "description": "HaRu UI: 搜索观看历史"
   },
   "ui0e1e2e67": "搜索视频、标签、分类或艺术家",
   "@ui0e1e2e67": {
-    "description": "Flule34 UI: 搜索视频、标签、分类或艺术家"
+    "description": "HaRu UI: 搜索视频、标签、分类或艺术家"
   },
   "ui49f810e0": "搜索订阅",
   "@ui49f810e0": {
-    "description": "Flule34 UI: 搜索订阅"
+    "description": "HaRu UI: 搜索订阅"
   },
   "ui761a4e53": "搜索记录删除失败，请稍后重试。",
   "@ui761a4e53": {
-    "description": "Flule34 UI: 搜索记录删除失败，请稍后重试。"
+    "description": "HaRu UI: 搜索记录删除失败，请稍后重试。"
   },
   "ui645e5e1c": "撤销自定义",
   "@ui645e5e1c": {
-    "description": "Flule34 UI: 撤销自定义"
+    "description": "HaRu UI: 撤销自定义"
   },
   "ui73d23748": "播放",
   "@ui73d23748": {
-    "description": "Flule34 UI: 播放"
+    "description": "HaRu UI: 播放"
   },
   "ui16f3ad93": "播放列表",
   "@ui16f3ad93": {
-    "description": "Flule34 UI: 播放列表"
+    "description": "HaRu UI: 播放列表"
   },
   "ui2189de41": "播放列表 {p0}",
   "@ui2189de41": {
-    "description": "Flule34 UI: 播放列表 {p0}",
+    "description": "HaRu UI: 播放列表 {p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1563,120 +2241,263 @@
   },
   "ui264bb7d8": "播放列表会从网站账号中删除。",
   "@ui264bb7d8": {
-    "description": "Flule34 UI: 播放列表会从网站账号中删除。"
+    "description": "HaRu UI: 播放列表会从网站账号中删除。"
   },
-  "ui1f1bcb06": "播放列表已创建。",
-  "@ui1f1bcb06": {
-    "description": "Flule34 UI: 播放列表已创建。"
-  },
-  "ui32c513bd": "播放列表已创建，但未能读取新列表。",
-  "@ui32c513bd": {
-    "description": "Flule34 UI: 播放列表已创建，但未能读取新列表。"
-  },
-  "ui080bbabb": "播放列表已删除。",
-  "@ui080bbabb": {
-    "description": "Flule34 UI: 播放列表已删除。"
-  },
-  "ui49fa8b9b": "播放列表已更新。",
-  "@ui49fa8b9b": {
-    "description": "Flule34 UI: 播放列表已更新。"
-  },
-  "ui5ba71ce6": "播放列表播放参数无效。",
-  "@ui5ba71ce6": {
-    "description": "Flule34 UI: 播放列表播放参数无效。"
-  },
-  "ui7e8be483": "播放器初始化后未提供视频时长。",
-  "@ui7e8be483": {
-    "description": "Flule34 UI: 播放器初始化后未提供视频时长。"
-  },
-  "ui206c2436": "播放文件",
-  "@ui206c2436": {
-    "description": "Flule34 UI: 播放文件"
-  },
-  "ui46f59caf": "播放时保持屏幕常亮",
-  "@ui46f59caf": {
-    "description": "Flule34 UI: 播放时保持屏幕常亮"
-  },
-  "ui1c97d427": "播放清晰度",
-  "@ui1c97d427": {
-    "description": "Flule34 UI: 播放清晰度"
-  },
-  "ui3940d7b7": "播放源失效时 App 会重新请求视频详情。仍无法播放时，请复制诊断信息并在反馈中说明视频链接和清晰度。",
-  "@ui3940d7b7": {
-    "description": "Flule34 UI: 播放源失效时 App 会重新请求视频详情。仍无法播放时，请复制诊断信息并在反馈中说明视频链接和清晰度。"
-  },
-  "ui03f9adce": "播放设置",
-  "@ui03f9adce": {
-    "description": "Flule34 UI: 播放设置"
-  },
-  "ui5caccc11": "播放速度",
-  "@ui5caccc11": {
-    "description": "Flule34 UI: 播放速度"
-  },
-  "ui21658def": "播放问题",
-  "@ui21658def": {
-    "description": "Flule34 UI: 播放问题"
-  },
-  "ui31d7af87": "操作未能完成，请稍后重试。",
-  "@ui31d7af87": {
-    "description": "Flule34 UI: 操作未能完成，请稍后重试。"
-  },
-  "ui0d933ab7": "收藏",
-  "@ui0d933ab7": {
-    "description": "Flule34 UI: 收藏"
-  },
-  "ui60768862": "收藏夹里还没有视频。",
-  "@ui60768862": {
-    "description": "Flule34 UI: 收藏夹里还没有视频。"
-  },
-  "ui00b01c4f": "收藏状态读取失败，点击重试",
-  "@ui00b01c4f": {
-    "description": "Flule34 UI: 收藏状态读取失败，点击重试"
-  },
-  "ui053602da": "数据库结构",
-  "@ui053602da": {
-    "description": "Flule34 UI: 数据库结构"
-  },
-  "ui1ce03cf7": "文件不存在",
-  "@ui1ce03cf7": {
-    "description": "Flule34 UI: 文件不存在"
-  },
-  "ui37efec5c": "文件包含 API 译文 {p0} 条、",
-  "@ui37efec5c": {
-    "description": "Flule34 UI: 文件包含 API 译文 {p0} 条、",
+  "ui766b41bc": "播放列表加载失败：{p0}",
+  "@ui766b41bc": {
+    "description": "HaRu UI: 播放列表加载失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
       }
     }
   },
+  "ui1f1bcb06": "播放列表已创建。",
+  "@ui1f1bcb06": {
+    "description": "HaRu UI: 播放列表已创建。"
+  },
+  "ui74ffe4ad": "播放列表已创建并加入当前视频。",
+  "@ui74ffe4ad": {
+    "description": "HaRu UI: 播放列表已创建并加入当前视频。"
+  },
+  "ui32c513bd": "播放列表已创建，但未能读取新列表。",
+  "@ui32c513bd": {
+    "description": "HaRu UI: 播放列表已创建，但未能读取新列表。"
+  },
+  "ui080bbabb": "播放列表已删除。",
+  "@ui080bbabb": {
+    "description": "HaRu UI: 播放列表已删除。"
+  },
+  "ui49fa8b9b": "播放列表已更新。",
+  "@ui49fa8b9b": {
+    "description": "HaRu UI: 播放列表已更新。"
+  },
+  "ui5ba71ce6": "播放列表播放参数无效。",
+  "@ui5ba71ce6": {
+    "description": "HaRu UI: 播放列表播放参数无效。"
+  },
+  "ui201d2aa4": "播放列表操作",
+  "@ui201d2aa4": {
+    "description": "HaRu UI: 播放列表操作"
+  },
+  "ui7e8be483": "播放器初始化后未提供视频时长。",
+  "@ui7e8be483": {
+    "description": "HaRu UI: 播放器初始化后未提供视频时长。"
+  },
+  "ui536e06b3": "播放器开始自动恢复；attempt={p0}；",
+  "@ui536e06b3": {
+    "description": "HaRu UI: 播放器开始自动恢复；attempt={p0}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui7479d54b": "播放器折叠权限更新；video={p0}；",
+  "@ui7479d54b": {
+    "description": "HaRu UI: 播放器折叠权限更新；video={p0}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui5b401ab2": "播放器报告异常：{p0}；",
+  "@ui5b401ab2": {
+    "description": "HaRu UI: 播放器报告异常：{p0}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui5a50b4ab": "播放器自动展开完成；video={p0}；",
+  "@ui5a50b4ab": {
+    "description": "HaRu UI: 播放器自动展开完成；video={p0}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui78522c85": "播放器自动恢复失败；reason=no-alternate-source；",
+  "@ui78522c85": {
+    "description": "HaRu UI: 播放器自动恢复失败；reason=no-alternate-source；"
+  },
+  "ui0dd3d83f": "播放器自动恢复异常；{p0}；",
+  "@ui0dd3d83f": {
+    "description": "HaRu UI: 播放器自动恢复异常；{p0}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui19faffc9": "播放器自动恢复成功；{p0}；耗时={p1}ms",
+  "@ui19faffc9": {
+    "description": "HaRu UI: 播放器自动恢复成功；{p0}；耗时={p1}ms",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      },
+      "p1": {
+        "type": "String"
+      }
+    }
+  },
+  "ui0146f5aa": "播放器自动恢复装载失败；{p0}；",
+  "@ui0146f5aa": {
+    "description": "HaRu UI: 播放器自动恢复装载失败；{p0}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui4e45686b": "播放器自动恢复选择备用源；from={p0}；",
+  "@ui4e45686b": {
+    "description": "HaRu UI: 播放器自动恢复选择备用源；from={p0}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui4cee68a6": "播放器装载失败：{p0}；",
+  "@ui4cee68a6": {
+    "description": "HaRu UI: 播放器装载失败：{p0}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui09679598": "播放态详情滚动触发边界反馈，已禁用视觉拉伸；video={p0}；",
+  "@ui09679598": {
+    "description": "HaRu UI: 播放态详情滚动触发边界反馈，已禁用视觉拉伸；video={p0}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui206c2436": "播放文件",
+  "@ui206c2436": {
+    "description": "HaRu UI: 播放文件"
+  },
+  "ui46f59caf": "播放时保持屏幕常亮",
+  "@ui46f59caf": {
+    "description": "HaRu UI: 播放时保持屏幕常亮"
+  },
+  "ui1c97d427": "播放清晰度",
+  "@ui1c97d427": {
+    "description": "HaRu UI: 播放清晰度"
+  },
+  "ui3940d7b7": "播放源失效时 App 会重新请求视频详情。仍无法播放时，请复制诊断信息并在反馈中说明视频链接和清晰度。",
+  "@ui3940d7b7": {
+    "description": "HaRu UI: 播放源失效时 App 会重新请求视频详情。仍无法播放时，请复制诊断信息并在反馈中说明视频链接和清晰度。"
+  },
+  "ui03f9adce": "播放设置",
+  "@ui03f9adce": {
+    "description": "HaRu UI: 播放设置"
+  },
+  "ui5caccc11": "播放速度",
+  "@ui5caccc11": {
+    "description": "HaRu UI: 播放速度"
+  },
+  "ui21658def": "播放问题",
+  "@ui21658def": {
+    "description": "HaRu UI: 播放问题"
+  },
+  "ui1c251464": "操作失败：{p0}",
+  "@ui1c251464": {
+    "description": "HaRu UI: 操作失败：{p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui31d7af87": "操作未能完成，请稍后重试。",
+  "@ui31d7af87": {
+    "description": "HaRu UI: 操作未能完成，请稍后重试。"
+  },
+  "ui0d933ab7": "收藏",
+  "@ui0d933ab7": {
+    "description": "HaRu UI: 收藏"
+  },
+  "ui60768862": "收藏夹里还没有视频。",
+  "@ui60768862": {
+    "description": "HaRu UI: 收藏夹里还没有视频。"
+  },
+  "ui00b01c4f": "收藏状态读取失败，点击重试",
+  "@ui00b01c4f": {
+    "description": "HaRu UI: 收藏状态读取失败，点击重试"
+  },
+  "ui453d0751": "收起",
+  "@ui453d0751": {
+    "description": "HaRu UI: 收起"
+  },
+  "ui0b53ee0f": "收起回复",
+  "@ui0b53ee0f": {
+    "description": "HaRu UI: 收起回复"
+  },
+  "ui7d902f31": "放宽匹配规则，可能返回标题仅部分匹配的结果。",
+  "@ui7d902f31": {
+    "description": "HaRu UI: 放宽匹配规则，可能返回标题仅部分匹配的结果。"
+  },
+  "ui053602da": "数据库结构",
+  "@ui053602da": {
+    "description": "HaRu UI: 数据库结构"
+  },
+  "ui1ce03cf7": "文件不存在",
+  "@ui1ce03cf7": {
+    "description": "HaRu UI: 文件不存在"
+  },
+  "ui37efec5c": "文件包含 API 译文 {p0} 条、",
+  "@ui37efec5c": {
+    "description": "HaRu UI: 文件包含 API 译文 {p0} 条、",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui27d4d033": "新密码",
+  "@ui27d4d033": {
+    "description": "HaRu UI: 新密码"
+  },
+  "ui59623fdc": "新密码至少需要 8 个字符。",
+  "@ui59623fdc": {
+    "description": "HaRu UI: 新密码至少需要 8 个字符。"
+  },
   "ui17e77337": "新建",
   "@ui17e77337": {
-    "description": "Flule34 UI: 新建"
+    "description": "HaRu UI: 新建"
   },
   "ui1b46740e": "新建任务会等待符合条件的网络；已存在任务不被追溯修改。",
   "@ui1b46740e": {
-    "description": "Flule34 UI: 新建任务会等待符合条件的网络；已存在任务不被追溯修改。"
+    "description": "HaRu UI: 新建任务会等待符合条件的网络；已存在任务不被追溯修改。"
   },
   "ui1062b8a1": "新建播放列表",
   "@ui1062b8a1": {
-    "description": "Flule34 UI: 新建播放列表"
+    "description": "HaRu UI: 新建播放列表"
   },
   "ui264c8716": "新建本地库",
   "@ui264c8716": {
-    "description": "Flule34 UI: 新建本地库"
+    "description": "HaRu UI: 新建本地库"
   },
   "ui742da263": "新建翻译服务",
   "@ui742da263": {
-    "description": "Flule34 UI: 新建翻译服务"
+    "description": "HaRu UI: 新建翻译服务"
   },
   "ui3180d36c": "无法将视频保存到 Download/Flule34。",
   "@ui3180d36c": {
-    "description": "Flule34 UI: 无法将视频保存到 Download/Flule34。"
+    "description": "HaRu UI: 无法将视频保存到 Download/Flule34。"
   },
   "ui180bd386": "无法打开分享面板：{p0}",
   "@ui180bd386": {
-    "description": "Flule34 UI: 无法打开分享面板：{p0}",
+    "description": "HaRu UI: 无法打开分享面板：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1685,7 +2506,7 @@
   },
   "ui3a33698e": "无法播放此视频源：{p0}",
   "@ui3a33698e": {
-    "description": "Flule34 UI: 无法播放此视频源：{p0}",
+    "description": "HaRu UI: 无法播放此视频源：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1694,80 +2515,130 @@
   },
   "ui310db05f": "无法生成诊断信息：{p0}",
   "@ui310db05f": {
-    "description": "Flule34 UI: 无法生成诊断信息：{p0}",
+    "description": "HaRu UI: 无法生成诊断信息：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
       }
     }
   },
+  "ui2dfcd562": "无法读取网页内容，可以点重试。",
+  "@ui2dfcd562": {
+    "description": "HaRu UI: 无法读取网页内容，可以点重试。"
+  },
   "ui0b6ddbbb": "无法连接 GitHub，请检查网络后重试。",
   "@ui0b6ddbbb": {
-    "description": "Flule34 UI: 无法连接 GitHub，请检查网络后重试。"
+    "description": "HaRu UI: 无法连接 GitHub，请检查网络后重试。"
+  },
+  "ui22636da6": "日本 IP 可能无法通过验证",
+  "@ui22636da6": {
+    "description": "HaRu UI: 日本 IP 可能无法通过验证"
   },
   "ui005f5ce7": "日本語",
   "@ui005f5ce7": {
-    "description": "Flule34 UI: 日本語"
+    "description": "HaRu UI: 日本語"
   },
   "ui60361df0": "旧版自定义端点",
   "@ui60361df0": {
-    "description": "Flule34 UI: 旧版自定义端点"
+    "description": "HaRu UI: 旧版自定义端点"
   },
   "ui3754e1ab": "时长",
   "@ui3754e1ab": {
-    "description": "Flule34 UI: 时长"
+    "description": "HaRu UI: 时长"
   },
   "ui194644ca": "时长最长",
   "@ui194644ca": {
-    "description": "Flule34 UI: 时长最长"
+    "description": "HaRu UI: 时长最长"
+  },
+  "ui7b627dbe": "时长：{p0}",
+  "@ui7b627dbe": {
+    "description": "HaRu UI: 时长：{p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui3ba0d1c3": "昨天",
+  "@ui3ba0d1c3": {
+    "description": "HaRu UI: 昨天"
   },
   "ui16b646f4": "是",
   "@ui16b646f4": {
-    "description": "Flule34 UI: 是"
+    "description": "HaRu UI: 是"
+  },
+  "ui5a80d5b4": "显示名称",
+  "@ui5a80d5b4": {
+    "description": "HaRu UI: 显示名称"
   },
   "ui6a379702": "显示密码",
   "@ui6a379702": {
-    "description": "Flule34 UI: 显示密码"
+    "description": "HaRu UI: 显示密码"
   },
   "ui5e0f4440": "显示设置",
   "@ui5e0f4440": {
-    "description": "Flule34 UI: 显示设置"
+    "description": "HaRu UI: 显示设置"
   },
   "ui7b1cd931": "暂停",
   "@ui7b1cd931": {
-    "description": "Flule34 UI: 暂停"
+    "description": "HaRu UI: 暂停"
   },
   "ui585c23ff": "暂时无法检查更新，请稍后重试。",
   "@ui585c23ff": {
-    "description": "Flule34 UI: 暂时无法检查更新，请稍后重试。"
+    "description": "HaRu UI: 暂时无法检查更新，请稍后重试。"
   },
   "ui47bde52d": "暂时无法预览",
   "@ui47bde52d": {
-    "description": "Flule34 UI: 暂时无法预览"
+    "description": "HaRu UI: 暂时无法预览"
   },
   "ui2effb403": "暂时没有可展示的热门标签。",
   "@ui2effb403": {
-    "description": "Flule34 UI: 暂时没有可展示的热门标签。"
+    "description": "HaRu UI: 暂时没有可展示的热门标签。"
+  },
+  "ui64683360": "暴力或令人反感的內容",
+  "@ui64683360": {
+    "description": "HaRu UI: 暴力或令人反感的內容"
+  },
+  "ui6b06a5db": "暴力或令人反感的内容",
+  "@ui6b06a5db": {
+    "description": "HaRu UI: 暴力或令人反感的内容"
+  },
+  "ui1902e077": "更多",
+  "@ui1902e077": {
+    "description": "HaRu UI: 更多"
   },
   "ui38e45090": "更多操作",
   "@ui38e45090": {
-    "description": "Flule34 UI: 更多操作"
+    "description": "HaRu UI: 更多操作"
+  },
+  "ui2d102f6b": "更换头像",
+  "@ui2d102f6b": {
+    "description": "HaRu UI: 更换头像"
+  },
+  "ui2bef8164": "更新失败：{p0}",
+  "@ui2bef8164": {
+    "description": "HaRu UI: 更新失败：{p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
   },
   "ui2ec2c481": "更新检查已完成。",
   "@ui2ec2c481": {
-    "description": "Flule34 UI: 更新检查已完成。"
+    "description": "HaRu UI: 更新检查已完成。"
   },
   "ui17e1bbfa": "更新源",
   "@ui17e1bbfa": {
-    "description": "Flule34 UI: 更新源"
+    "description": "HaRu UI: 更新源"
   },
   "ui0beabc18": "更新源没有可用的 Android Release。",
   "@ui0beabc18": {
-    "description": "Flule34 UI: 更新源没有可用的 Android Release。"
+    "description": "HaRu UI: 更新源没有可用的 Android Release。"
   },
   "ui55d54121": "更新源：{p0}",
   "@ui55d54121": {
-    "description": "Flule34 UI: 更新源：{p0}",
+    "description": "HaRu UI: 更新源：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1776,67 +2647,103 @@
   },
   "ui1d030a86": "更新通道",
   "@ui1d030a86": {
-    "description": "Flule34 UI: 更新通道"
+    "description": "HaRu UI: 更新通道"
   },
   "ui69112ae8": "最低投票数",
   "@ui69112ae8": {
-    "description": "Flule34 UI: 最低投票数"
+    "description": "HaRu UI: 最低投票数"
   },
   "ui65f28853": "最低点赞率",
   "@ui65f28853": {
-    "description": "Flule34 UI: 最低点赞率"
+    "description": "HaRu UI: 最低点赞率"
   },
   "ui51a023ab": "最低票数",
   "@ui51a023ab": {
-    "description": "Flule34 UI: 最低票数"
+    "description": "HaRu UI: 最低票数"
   },
   "ui2b705f61": "最多观看",
   "@ui2b705f61": {
-    "description": "Flule34 UI: 最多观看"
+    "description": "HaRu UI: 最多观看"
   },
   "ui347c998f": "最新",
   "@ui347c998f": {
-    "description": "Flule34 UI: 最新"
+    "description": "HaRu UI: 最新"
+  },
+  "ui6c3fd091": "最新上传",
+  "@ui6c3fd091": {
+    "description": "HaRu UI: 最新上传"
+  },
+  "ui7a46e769": "最新上傳",
+  "@ui7a46e769": {
+    "description": "HaRu UI: 最新上傳"
+  },
+  "ui21368744": "最新上市",
+  "@ui21368744": {
+    "description": "HaRu UI: 最新上市"
   },
   "ui222ba90b": "最新创建",
   "@ui222ba90b": {
-    "description": "Flule34 UI: 最新创建"
+    "description": "HaRu UI: 最新创建"
   },
   "ui368db057": "最新订阅",
   "@ui368db057": {
-    "description": "Flule34 UI: 最新订阅"
+    "description": "HaRu UI: 最新订阅"
+  },
+  "ui4778e5e1": "最早",
+  "@ui4778e5e1": {
+    "description": "HaRu UI: 最早"
+  },
+  "ui4124f57e": "最热",
+  "@ui4124f57e": {
+    "description": "HaRu UI: 最热"
   },
   "ui23dfffd1": "最近修改",
   "@ui23dfffd1": {
-    "description": "Flule34 UI: 最近修改"
+    "description": "HaRu UI: 最近修改"
   },
   "ui6da2840c": "最近更新",
   "@ui6da2840c": {
-    "description": "Flule34 UI: 最近更新"
+    "description": "HaRu UI: 最近更新"
   },
   "ui5891390e": "最近添加",
   "@ui5891390e": {
-    "description": "Flule34 UI: 最近添加"
+    "description": "HaRu UI: 最近添加"
+  },
+  "ui73804ab0": "最近观看",
+  "@ui73804ab0": {
+    "description": "HaRu UI: 最近观看"
   },
   "ui3f66748c": "最长",
   "@ui3f66748c": {
-    "description": "Flule34 UI: 最长"
+    "description": "HaRu UI: 最长"
   },
   "ui72d8c6d5": "最高可用",
   "@ui72d8c6d5": {
-    "description": "Flule34 UI: 最高可用"
+    "description": "HaRu UI: 最高可用"
   },
   "ui646cc4af": "最高评分",
   "@ui646cc4af": {
-    "description": "Flule34 UI: 最高评分"
+    "description": "HaRu UI: 最高评分"
+  },
+  "ui7dbfe375": "月",
+  "@ui7dbfe375": {
+    "description": "HaRu UI: 月"
+  },
+  "ui625d464f": "月份",
+  "@ui625d464f": {
+    "description": "HaRu UI: 月份"
   },
   "ui7ee4b38a": "服务名称",
   "@ui7ee4b38a": {
-    "description": "Flule34 UI: 服务名称"
+    "description": "HaRu UI: 服务名称"
+  },
+  "ui0b0f8079": "未挂载",
+  "@ui0b0f8079": {
+    "description": "HaRu UI: 未挂载"
   },
   "ui5801f5b9": "未捕获异步异常：{p0}\n{p1}",
   "@ui5801f5b9": {
-    "description": "Flule34 UI: 未捕获异步异常：{p0}\n{p1}",
+    "description": "HaRu UI: 未捕获异步异常：{p0}\n{p1}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1848,92 +2755,113 @@
   },
   "ui1d2649c7": "未排除任何{p0}",
   "@ui1d2649c7": {
-    "description": "Flule34 UI: 未排除任何{p0}",
+    "description": "HaRu UI: 未排除任何{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
       }
     }
   },
+  "ui6c16defb": "未登录 Hanime",
+  "@ui6c16defb": {
+    "description": "HaRu UI: 未登录 Hanime"
+  },
   "ui73b71caa": "未配置",
   "@ui73b71caa": {
-    "description": "Flule34 UI: 未配置"
+    "description": "HaRu UI: 未配置"
   },
   "ui593a76ae": "本地分类库",
   "@ui593a76ae": {
-    "description": "Flule34 UI: 本地分类库"
-  },
-  "ui7afe5844": "本地分类库无需登录；登录后还可查看网站收藏、历史和订阅。",
-  "@ui7afe5844": {
-    "description": "Flule34 UI: 本地分类库无需登录；登录后还可查看网站收藏、历史和订阅。"
+    "description": "HaRu UI: 本地分类库"
   },
   "ui0760582c": "本地库",
   "@ui0760582c": {
-    "description": "Flule34 UI: 本地库"
+    "description": "HaRu UI: 本地库"
   },
   "ui5af2b9c7": "本地诊断日志",
   "@ui5af2b9c7": {
-    "description": "Flule34 UI: 本地诊断日志"
+    "description": "HaRu UI: 本地诊断日志"
+  },
+  "ui42457eeb": "本机",
+  "@ui42457eeb": {
+    "description": "HaRu UI: 本机"
   },
   "ui609a0e8a": "本机下载",
   "@ui609a0e8a": {
-    "description": "Flule34 UI: 本机下载"
+    "description": "HaRu UI: 本机下载"
   },
   "ui010aee81": "本机下载记录",
   "@ui010aee81": {
-    "description": "Flule34 UI: 本机下载记录"
+    "description": "HaRu UI: 本机下载记录"
   },
   "ui21a44385": "来源",
   "@ui21a44385": {
-    "description": "Flule34 UI: 来源"
+    "description": "HaRu UI: 来源"
   },
   "ui458ff22a": "构建时间",
   "@ui458ff22a": {
-    "description": "Flule34 UI: 构建时间"
+    "description": "HaRu UI: 构建时间"
   },
   "ui06231f4e": "构建模式",
   "@ui06231f4e": {
-    "description": "Flule34 UI: 构建模式"
+    "description": "HaRu UI: 构建模式"
   },
   "ui3a3a5f44": "查找艺术家页面",
   "@ui3a3a5f44": {
-    "description": "Flule34 UI: 查找艺术家页面"
+    "description": "HaRu UI: 查找艺术家页面"
   },
-  "ui32e834c8": "查看 Flule34 与第三方 Flutter 依赖许可",
-  "@ui32e834c8": {
-    "description": "Flule34 UI: 查看 Flule34 与第三方 Flutter 依赖许可"
+  "ui29d7c1b1": "查看 HaRu 与第三方 Flutter 依赖许可",
+  "@ui29d7c1b1": {
+    "description": "HaRu UI: 查看 HaRu 与第三方 Flutter 依赖许可"
+  },
+  "ui2489fa87": "查看 {p0} 则回复",
+  "@ui2489fa87": {
+    "description": "HaRu UI: 查看 {p0} 则回复",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
   },
   "ui3c5ed424": "查看公开资料、上传内容和公开收藏",
   "@ui3c5ed424": {
-    "description": "Flule34 UI: 查看公开资料、上传内容和公开收藏"
+    "description": "HaRu UI: 查看公开资料、上传内容和公开收藏"
+  },
+  "ui39fa84e7": "查看公开资料、订阅和上传内容",
+  "@ui39fa84e7": {
+    "description": "HaRu UI: 查看公开资料、订阅和上传内容"
   },
   "ui682b70e0": "查看并复制不含凭据的运行环境摘要",
   "@ui682b70e0": {
-    "description": "Flule34 UI: 查看并复制不含凭据的运行环境摘要"
+    "description": "HaRu UI: 查看并复制不含凭据的运行环境摘要"
   },
   "ui37042e79": "查看诊断信息",
   "@ui37042e79": {
-    "description": "Flule34 UI: 查看诊断信息"
+    "description": "HaRu UI: 查看诊断信息"
+  },
+  "ui7f5af178": "标准视频列表布局",
+  "@ui7f5af178": {
+    "description": "HaRu UI: 标准视频列表布局"
   },
   "ui3d8dc836": "标签",
   "@ui3d8dc836": {
-    "description": "Flule34 UI: 标签"
+    "description": "HaRu UI: 标签"
   },
   "ui669643c5": "标题",
   "@ui669643c5": {
-    "description": "Flule34 UI: 标题"
+    "description": "HaRu UI: 标题"
   },
   "ui04e99c7b": "标题、分类和标签可以分别选择显示原文、译文或双语。",
   "@ui04e99c7b": {
-    "description": "Flule34 UI: 标题、分类和标签可以分别选择显示原文、译文或双语。"
+    "description": "HaRu UI: 标题、分类和标签可以分别选择显示原文、译文或双语。"
   },
   "ui308c78ab": "检查更新",
   "@ui308c78ab": {
-    "description": "Flule34 UI: 检查更新"
+    "description": "HaRu UI: 检查更新"
   },
   "ui5822474f": "检查更新失败：{p0}",
   "@ui5822474f": {
-    "description": "Flule34 UI: 检查更新失败：{p0}",
+    "description": "HaRu UI: 检查更新失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1942,11 +2870,11 @@
   },
   "ui3535d913": "检查更新超时，请稍后重试。",
   "@ui3535d913": {
-    "description": "Flule34 UI: 检查更新超时，请稍后重试。"
+    "description": "HaRu UI: 检查更新超时，请稍后重试。"
   },
   "ui35ec3fa1": "模型列表拉取失败：{p0}",
   "@ui35ec3fa1": {
-    "description": "Flule34 UI: 模型列表拉取失败：{p0}",
+    "description": "HaRu UI: 模型列表拉取失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1955,19 +2883,19 @@
   },
   "ui703ce28e": "模型名",
   "@ui703ce28e": {
-    "description": "Flule34 UI: 模型名"
+    "description": "HaRu UI: 模型名"
   },
   "ui1375925f": "模糊视频封面",
   "@ui1375925f": {
-    "description": "Flule34 UI: 模糊视频封面"
+    "description": "HaRu UI: 模糊视频封面"
   },
   "ui43f69efd": "正在下载",
   "@ui43f69efd": {
-    "description": "Flule34 UI: 正在下载"
+    "description": "HaRu UI: 正在下载"
   },
   "ui210fbca4": "正在下载 · {p0}",
   "@ui210fbca4": {
-    "description": "Flule34 UI: 正在下载 · {p0}",
+    "description": "HaRu UI: 正在下载 · {p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1976,19 +2904,19 @@
   },
   "ui34d9a170": "正在刷新视频地址…",
   "@ui34d9a170": {
-    "description": "Flule34 UI: 正在刷新视频地址…"
+    "description": "HaRu UI: 正在刷新视频地址…"
   },
   "ui57036f5e": "正在处理",
   "@ui57036f5e": {
-    "description": "Flule34 UI: 正在处理"
+    "description": "HaRu UI: 正在处理"
   },
   "ui1e85b6dc": "正在播放媒体",
   "@ui1e85b6dc": {
-    "description": "Flule34 UI: 正在播放媒体"
+    "description": "HaRu UI: 正在播放媒体"
   },
-  "ui01c66e0e": "正在整理关注内容 {p0}/{p1}",
-  "@ui01c66e0e": {
-    "description": "Flule34 UI: 正在整理关注内容 {p0}/{p1}",
+  "ui0e786c06": "正在整理订阅内容 {p0}/{p1}",
+  "@ui0e786c06": {
+    "description": "HaRu UI: 正在整理订阅内容 {p0}/{p1}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -1997,30 +2925,34 @@
         "type": "String"
       }
     }
+  },
+  "ui3dcae6c0": "正在等待验证结果…如果长时间无反应，请点重试。",
+  "@ui3dcae6c0": {
+    "description": "HaRu UI: 正在等待验证结果…如果长时间无反应，请点重试。"
   },
   "ui37674019": "正在读取全部视频…",
   "@ui37674019": {
-    "description": "Flule34 UI: 正在读取全部视频…"
+    "description": "HaRu UI: 正在读取全部视频…"
   },
   "ui5323d64f": "正在读取可用清晰度…",
   "@ui5323d64f": {
-    "description": "Flule34 UI: 正在读取可用清晰度…"
+    "description": "HaRu UI: 正在读取可用清晰度…"
   },
   "ui334203a0": "正在读取收藏状态",
   "@ui334203a0": {
-    "description": "Flule34 UI: 正在读取收藏状态"
+    "description": "HaRu UI: 正在读取收藏状态"
   },
   "ui0c3a23f3": "正在读取日志信息…",
   "@ui0c3a23f3": {
-    "description": "Flule34 UI: 正在读取日志信息…"
+    "description": "HaRu UI: 正在读取日志信息…"
   },
   "ui6b2b15cb": "正在读取最近更新…",
   "@ui6b2b15cb": {
-    "description": "Flule34 UI: 正在读取最近更新…"
+    "description": "HaRu UI: 正在读取最近更新…"
   },
   "ui40cc44ec": "正在读取最近更新（{p0}/{p1}）",
   "@ui40cc44ec": {
-    "description": "Flule34 UI: 正在读取最近更新（{p0}/{p1}）",
+    "description": "HaRu UI: 正在读取最近更新（{p0}/{p1}）",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -2030,53 +2962,77 @@
       }
     }
   },
+  "ui23a76939": "正在读取点赞状态",
+  "@ui23a76939": {
+    "description": "HaRu UI: 正在读取点赞状态"
+  },
   "ui3016a852": "正在读取版本…",
   "@ui3016a852": {
-    "description": "Flule34 UI: 正在读取版本…"
+    "description": "HaRu UI: 正在读取版本…"
+  },
+  "ui0c4e429a": "正在读取稍后观看状态",
+  "@ui0c4e429a": {
+    "description": "HaRu UI: 正在读取稍后观看状态"
   },
   "ui3de0c840": "正在连接",
   "@ui3de0c840": {
-    "description": "Flule34 UI: 正在连接"
+    "description": "HaRu UI: 正在连接"
+  },
+  "ui7629ef8e": "正在通过浏览器连接 Hanime…",
+  "@ui7629ef8e": {
+    "description": "HaRu UI: 正在通过浏览器连接 Hanime…"
   },
   "ui108cc700": "此构建未配置 GitHub Releases 更新源。",
   "@ui108cc700": {
-    "description": "Flule34 UI: 此构建未配置 GitHub Releases 更新源。"
+    "description": "HaRu UI: 此构建未配置 GitHub Releases 更新源。"
   },
   "ui3a0a0c97": "此视频未提供可直接播放的 MP4 源。",
   "@ui3a0a0c97": {
-    "description": "Flule34 UI: 此视频未提供可直接播放的 MP4 源。"
+    "description": "HaRu UI: 此视频未提供可直接播放的 MP4 源。"
   },
   "ui02c5ad74": "此视频没有可下载的 MP4 源。",
   "@ui02c5ad74": {
-    "description": "Flule34 UI: 此视频没有可下载的 MP4 源。"
+    "description": "HaRu UI: 此视频没有可下载的 MP4 源。"
   },
   "ui7cb7a0c5": "此视频源仍不可用，请重试刷新视频地址。",
   "@ui7cb7a0c5": {
-    "description": "Flule34 UI: 此视频源仍不可用，请重试刷新视频地址。"
+    "description": "HaRu UI: 此视频源仍不可用，请重试刷新视频地址。"
   },
   "ui62dcc4bc": "每次加载一批随机视频",
   "@ui62dcc4bc": {
-    "description": "Flule34 UI: 每次加载一批随机视频"
+    "description": "HaRu UI: 每次加载一批随机视频"
   },
   "ui51c846f1": "每次询问",
   "@ui51c846f1": {
-    "description": "Flule34 UI: 每次询问"
+    "description": "HaRu UI: 每次询问"
   },
   "ui68fbffba": "没有保存完成文件的位置。",
   "@ui68fbffba": {
-    "description": "Flule34 UI: 没有保存完成文件的位置。"
+    "description": "HaRu UI: 没有保存完成文件的位置。"
+  },
+  "ui129bcb21": "没有匹配的品牌。",
+  "@ui129bcb21": {
+    "description": "HaRu UI: 没有匹配的品牌。"
   },
   "ui13ed4ac5": "没有匹配的已加载内容。",
   "@ui13ed4ac5": {
-    "description": "Flule34 UI: 没有匹配的已加载内容。"
+    "description": "HaRu UI: 没有匹配的已加载内容。"
+  },
+  "ui26ec4dbb": "没有匹配的标签。",
+  "@ui26ec4dbb": {
+    "description": "HaRu UI: 没有匹配的标签。"
   },
   "ui5198af87": "没有可导出的日志。\n",
   "@ui5198af87": {
-    "description": "Flule34 UI: 没有可导出的日志。\n"
+    "description": "HaRu UI: 没有可导出的日志。\n"
+  },
+  "ui29c894b2": "没有可用的备用清晰度，请稍后重试。",
+  "@ui29c894b2": {
+    "description": "HaRu UI: 没有可用的备用清晰度，请稍后重试。"
   },
   "ui61fe8d4a": "没有找到与“{p0}”匹配的{p1}。",
   "@ui61fe8d4a": {
-    "description": "Flule34 UI: 没有找到与“{p0}”匹配的{p1}。",
+    "description": "HaRu UI: 没有找到与“{p0}”匹配的{p1}。",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -2088,7 +3044,7 @@
   },
   "ui02a64c6e": "没有找到匹配的{p0}。",
   "@ui02a64c6e": {
-    "description": "Flule34 UI: 没有找到匹配的{p0}。",
+    "description": "HaRu UI: 没有找到匹配的{p0}。",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -2097,15 +3053,15 @@
   },
   "ui6143fb85": "没有找到同时满足这些条件的视频。",
   "@ui6143fb85": {
-    "description": "Flule34 UI: 没有找到同时满足这些条件的视频。"
+    "description": "HaRu UI: 没有找到同时满足这些条件的视频。"
   },
   "ui2aa03638": "没有找到对应的本地标签译文或已学习标题译文。",
   "@ui2aa03638": {
-    "description": "Flule34 UI: 没有找到对应的本地标签译文或已学习标题译文。"
+    "description": "HaRu UI: 没有找到对应的本地标签译文或已学习标题译文。"
   },
   "ui394bbe87": "没有找到相关{p0}。",
   "@ui394bbe87": {
-    "description": "Flule34 UI: 没有找到相关{p0}。",
+    "description": "HaRu UI: 没有找到相关{p0}。",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -2114,91 +3070,160 @@
   },
   "ui335a4697": "没有找到符合条件的视频。",
   "@ui335a4697": {
-    "description": "Flule34 UI: 没有找到符合条件的视频。"
+    "description": "HaRu UI: 没有找到符合条件的视频。"
   },
   "ui3c55278f": "没有找到视频。",
   "@ui3c55278f": {
-    "description": "Flule34 UI: 没有找到视频。"
+    "description": "HaRu UI: 没有找到视频。"
   },
   "ui2855d008": "没有符合搜索和筛选条件的视频。",
   "@ui2855d008": {
-    "description": "Flule34 UI: 没有符合搜索和筛选条件的视频。"
+    "description": "HaRu UI: 没有符合搜索和筛选条件的视频。"
   },
   "ui1cbeb77a": "没有符合条件的下载记录。",
   "@ui1cbeb77a": {
-    "description": "Flule34 UI: 没有符合条件的下载记录。"
+    "description": "HaRu UI: 没有符合条件的下载记录。"
   },
   "ui3f6214e2": "没有符合条件的播放列表。",
   "@ui3f6214e2": {
-    "description": "Flule34 UI: 没有符合条件的播放列表。"
+    "description": "HaRu UI: 没有符合条件的播放列表。"
   },
   "ui5bcb2c9b": "没有符合条件的本地库。",
   "@ui5bcb2c9b": {
-    "description": "Flule34 UI: 没有符合条件的本地库。"
+    "description": "HaRu UI: 没有符合条件的本地库。"
   },
   "ui3288b748": "没有符合条件的订阅。",
   "@ui3288b748": {
-    "description": "Flule34 UI: 没有符合条件的订阅。"
+    "description": "HaRu UI: 没有符合条件的订阅。"
   },
   "ui1408d9d3": "没有符合条件的译文。",
   "@ui1408d9d3": {
-    "description": "Flule34 UI: 没有符合条件的译文。"
+    "description": "HaRu UI: 没有符合条件的译文。"
+  },
+  "ui522cef73": "泡面番",
+  "@ui522cef73": {
+    "description": "HaRu UI: 泡面番"
+  },
+  "ui0edc6509": "泡麵番",
+  "@ui0edc6509": {
+    "description": "HaRu UI: 泡麵番"
   },
   "ui0e0207cc": "注册账号",
   "@ui0e0207cc": {
-    "description": "Flule34 UI: 注册账号"
+    "description": "HaRu UI: 注册账号"
   },
   "ui34dc8c2e": "注册邮箱",
   "@ui34dc8c2e": {
-    "description": "Flule34 UI: 注册邮箱"
+    "description": "HaRu UI: 注册邮箱"
   },
   "ui4782703e": "浅色",
   "@ui4782703e": {
-    "description": "Flule34 UI: 浅色"
+    "description": "HaRu UI: 浅色"
   },
   "ui06cf3f13": "测试连接",
   "@ui06cf3f13": {
-    "description": "Flule34 UI: 测试连接"
+    "description": "HaRu UI: 测试连接"
+  },
+  "ui1d96670f": "浏览器主页面加载失败；错误码={p0}；",
+  "@ui1d96670f": {
+    "description": "HaRu UI: 浏览器主页面加载失败；错误码={p0}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui33fbe6ce": "浏览器挑战界面已消失，正在等待 cf_clearance；",
+  "@ui33fbe6ce": {
+    "description": "HaRu UI: 浏览器挑战界面已消失，正在等待 cf_clearance；"
+  },
+  "ui129ae59c": "浏览器检测到 Cloudflare 挑战；路径={p0}；",
+  "@ui129ae59c": {
+    "description": "HaRu UI: 浏览器检测到 Cloudflare 挑战；路径={p0}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui67cd734f": "浏览器辅助验证完成；触发={p0}；路径={p1}；",
+  "@ui67cd734f": {
+    "description": "HaRu UI: 浏览器辅助验证完成；触发={p0}；路径={p1}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      },
+      "p1": {
+        "type": "String"
+      }
+    }
+  },
+  "ui2c065af1": "浏览器辅助验证弹窗已显示；路径={p0}",
+  "@ui2c065af1": {
+    "description": "HaRu UI: 浏览器辅助验证弹窗已显示；路径={p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui521398c6": "浏览器页面开始加载；路径={p0}",
+  "@ui521398c6": {
+    "description": "HaRu UI: 浏览器页面开始加载；路径={p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
   },
   "ui2bce8045": "浏览站点内容分类",
   "@ui2bce8045": {
-    "description": "Flule34 UI: 浏览站点内容分类"
+    "description": "HaRu UI: 浏览站点内容分类"
   },
   "ui1bdcacb9": "浏览站点评分最高的视频",
   "@ui1bdcacb9": {
-    "description": "Flule34 UI: 浏览站点评分最高的视频"
+    "description": "HaRu UI: 浏览站点评分最高的视频"
   },
   "ui4e94fd7c": "深色",
   "@ui4e94fd7c": {
-    "description": "Flule34 UI: 深色"
+    "description": "HaRu UI: 深色"
   },
   "ui68aa72b8": "添加",
   "@ui68aa72b8": {
-    "description": "Flule34 UI: 添加"
+    "description": "HaRu UI: 添加"
   },
   "ui28b4fe80": "清晰度",
   "@ui28b4fe80": {
-    "description": "Flule34 UI: 清晰度"
+    "description": "HaRu UI: 清晰度"
+  },
+  "ui57e9c7ab": "清晰度={p0}",
+  "@ui57e9c7ab": {
+    "description": "HaRu UI: 清晰度={p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
   },
   "ui1226aec8": "清空",
   "@ui1226aec8": {
-    "description": "Flule34 UI: 清空"
+    "description": "HaRu UI: 清空"
   },
   "ui66d1872a": "清空搜索历史？",
   "@ui66d1872a": {
-    "description": "Flule34 UI: 清空搜索历史？"
+    "description": "HaRu UI: 清空搜索历史？"
   },
   "ui3c5a0f54": "清除",
   "@ui3c5a0f54": {
-    "description": "Flule34 UI: 清除"
+    "description": "HaRu UI: 清除"
   },
   "ui1e1dc2c5": "清除图片缓存",
   "@ui1e1dc2c5": {
-    "description": "Flule34 UI: 清除图片缓存"
+    "description": "HaRu UI: 清除图片缓存"
   },
   "ui198292d1": "清除图片缓存失败：{p0}",
   "@ui198292d1": {
-    "description": "Flule34 UI: 清除图片缓存失败：{p0}",
+    "description": "HaRu UI: 清除图片缓存失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -2207,19 +3232,19 @@
   },
   "ui2b78b9a7": "清除应用日志？",
   "@ui2b78b9a7": {
-    "description": "Flule34 UI: 清除应用日志？"
+    "description": "HaRu UI: 清除应用日志？"
   },
   "ui62aa01c1": "清除当前账号搜索历史",
   "@ui62aa01c1": {
-    "description": "Flule34 UI: 清除当前账号搜索历史"
+    "description": "HaRu UI: 清除当前账号搜索历史"
   },
   "ui04093a21": "清除搜索",
   "@ui04093a21": {
-    "description": "Flule34 UI: 清除搜索"
+    "description": "HaRu UI: 清除搜索"
   },
   "ui21987264": "清除搜索历史失败：{p0}",
   "@ui21987264": {
-    "description": "Flule34 UI: 清除搜索历史失败：{p0}",
+    "description": "HaRu UI: 清除搜索历史失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -2228,11 +3253,11 @@
   },
   "ui03f9bc1e": "清除搜索历史？",
   "@ui03f9bc1e": {
-    "description": "Flule34 UI: 清除搜索历史？"
+    "description": "HaRu UI: 清除搜索历史？"
   },
   "ui0e4abc92": "清除播放进度失败：{p0}",
   "@ui0e4abc92": {
-    "description": "Flule34 UI: 清除播放进度失败：{p0}",
+    "description": "HaRu UI: 清除播放进度失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -2241,23 +3266,35 @@
   },
   "ui2b43d71b": "清除日志",
   "@ui2b43d71b": {
-    "description": "Flule34 UI: 清除日志"
+    "description": "HaRu UI: 清除日志"
   },
   "ui1f517bea": "清除日志失败，请稍后重试。",
   "@ui1f517bea": {
-    "description": "Flule34 UI: 清除日志失败，请稍后重试。"
+    "description": "HaRu UI: 清除日志失败，请稍后重试。"
   },
   "ui47882249": "清除条件",
   "@ui47882249": {
-    "description": "Flule34 UI: 清除条件"
+    "description": "HaRu UI: 清除条件"
   },
   "ui21697b99": "点击返回应用",
   "@ui21697b99": {
-    "description": "Flule34 UI: 点击返回应用"
+    "description": "HaRu UI: 点击返回应用"
+  },
+  "ui3273204a": "点赞",
+  "@ui3273204a": {
+    "description": "HaRu UI: 点赞"
+  },
+  "ui6356f887": "点赞列表暂时为空。",
+  "@ui6356f887": {
+    "description": "HaRu UI: 点赞列表暂时为空。"
+  },
+  "ui6dfa7544": "点赞状态读取失败，点击重试",
+  "@ui6dfa7544": {
+    "description": "HaRu UI: 点赞状态读取失败，点击重试"
   },
   "ui26b5101f": "点赞率 ≥ {p0}%",
   "@ui26b5101f": {
-    "description": "Flule34 UI: 点赞率 ≥ {p0}%",
+    "description": "HaRu UI: 点赞率 ≥ {p0}%",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -2266,31 +3303,39 @@
   },
   "ui1894e352": "点赞率必须配合投票数判断，避免少量投票造成虚高。",
   "@ui1894e352": {
-    "description": "Flule34 UI: 点赞率必须配合投票数判断，避免少量投票造成虚高。"
+    "description": "HaRu UI: 点赞率必须配合投票数判断，避免少量投票造成虚高。"
   },
   "ui71e94df2": "热门",
   "@ui71e94df2": {
-    "description": "Flule34 UI: 热门"
+    "description": "HaRu UI: 热门"
   },
   "ui41d23f81": "热门标签",
   "@ui41d23f81": {
-    "description": "Flule34 UI: 热门标签"
+    "description": "HaRu UI: 热门标签"
   },
   "ui0e7f13ac": "热门标签暂时不可用。",
   "@ui0e7f13ac": {
-    "description": "Flule34 UI: 热门标签暂时不可用。"
+    "description": "HaRu UI: 热门标签暂时不可用。"
   },
   "ui795ab7fb": "热门视频",
   "@ui795ab7fb": {
-    "description": "Flule34 UI: 热门视频"
+    "description": "HaRu UI: 热门视频"
   },
   "ui5137980d": "热门视频、高评分视频和艺术家排行",
   "@ui5137980d": {
-    "description": "Flule34 UI: 热门视频、高评分视频和艺术家排行"
+    "description": "HaRu UI: 热门视频、高评分视频和艺术家排行"
+  },
+  "ui0ac00f7c": "煽动仇恨或恶意内容",
+  "@ui0ac00f7c": {
+    "description": "HaRu UI: 煽动仇恨或恶意内容"
+  },
+  "ui173de99c": "煽動仇恨或惡意內容",
+  "@ui173de99c": {
+    "description": "HaRu UI: 煽動仇恨或惡意內容"
   },
   "ui326c0193": "版本 {p0}+{p1}",
   "@ui326c0193": {
-    "description": "Flule34 UI: 版本 {p0}+{p1}",
+    "description": "HaRu UI: 版本 {p0}+{p1}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -2302,7 +3347,7 @@
   },
   "ui3d81628e": "版本：{p0}",
   "@ui3d81628e": {
-    "description": "Flule34 UI: 版本：{p0}",
+    "description": "HaRu UI: 版本：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -2311,15 +3356,24 @@
   },
   "ui4627f6e6": "生成包含诊断信息和最近日志的文本文件。",
   "@ui4627f6e6": {
-    "description": "Flule34 UI: 生成包含诊断信息和最近日志的文本文件。"
+    "description": "HaRu UI: 生成包含诊断信息和最近日志的文本文件。"
   },
   "ui1be4cbb9": "用户",
   "@ui1be4cbb9": {
-    "description": "Flule34 UI: 用户"
+    "description": "HaRu UI: 用户"
   },
   "ui2ff2035d": "用户 ID：{p0}",
   "@ui2ff2035d": {
-    "description": "Flule34 UI: 用户 ID：{p0}",
+    "description": "HaRu UI: 用户 ID：{p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui19930fad": "用户手动重试刷新验证页面；路径={p0}；",
+  "@ui19930fad": {
+    "description": "HaRu UI: 用户手动重试刷新验证页面；路径={p0}；",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -2328,7 +3382,7 @@
   },
   "ui07df625b": "用户译文 {p0} 条。\n\n",
   "@ui07df625b": {
-    "description": "Flule34 UI: 用户译文 {p0} 条。\n\n",
+    "description": "HaRu UI: 用户译文 {p0} 条。\n\n",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -2337,55 +3391,92 @@
   },
   "ui02ac0fa7": "由网站验证身份并处理邮箱变更",
   "@ui02ac0fa7": {
-    "description": "Flule34 UI: 由网站验证身份并处理邮箱变更"
+    "description": "HaRu UI: 由网站验证身份并处理邮箱变更"
   },
   "ui766b8c5d": "由网站验证身份并更新账号密码",
   "@ui766b8c5d": {
-    "description": "Flule34 UI: 由网站验证身份并更新账号密码"
+    "description": "HaRu UI: 由网站验证身份并更新账号密码"
   },
   "ui6f51d88d": "界面语言",
   "@ui6f51d88d": {
-    "description": "Flule34 UI: 界面语言"
+    "description": "HaRu UI: 界面语言"
   },
   "ui673b9a23": "留空表示保留原密钥",
   "@ui673b9a23": {
-    "description": "Flule34 UI: 留空表示保留原密钥"
+    "description": "HaRu UI: 留空表示保留原密钥"
   },
   "ui3ad2af27": "登录",
   "@ui3ad2af27": {
-    "description": "Flule34 UI: 登录"
+    "description": "HaRu UI: 登录"
+  },
+  "ui720f5c51": "登录 Hanime",
+  "@ui720f5c51": {
+    "description": "HaRu UI: 登录 Hanime"
+  },
+  "ui5d9071a1": "登录 Hanime 后参与评论",
+  "@ui5d9071a1": {
+    "description": "HaRu UI: 登录 Hanime 后参与评论"
+  },
+  "ui1cb8175c": "登录 R34V 后参与评论",
+  "@ui1cb8175c": {
+    "description": "HaRu UI: 登录 R34V 后参与评论"
+  },
+  "ui633ad687": "登录 Rule34Video",
+  "@ui633ad687": {
+    "description": "HaRu UI: 登录 Rule34Video"
+  },
+  "ui7b669835": "登录 {p0}",
+  "@ui7b669835": {
+    "description": "HaRu UI: 登录 {p0}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui50edd253": "登录后即可查看收藏、历史、播放列表和订阅。",
+  "@ui50edd253": {
+    "description": "HaRu UI: 登录后即可查看收藏、历史、播放列表和订阅。"
+  },
+  "ui0b18f11a": "登录后即可查看点赞、稍后观看、历史、播放列表和订阅。",
+  "@ui0b18f11a": {
+    "description": "HaRu UI: 登录后即可查看点赞、稍后观看、历史、播放列表和订阅。"
   },
   "ui6ddcc3eb": "登录后同步网站收藏、历史记录和订阅。",
   "@ui6ddcc3eb": {
-    "description": "Flule34 UI: 登录后同步网站收藏、历史记录和订阅。"
+    "description": "HaRu UI: 登录后同步网站收藏、历史记录和订阅。"
   },
-  "ui03ac75d2": "登录后查看关注内容",
-  "@ui03ac75d2": {
-    "description": "Flule34 UI: 登录后查看关注内容"
+  "ui47765d07": "登录后同步网站点赞、稍后观看、播放列表和评论。",
+  "@ui47765d07": {
+    "description": "HaRu UI: 登录后同步网站点赞、稍后观看、播放列表和评论。"
+  },
+  "ui18ff18c2": "登录后查看订阅内容",
+  "@ui18ff18c2": {
+    "description": "HaRu UI: 登录后查看订阅内容"
   },
   "ui4bd42f4c": "登录后，搜索历史会按账号安全保存。",
   "@ui4bd42f4c": {
-    "description": "Flule34 UI: 登录后，搜索历史会按账号安全保存。"
+    "description": "HaRu UI: 登录后，搜索历史会按账号安全保存。"
   },
   "ui257d2512": "目标语言",
   "@ui257d2512": {
-    "description": "Flule34 UI: 目标语言"
+    "description": "HaRu UI: 目标语言"
   },
   "ui564ade2f": "相关度",
   "@ui564ade2f": {
-    "description": "Flule34 UI: 相关度"
+    "description": "HaRu UI: 相关度"
   },
   "ui5e5057d9": "相关视频",
   "@ui5e5057d9": {
-    "description": "Flule34 UI: 相关视频"
+    "description": "HaRu UI: 相关视频"
   },
   "ui271e4b44": "确定",
   "@ui271e4b44": {
-    "description": "Flule34 UI: 确定"
+    "description": "HaRu UI: 确定"
   },
   "ui5731dc83": "确定取消订阅“{p0}”吗？",
   "@ui5731dc83": {
-    "description": "Flule34 UI: 确定取消订阅“{p0}”吗？",
+    "description": "HaRu UI: 确定取消订阅“{p0}”吗？",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -2394,67 +3485,99 @@
   },
   "ui10bfd59a": "确认删除",
   "@ui10bfd59a": {
-    "description": "Flule34 UI: 确认删除"
+    "description": "HaRu UI: 确认删除"
   },
   "ui23a1a099": "确认批量删除？",
   "@ui23a1a099": {
-    "description": "Flule34 UI: 确认批量删除？"
+    "description": "HaRu UI: 确认批量删除？"
+  },
+  "ui79c740c7": "确认新密码",
+  "@ui79c740c7": {
+    "description": "HaRu UI: 确认新密码"
   },
   "ui22d867a3": "票",
   "@ui22d867a3": {
-    "description": "Flule34 UI: 票"
+    "description": "HaRu UI: 票"
   },
   "ui3e2a2939": "票数最多",
   "@ui3e2a2939": {
-    "description": "Flule34 UI: 票数最多"
+    "description": "HaRu UI: 票数最多"
+  },
+  "ui2cd19db3": "秒",
+  "@ui2cd19db3": {
+    "description": "HaRu UI: 秒"
   },
   "ui07f3e573": "移出此库",
   "@ui07f3e573": {
-    "description": "Flule34 UI: 移出此库"
+    "description": "HaRu UI: 移出此库"
   },
   "ui332d29c7": "移出此播放列表",
   "@ui332d29c7": {
-    "description": "Flule34 UI: 移出此播放列表"
+    "description": "HaRu UI: 移出此播放列表"
+  },
+  "ui3898a44a": "移出稍后观看",
+  "@ui3898a44a": {
+    "description": "HaRu UI: 移出稍后观看"
   },
   "ui3890123e": "移除失效记录",
   "@ui3890123e": {
-    "description": "Flule34 UI: 移除失效记录"
+    "description": "HaRu UI: 移除失效记录"
   },
   "ui43f4c9b6": "移除失效记录？",
   "@ui43f4c9b6": {
-    "description": "Flule34 UI: 移除失效记录？"
+    "description": "HaRu UI: 移除失效记录？"
+  },
+  "ui73f2e211": "稍后观看",
+  "@ui73f2e211": {
+    "description": "HaRu UI: 稍后观看"
+  },
+  "ui5d12e72e": "稍后观看列表暂时为空。",
+  "@ui5d12e72e": {
+    "description": "HaRu UI: 稍后观看列表暂时为空。"
+  },
+  "ui6e62f819": "稍后观看状态读取失败，点击重试",
+  "@ui6e62f819": {
+    "description": "HaRu UI: 稍后观看状态读取失败，点击重试"
   },
   "ui3250d80e": "稳定版",
   "@ui3250d80e": {
-    "description": "Flule34 UI: 稳定版"
+    "description": "HaRu UI: 稳定版"
   },
   "ui68bc4e82": "站内消息",
   "@ui68bc4e82": {
-    "description": "Flule34 UI: 站内消息"
+    "description": "HaRu UI: 站内消息"
+  },
+  "ui6fe1719c": "等不到 cookie → 重刷 → 再挑战",
+  "@ui6fe1719c": {
+    "description": "HaRu UI: 等不到 cookie → 重刷 → 再挑战"
   },
   "ui2ced8087": "等待下载",
   "@ui2ced8087": {
-    "description": "Flule34 UI: 等待下载"
+    "description": "HaRu UI: 等待下载"
   },
   "ui106c1db7": "等待重试",
   "@ui106c1db7": {
-    "description": "Flule34 UI: 等待重试"
+    "description": "HaRu UI: 等待重试"
+  },
+  "ui50c5f340": "等待验证结果已超 10 秒，提示用户可手动重试；",
+  "@ui50c5f340": {
+    "description": "HaRu UI: 等待验证结果已超 10 秒，提示用户可手动重试；"
   },
   "ui373ece32": "筛选",
   "@ui373ece32": {
-    "description": "Flule34 UI: 筛选"
+    "description": "HaRu UI: 筛选"
   },
   "ui65b9a0f6": "筛选与排序",
   "@ui65b9a0f6": {
-    "description": "Flule34 UI: 筛选与排序"
+    "description": "HaRu UI: 筛选与排序"
   },
   "ui0ea0c5c7": "筛选仅覆盖已加载内容，继续下滑可加载更多",
   "@ui0ea0c5c7": {
-    "description": "Flule34 UI: 筛选仅覆盖已加载内容，继续下滑可加载更多"
+    "description": "HaRu UI: 筛选仅覆盖已加载内容，继续下滑可加载更多"
   },
   "ui354b30cc": "筛选已加载的{p0}",
   "@ui354b30cc": {
-    "description": "Flule34 UI: 筛选已加载的{p0}",
+    "description": "HaRu UI: 筛选已加载的{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -2463,31 +3586,47 @@
   },
   "ui269190a8": "筛选播放列表",
   "@ui269190a8": {
-    "description": "Flule34 UI: 筛选播放列表"
+    "description": "HaRu UI: 筛选播放列表"
   },
   "ui72e0eba7": "筛选此库",
   "@ui72e0eba7": {
-    "description": "Flule34 UI: 筛选此库"
+    "description": "HaRu UI: 筛选此库"
   },
   "ui2fe9e03b": "筛选视频",
   "@ui2fe9e03b": {
-    "description": "Flule34 UI: 筛选视频"
+    "description": "HaRu UI: 筛选视频"
   },
   "ui78a24072": "简介",
   "@ui78a24072": {
-    "description": "Flule34 UI: 简介"
+    "description": "HaRu UI: 简介"
   },
   "ui36e4a35c": "简体中文",
   "@ui36e4a35c": {
-    "description": "Flule34 UI: 简体中文"
+    "description": "HaRu UI: 简体中文"
+  },
+  "ui2f406a3c": "管理播放列表",
+  "@ui2f406a3c": {
+    "description": "HaRu UI: 管理播放列表"
   },
   "ui7aa38d36": "类型",
   "@ui7aa38d36": {
-    "description": "Flule34 UI: 类型"
+    "description": "HaRu UI: 类型"
+  },
+  "ui6107c243": "类型={p0}；耗时={p1}ms",
+  "@ui6107c243": {
+    "description": "HaRu UI: 类型={p0}；耗时={p1}ms",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      },
+      "p1": {
+        "type": "String"
+      }
+    }
   },
   "ui0dbe3ac7": "精选库 {p0} 包含重复视频。",
   "@ui0dbe3ac7": {
-    "description": "Flule34 UI: 精选库 {p0} 包含重复视频。",
+    "description": "HaRu UI: 精选库 {p0} 包含重复视频。",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -2496,127 +3635,131 @@
   },
   "ui3ae9eef9": "精选库条目格式无效。",
   "@ui3ae9eef9": {
-    "description": "Flule34 UI: 精选库条目格式无效。"
+    "description": "HaRu UI: 精选库条目格式无效。"
   },
   "ui6d95458c": "精选库条目缺少必要字段。",
   "@ui6d95458c": {
-    "description": "Flule34 UI: 精选库条目缺少必要字段。"
+    "description": "HaRu UI: 精选库条目缺少必要字段。"
   },
   "ui082a7d52": "精选库清单包含重复标识。",
   "@ui082a7d52": {
-    "description": "Flule34 UI: 精选库清单包含重复标识。"
+    "description": "HaRu UI: 精选库清单包含重复标识。"
   },
   "ui05f173f7": "精选库清单格式无效。",
   "@ui05f173f7": {
-    "description": "Flule34 UI: 精选库清单格式无效。"
+    "description": "HaRu UI: 精选库清单格式无效。"
   },
   "ui48c2347b": "精选库清单缺少版本或库列表。",
   "@ui48c2347b": {
-    "description": "Flule34 UI: 精选库清单缺少版本或库列表。"
+    "description": "HaRu UI: 精选库清单缺少版本或库列表。"
   },
   "ui45724236": "精选视频条目格式无效。",
   "@ui45724236": {
-    "description": "Flule34 UI: 精选视频条目格式无效。"
+    "description": "HaRu UI: 精选视频条目格式无效。"
   },
   "ui3c28fff7": "精选视频条目缺少必要字段。",
   "@ui3c28fff7": {
-    "description": "Flule34 UI: 精选视频条目缺少必要字段。"
+    "description": "HaRu UI: 精选视频条目缺少必要字段。"
   },
   "ui058d6015": "系统中断|网络连接中断|connection reset|socketexception|timed?\\s*out|broken pipe",
   "@ui058d6015": {
-    "description": "Flule34 UI: 系统中断|网络连接中断|connection reset|socketexception|timed?\\s*out|broken pipe"
+    "description": "HaRu UI: 系统中断|网络连接中断|connection reset|socketexception|timed?\\s*out|broken pipe"
   },
   "ui05a078da": "系统未授予公共下载目录写入权限。",
   "@ui05a078da": {
-    "description": "Flule34 UI: 系统未授予公共下载目录写入权限。"
+    "description": "HaRu UI: 系统未授予公共下载目录写入权限。"
   },
   "ui21f76d12": "系统未能将任务加入下载队列。",
   "@ui21f76d12": {
-    "description": "Flule34 UI: 系统未能将任务加入下载队列。"
+    "description": "HaRu UI: 系统未能将任务加入下载队列。"
   },
   "ui111afc5c": "系统未能重新加入下载任务。",
   "@ui111afc5c": {
-    "description": "Flule34 UI: 系统未能重新加入下载任务。"
+    "description": "HaRu UI: 系统未能重新加入下载任务。"
   },
   "ui5cb65115": "继续",
   "@ui5cb65115": {
-    "description": "Flule34 UI: 继续"
+    "description": "HaRu UI: 继续"
   },
   "ui0487b957": "继续加载并查找",
   "@ui0487b957": {
-    "description": "Flule34 UI: 继续加载并查找"
+    "description": "HaRu UI: 继续加载并查找"
   },
   "ui16709544": "继续向下滚动",
   "@ui16709544": {
-    "description": "Flule34 UI: 继续向下滚动"
+    "description": "HaRu UI: 继续向下滚动"
   },
   "ui75e19e47": "继续向下滚动以加载更多",
   "@ui75e19e47": {
-    "description": "Flule34 UI: 继续向下滚动以加载更多"
+    "description": "HaRu UI: 继续向下滚动以加载更多"
   },
   "ui4a3ada55": "继续手动填写",
   "@ui4a3ada55": {
-    "description": "Flule34 UI: 继续手动填写"
+    "description": "HaRu UI: 继续手动填写"
   },
   "ui0e97bdd4": "综合",
   "@ui0e97bdd4": {
-    "description": "Flule34 UI: 综合"
+    "description": "HaRu UI: 综合"
   },
   "ui49512531": "编辑",
   "@ui49512531": {
-    "description": "Flule34 UI: 编辑"
+    "description": "HaRu UI: 编辑"
   },
   "ui07922887": "编辑播放列表",
   "@ui07922887": {
-    "description": "Flule34 UI: 编辑播放列表"
+    "description": "HaRu UI: 编辑播放列表"
   },
   "ui1d6b067d": "编辑翻译服务",
   "@ui1d6b067d": {
-    "description": "Flule34 UI: 编辑翻译服务"
+    "description": "HaRu UI: 编辑翻译服务"
   },
   "ui0faaeb98": "编辑译文",
   "@ui0faaeb98": {
-    "description": "Flule34 UI: 编辑译文"
+    "description": "HaRu UI: 编辑译文"
+  },
+  "ui4232bd82": "编辑账号资料",
+  "@ui4232bd82": {
+    "description": "HaRu UI: 编辑账号资料"
   },
   "ui7d44f8fd": "编辑资料",
   "@ui7d44f8fd": {
-    "description": "Flule34 UI: 编辑资料"
+    "description": "HaRu UI: 编辑资料"
   },
   "ui59c1fe85": "网站个人主页",
   "@ui59c1fe85": {
-    "description": "Flule34 UI: 网站个人主页"
+    "description": "HaRu UI: 网站个人主页"
   },
   "ui166970fa": "网站收藏、历史和订阅以登录账号为边界；本地分类库保存在设备上，与账号无关。",
   "@ui166970fa": {
-    "description": "Flule34 UI: 网站收藏、历史和订阅以登录账号为边界；本地分类库保存在设备上，与账号无关。"
+    "description": "HaRu UI: 网站收藏、历史和订阅以登录账号为边界；本地分类库保存在设备上，与账号无关。"
   },
   "ui6d8a839a": "网站要求填写验证码，因此由系统浏览器完成提交",
   "@ui6d8a839a": {
-    "description": "Flule34 UI: 网站要求填写验证码，因此由系统浏览器完成提交"
+    "description": "HaRu UI: 网站要求填写验证码，因此由系统浏览器完成提交"
   },
   "ui52d40a61": "网站观看历史还是空的。",
   "@ui52d40a61": {
-    "description": "Flule34 UI: 网站观看历史还是空的。"
+    "description": "HaRu UI: 网站观看历史还是空的。"
   },
   "ui49712caa": "网站退出请求失败，但本地登录状态已经清除。",
   "@ui49712caa": {
-    "description": "Flule34 UI: 网站退出请求失败，但本地登录状态已经清除。"
+    "description": "HaRu UI: 网站退出请求失败，但本地登录状态已经清除。"
   },
   "ui22be6add": "网站顺序",
   "@ui22be6add": {
-    "description": "Flule34 UI: 网站顺序"
+    "description": "HaRu UI: 网站顺序"
   },
   "ui5c5b8e6e": "网络播放策略",
   "@ui5c5b8e6e": {
-    "description": "Flule34 UI: 网络播放策略"
+    "description": "HaRu UI: 网络播放策略"
   },
   "ui5d909650": "网络连接中断，请检查网络后重试。",
   "@ui5d909650": {
-    "description": "Flule34 UI: 网络连接中断，请检查网络后重试。"
+    "description": "HaRu UI: 网络连接中断，请检查网络后重试。"
   },
   "ui4c8d7732": "翻译失败：{p0}",
   "@ui4c8d7732": {
-    "description": "Flule34 UI: 翻译失败：{p0}",
+    "description": "HaRu UI: 翻译失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -2625,272 +3768,394 @@
   },
   "ui20251330": "翻译库",
   "@ui20251330": {
-    "description": "Flule34 UI: 翻译库"
+    "description": "HaRu UI: 翻译库"
   },
   "ui0e144c39": "翻译服务",
   "@ui0e144c39": {
-    "description": "Flule34 UI: 翻译服务"
+    "description": "HaRu UI: 翻译服务"
   },
   "ui4e721b57": "翻译目标语言",
   "@ui4e721b57": {
-    "description": "Flule34 UI: 翻译目标语言"
+    "description": "HaRu UI: 翻译目标语言"
   },
   "ui7312260a": "翻译设置",
   "@ui7312260a": {
-    "description": "Flule34 UI: 翻译设置"
+    "description": "HaRu UI: 翻译设置"
   },
-  "ui42682f0b": "自动",
-  "@ui42682f0b": {
-    "description": "Flule34 UI: 自动"
-  },
-  "ui3a3ee33c": "自动或手动翻译时，每次只发送当前标题、标签或分类。服务按当前顺序依次尝试，失败后自动使用下一项。建议优先使用 AI 翻译，结果通常更自然、准确。",
-  "@ui3a3ee33c": {
-    "description": "Flule34 UI: 自动或手动翻译时，每次只发送当前标题、标签或分类。服务按当前顺序依次尝试，失败后自动使用下一项。建议优先使用 AI 翻译，结果通常更自然、准确。"
-  },
-  "ui4e37cc82": "自动翻译",
-  "@ui4e37cc82": {
-    "description": "Flule34 UI: 自动翻译"
-  },
-  "ui1d2c54c2": "艺术家",
-  "@ui1d2c54c2": {
-    "description": "Flule34 UI: 艺术家"
-  },
-  "ui273d81af": "艺术家排行榜",
-  "@ui273d81af": {
-    "description": "Flule34 UI: 艺术家排行榜"
-  },
-  "ui296bcd5e": "节省流量",
-  "@ui296bcd5e": {
-    "description": "Flule34 UI: 节省流量"
-  },
-  "ui7f179fc8": "视频",
-  "@ui7f179fc8": {
-    "description": "Flule34 UI: 视频"
-  },
-  "ui4fbae4c2": "视频保存路径：Download/Flule34",
-  "@ui4fbae4c2": {
-    "description": "Flule34 UI: 视频保存路径：Download/Flule34"
-  },
-  "ui276089b3": "视频地址刷新后仍不可用，请稍后重试。",
-  "@ui276089b3": {
-    "description": "Flule34 UI: 视频地址刷新后仍不可用，请稍后重试。"
-  },
-  "ui538cdd02": "视频地址已连续刷新多次仍无法播放，请稍后手动重试。",
-  "@ui538cdd02": {
-    "description": "Flule34 UI: 视频地址已连续刷新多次仍无法播放，请稍后手动重试。"
-  },
-  "ui6ad9c53c": "视频布局",
-  "@ui6ad9c53c": {
-    "description": "Flule34 UI: 视频布局"
-  },
-  "ui37bdf9f3": "视频操作",
-  "@ui37bdf9f3": {
-    "description": "Flule34 UI: 视频操作"
-  },
-  "ui604372e8": "视频数量",
-  "@ui604372e8": {
-    "description": "Flule34 UI: 视频数量"
-  },
-  "ui7b794d8a": "视频时长",
-  "@ui7b794d8a": {
-    "description": "Flule34 UI: 视频时长"
-  },
-  "ui63929b8d": "视频源不能为空",
-  "@ui63929b8d": {
-    "description": "Flule34 UI: 视频源不能为空"
-  },
-  "ui6b6d2d3c": "视频直接写入所选公共目录；默认目录为 Downloads/Flule34，可从“我的 → 下载”右上角进入设置。",
-  "@ui6b6d2d3c": {
-    "description": "Flule34 UI: 视频直接写入所选公共目录；默认目录为 Downloads/Flule34，可从“我的 → 下载”右上角进入设置。"
-  },
-  "ui3c64ae15": "视频详情",
-  "@ui3c64ae15": {
-    "description": "Flule34 UI: 视频详情"
-  },
-  "ui6fbc2348": "视频预览",
-  "@ui6fbc2348": {
-    "description": "Flule34 UI: 视频预览"
-  },
-  "ui7b8f2379": "解锁控件",
-  "@ui7b8f2379": {
-    "description": "Flule34 UI: 解锁控件"
-  },
-  "ui6e7502fd": "订阅",
-  "@ui6e7502fd": {
-    "description": "Flule34 UI: 订阅"
-  },
-  "ui4c54789e": "订阅页布局",
-  "@ui4c54789e": {
-    "description": "Flule34 UI: 订阅页布局"
-  },
-  "ui3c79fc19": "记忆播放进度",
-  "@ui3c79fc19": {
-    "description": "Flule34 UI: 记忆播放进度"
-  },
-  "ui5ab2c3c2": "设为私密",
-  "@ui5ab2c3c2": {
-    "description": "Flule34 UI: 设为私密"
-  },
-  "ui592e7edb": "设备",
-  "@ui592e7edb": {
-    "description": "Flule34 UI: 设备"
-  },
-  "ui11313487": "评分最高",
-  "@ui11313487": {
-    "description": "Flule34 UI: 评分最高"
-  },
-  "ui3ce65beb": "诊断信息",
-  "@ui3ce65beb": {
-    "description": "Flule34 UI: 诊断信息"
-  },
-  "ui442a175d": "诊断信息已复制。",
-  "@ui442a175d": {
-    "description": "Flule34 UI: 诊断信息已复制。"
-  },
-  "ui0a2256ac": "译文",
-  "@ui0a2256ac": {
-    "description": "Flule34 UI: 译文"
-  },
-  "ui5e9e6941": "译文不能为空",
-  "@ui5e9e6941": {
-    "description": "Flule34 UI: 译文不能为空"
-  },
-  "ui52575ad3": "语言显示模式",
-  "@ui52575ad3": {
-    "description": "Flule34 UI: 语言显示模式"
-  },
-  "ui7894fed1": "请先填写有效基址。",
-  "@ui7894fed1": {
-    "description": "Flule34 UI: 请先填写有效基址。"
-  },
-  "ui190ff633": "请完整填写名称、基址、模型和密钥。",
-  "@ui190ff633": {
-    "description": "Flule34 UI: 请完整填写名称、基址、模型和密钥。"
-  },
-  "ui61ca1aa4": "请至少输入 2 个字符。",
-  "@ui61ca1aa4": {
-    "description": "Flule34 UI: 请至少输入 2 个字符。"
-  },
-  "ui61cb4e40": "请输入密码。",
-  "@ui61cb4e40": {
-    "description": "Flule34 UI: 请输入密码。"
-  },
-  "ui196453a1": "请输入注册邮箱。",
-  "@ui196453a1": {
-    "description": "Flule34 UI: 请输入注册邮箱。"
-  },
-  "ui77044f29": "请返回“我的”页面登录后查看账号信息。",
-  "@ui77044f29": {
-    "description": "Flule34 UI: 请返回“我的”页面登录后查看账号信息。"
-  },
-  "ui6447b2e3": "账号与媒体库",
-  "@ui6447b2e3": {
-    "description": "Flule34 UI: 账号与媒体库"
-  },
-  "ui730cbb68": "账号与安全",
-  "@ui730cbb68": {
-    "description": "Flule34 UI: 账号与安全"
-  },
-  "ui6527aff1": "账号中还没有播放列表。",
-  "@ui6527aff1": {
-    "description": "Flule34 UI: 账号中还没有播放列表。"
-  },
-  "ui4f0bb3b1": "质量条件",
-  "@ui4f0bb3b1": {
-    "description": "Flule34 UI: 质量条件"
-  },
-  "ui5e2feb59": "资料加载失败，重试",
-  "@ui5e2feb59": {
-    "description": "Flule34 UI: 资料加载失败，重试"
-  },
-  "ui5236b1c3": "跟随界面语言",
-  "@ui5236b1c3": {
-    "description": "Flule34 UI: 跟随界面语言"
-  },
-  "ui1c47ee05": "跟随系统",
-  "@ui1c47ee05": {
-    "description": "Flule34 UI: 跟随系统"
-  },
-  "ui76da0fc0": "跳过 {p0}，",
-  "@ui76da0fc0": {
-    "description": "Flule34 UI: 跳过 {p0}，",
+  "ui56a4f7ec": "耗时={p0}ms",
+  "@ui56a4f7ec": {
+    "description": "HaRu UI: 耗时={p0}ms",
     "placeholders": {
       "p0": {
         "type": "String"
       }
     }
   },
+  "ui0cfe710c": "耗时={p0}ms；",
+  "@ui0cfe710c": {
+    "description": "HaRu UI: 耗时={p0}ms；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui42682f0b": "自动",
+  "@ui42682f0b": {
+    "description": "HaRu UI: 自动"
+  },
+  "ui3a3ee33c": "自动或手动翻译时，每次只发送当前标题、标签或分类。服务按当前顺序依次尝试，失败后自动使用下一项。建议优先使用 AI 翻译，结果通常更自然、准确。",
+  "@ui3a3ee33c": {
+    "description": "HaRu UI: 自动或手动翻译时，每次只发送当前标题、标签或分类。服务按当前顺序依次尝试，失败后自动使用下一项。建议优先使用 AI 翻译，结果通常更自然、准确。"
+  },
+  "ui4e37cc82": "自动翻译",
+  "@ui4e37cc82": {
+    "description": "HaRu UI: 自动翻译"
+  },
+  "ui1d2c54c2": "艺术家",
+  "@ui1d2c54c2": {
+    "description": "HaRu UI: 艺术家"
+  },
+  "ui273d81af": "艺术家排行榜",
+  "@ui273d81af": {
+    "description": "HaRu UI: 艺术家排行榜"
+  },
+  "ui296bcd5e": "节省流量",
+  "@ui296bcd5e": {
+    "description": "HaRu UI: 节省流量"
+  },
+  "ui5c249ba5": "裏番",
+  "@ui5c249ba5": {
+    "description": "HaRu UI: 裏番"
+  },
+  "ui7f179fc8": "视频",
+  "@ui7f179fc8": {
+    "description": "HaRu UI: 视频"
+  },
+  "ui4fbae4c2": "视频保存路径：Download/Flule34",
+  "@ui4fbae4c2": {
+    "description": "HaRu UI: 视频保存路径：Download/Flule34"
+  },
+  "ui538cdd02": "视频地址已连续刷新多次仍无法播放，请稍后手动重试。",
+  "@ui538cdd02": {
+    "description": "HaRu UI: 视频地址已连续刷新多次仍无法播放，请稍后手动重试。"
+  },
+  "ui37bdf9f3": "视频操作",
+  "@ui37bdf9f3": {
+    "description": "HaRu UI: 视频操作"
+  },
+  "ui604372e8": "视频数量",
+  "@ui604372e8": {
+    "description": "HaRu UI: 视频数量"
+  },
+  "ui7b794d8a": "视频时长",
+  "@ui7b794d8a": {
+    "description": "HaRu UI: 视频时长"
+  },
+  "ui63929b8d": "视频源不能为空",
+  "@ui63929b8d": {
+    "description": "HaRu UI: 视频源不能为空"
+  },
+  "ui6b6d2d3c": "视频直接写入所选公共目录；默认目录为 Downloads/Flule34，可从“我的 → 下载”右上角进入设置。",
+  "@ui6b6d2d3c": {
+    "description": "HaRu UI: 视频直接写入所选公共目录；默认目录为 Downloads/Flule34，可从“我的 → 下载”右上角进入设置。"
+  },
+  "ui3c64ae15": "视频详情",
+  "@ui3c64ae15": {
+    "description": "HaRu UI: 视频详情"
+  },
+  "ui6fbc2348": "视频预览",
+  "@ui6fbc2348": {
+    "description": "HaRu UI: 视频预览"
+  },
+  "ui2d82e410": "视频预览失败；site={p0}；video={p1}",
+  "@ui2d82e410": {
+    "description": "HaRu UI: 视频预览失败；site={p0}；video={p1}",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      },
+      "p1": {
+        "type": "String"
+      }
+    }
+  },
+  "ui7b8f2379": "解锁控件",
+  "@ui7b8f2379": {
+    "description": "HaRu UI: 解锁控件"
+  },
+  "ui6e7502fd": "订阅",
+  "@ui6e7502fd": {
+    "description": "HaRu UI: 订阅"
+  },
+  "ui7d39567a": "订阅的分类、艺术家或用户暂时没有可展示的视频。",
+  "@ui7d39567a": {
+    "description": "HaRu UI: 订阅的分类、艺术家或用户暂时没有可展示的视频。"
+  },
+  "ui42e78a20": "订阅的艺术家暂时没有新视频。",
+  "@ui42e78a20": {
+    "description": "HaRu UI: 订阅的艺术家暂时没有新视频。"
+  },
+  "ui4c54789e": "订阅页布局",
+  "@ui4c54789e": {
+    "description": "HaRu UI: 订阅页布局"
+  },
+  "ui40acc969": "订阅频道会汇总你在网站订阅的分类、艺术家、用户和播放列表。",
+  "@ui40acc969": {
+    "description": "HaRu UI: 订阅频道会汇总你在网站订阅的分类、艺术家、用户和播放列表。"
+  },
+  "ui3c79fc19": "记忆播放进度",
+  "@ui3c79fc19": {
+    "description": "HaRu UI: 记忆播放进度"
+  },
+  "ui5ab2c3c2": "设为私密",
+  "@ui5ab2c3c2": {
+    "description": "HaRu UI: 设为私密"
+  },
+  "ui592e7edb": "设备",
+  "@ui592e7edb": {
+    "description": "HaRu UI: 设备"
+  },
+  "ui11313487": "评分最高",
+  "@ui11313487": {
+    "description": "HaRu UI: 评分最高"
+  },
+  "ui491e642c": "评论",
+  "@ui491e642c": {
+    "description": "HaRu UI: 评论"
+  },
+  "ui7d9b7107": "评论加载失败，点击重试",
+  "@ui7d9b7107": {
+    "description": "HaRu UI: 评论加载失败，点击重试"
+  },
+  "ui005f2e8d": "评论已发表。",
+  "@ui005f2e8d": {
+    "description": "HaRu UI: 评论已发表。"
+  },
+  "ui761f4205": "评论已提交，审核通过后展示。",
+  "@ui761f4205": {
+    "description": "HaRu UI: 评论已提交，审核通过后展示。"
+  },
+  "ui3ce65beb": "诊断信息",
+  "@ui3ce65beb": {
+    "description": "HaRu UI: 诊断信息"
+  },
+  "ui442a175d": "诊断信息已复制。",
+  "@ui442a175d": {
+    "description": "HaRu UI: 诊断信息已复制。"
+  },
+  "ui0a2256ac": "译文",
+  "@ui0a2256ac": {
+    "description": "HaRu UI: 译文"
+  },
+  "ui5e9e6941": "译文不能为空",
+  "@ui5e9e6941": {
+    "description": "HaRu UI: 译文不能为空"
+  },
+  "ui52575ad3": "语言显示模式",
+  "@ui52575ad3": {
+    "description": "HaRu UI: 语言显示模式"
+  },
+  "ui16d86fec": "说明",
+  "@ui16d86fec": {
+    "description": "HaRu UI: 说明"
+  },
+  "ui7894fed1": "请先填写有效基址。",
+  "@ui7894fed1": {
+    "description": "HaRu UI: 请先填写有效基址。"
+  },
+  "ui19e258a9": "请先登录 Hanime",
+  "@ui19e258a9": {
+    "description": "HaRu UI: 请先登录 Hanime"
+  },
+  "ui7ce74a5f": "请在网页中完成验证，成功后会自动返回。",
+  "@ui7ce74a5f": {
+    "description": "HaRu UI: 请在网页中完成验证，成功后会自动返回。"
+  },
+  "ui190ff633": "请完整填写名称、基址、模型和密钥。",
+  "@ui190ff633": {
+    "description": "HaRu UI: 请完整填写名称、基址、模型和密钥。"
+  },
+  "ui61ca1aa4": "请至少输入 2 个字符。",
+  "@ui61ca1aa4": {
+    "description": "HaRu UI: 请至少输入 2 个字符。"
+  },
+  "ui61cb4e40": "请输入密码。",
+  "@ui61cb4e40": {
+    "description": "HaRu UI: 请输入密码。"
+  },
+  "ui196453a1": "请输入注册邮箱。",
+  "@ui196453a1": {
+    "description": "HaRu UI: 请输入注册邮箱。"
+  },
+  "ui742d2222": "请返回“我的”页面登录 Hanime 账号。",
+  "@ui742d2222": {
+    "description": "HaRu UI: 请返回“我的”页面登录 Hanime 账号。"
+  },
+  "ui77044f29": "请返回“我的”页面登录后查看账号信息。",
+  "@ui77044f29": {
+    "description": "HaRu UI: 请返回“我的”页面登录后查看账号信息。"
+  },
+  "ui4af5a957": "调整本机、R34V 与 Hanime 的显示顺序。",
+  "@ui4af5a957": {
+    "description": "HaRu UI: 调整本机、R34V 与 Hanime 的显示顺序。"
+  },
+  "ui6447b2e3": "账号与媒体库",
+  "@ui6447b2e3": {
+    "description": "HaRu UI: 账号与媒体库"
+  },
+  "ui6527aff1": "账号中还没有播放列表。",
+  "@ui6527aff1": {
+    "description": "HaRu UI: 账号中还没有播放列表。"
+  },
+  "ui04e867ba": "账号资料已更新。",
+  "@ui04e867ba": {
+    "description": "HaRu UI: 账号资料已更新。"
+  },
+  "ui4f0bb3b1": "质量条件",
+  "@ui4f0bb3b1": {
+    "description": "HaRu UI: 质量条件"
+  },
+  "ui5e2feb59": "资料加载失败，重试",
+  "@ui5e2feb59": {
+    "description": "HaRu UI: 资料加载失败，重试"
+  },
+  "ui5236b1c3": "跟随界面语言",
+  "@ui5236b1c3": {
+    "description": "HaRu UI: 跟随界面语言"
+  },
+  "ui1c47ee05": "跟随系统",
+  "@ui1c47ee05": {
+    "description": "HaRu UI: 跟随系统"
+  },
+  "ui58ccc0dc": "路径={p0}；进度={p1}；",
+  "@ui58ccc0dc": {
+    "description": "HaRu UI: 路径={p0}；进度={p1}；",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      },
+      "p1": {
+        "type": "String"
+      }
+    }
+  },
+  "ui76da0fc0": "跳过 {p0}，",
+  "@ui76da0fc0": {
+    "description": "HaRu UI: 跳过 {p0}，",
+    "placeholders": {
+      "p0": {
+        "type": "String"
+      }
+    }
+  },
+  "ui6c5a7de5": "轮询",
+  "@ui6c5a7de5": {
+    "description": "HaRu UI: 轮询"
+  },
   "ui739c6fd6": "过去 1 周",
   "@ui739c6fd6": {
-    "description": "Flule34 UI: 过去 1 周"
+    "description": "HaRu UI: 过去 1 周"
   },
   "ui5fd87a82": "过去 1 年",
   "@ui5fd87a82": {
-    "description": "Flule34 UI: 过去 1 年"
+    "description": "HaRu UI: 过去 1 年"
   },
   "ui431df5d6": "过去 1 月",
   "@ui431df5d6": {
-    "description": "Flule34 UI: 过去 1 月"
+    "description": "HaRu UI: 过去 1 月"
   },
   "ui759f4739": "过去 2 天",
   "@ui759f4739": {
-    "description": "Flule34 UI: 过去 2 天"
+    "description": "HaRu UI: 过去 2 天"
   },
   "ui7790bf0c": "过去 24 小时",
   "@ui7790bf0c": {
-    "description": "Flule34 UI: 过去 24 小时"
+    "description": "HaRu UI: 过去 24 小时"
   },
   "ui0a322b08": "过去 3 月",
   "@ui0a322b08": {
-    "description": "Flule34 UI: 过去 3 月"
+    "description": "HaRu UI: 过去 3 月"
+  },
+  "ui1c3504bd": "过滤品牌…",
+  "@ui1c3504bd": {
+    "description": "HaRu UI: 过滤品牌…"
+  },
+  "ui1863f57b": "过滤标签…",
+  "@ui1863f57b": {
+    "description": "HaRu UI: 过滤标签…"
   },
   "ui58a37252": "返回",
   "@ui58a37252": {
-    "description": "Flule34 UI: 返回"
+    "description": "HaRu UI: 返回"
   },
   "ui10524b4c": "还没有下载任务。",
   "@ui10524b4c": {
-    "description": "Flule34 UI: 还没有下载任务。"
+    "description": "HaRu UI: 还没有下载任务。"
   },
   "ui6e7397b9": "还没有搜索记录。",
   "@ui6e7397b9": {
-    "description": "Flule34 UI: 还没有搜索记录。"
+    "description": "HaRu UI: 还没有搜索记录。"
+  },
+  "ui5c800f01": "还没有播放列表。",
+  "@ui5c800f01": {
+    "description": "HaRu UI: 还没有播放列表。"
+  },
+  "ui58052679": "还没有播放列表，可先新建一个。",
+  "@ui58052679": {
+    "description": "HaRu UI: 还没有播放列表，可先新建一个。"
   },
   "ui71607183": "还没有本地库",
   "@ui71607183": {
-    "description": "Flule34 UI: 还没有本地库"
+    "description": "HaRu UI: 还没有本地库"
   },
   "ui7a38235f": "还没有订阅内容。",
   "@ui7a38235f": {
-    "description": "Flule34 UI: 还没有订阅内容。"
+    "description": "HaRu UI: 还没有订阅内容。"
+  },
+  "ui460dc5ac": "还没有评论。",
+  "@ui460dc5ac": {
+    "description": "HaRu UI: 还没有评论。"
   },
   "ui2f767daa": "这个上传者还没有公开视频。",
   "@ui2f767daa": {
-    "description": "Flule34 UI: 这个上传者还没有公开视频。"
+    "description": "HaRu UI: 这个上传者还没有公开视频。"
+  },
+  "ui4d146290": "这个播放列表暂时没有视频。",
+  "@ui4d146290": {
+    "description": "HaRu UI: 这个播放列表暂时没有视频。"
   },
   "ui3d2b959e": "这个播放列表里还没有视频。",
   "@ui3d2b959e": {
-    "description": "Flule34 UI: 这个播放列表里还没有视频。"
+    "description": "HaRu UI: 这个播放列表里还没有视频。"
   },
   "ui1543885f": "这个本地库里还没有视频。",
   "@ui1543885f": {
-    "description": "Flule34 UI: 这个本地库里还没有视频。"
+    "description": "HaRu UI: 这个本地库里还没有视频。"
   },
   "ui08dc5995": "这个订阅目前没有可显示的视频。",
   "@ui08dc5995": {
-    "description": "Flule34 UI: 这个订阅目前没有可显示的视频。"
+    "description": "HaRu UI: 这个订阅目前没有可显示的视频。"
   },
   "ui0432dab5": "这个集合里暂时没有视频。",
   "@ui0432dab5": {
-    "description": "Flule34 UI: 这个集合里暂时没有视频。"
+    "description": "HaRu UI: 这个集合里暂时没有视频。"
+  },
+  "ui6ad274d1": "这个频道暂时没有视频。",
+  "@ui6ad274d1": {
+    "description": "HaRu UI: 这个频道暂时没有视频。"
   },
   "ui6c1512dd": "进入全屏时横屏",
   "@ui6c1512dd": {
-    "description": "Flule34 UI: 进入全屏时横屏"
+    "description": "HaRu UI: 进入全屏时横屏"
+  },
+  "ui231a13c4": "进度",
+  "@ui231a13c4": {
+    "description": "HaRu UI: 进度"
   },
   "ui340178b5": "连接失败：{p0}",
   "@ui340178b5": {
-    "description": "Flule34 UI: 连接失败：{p0}",
+    "description": "HaRu UI: 连接失败：{p0}",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -2899,180 +4164,212 @@
   },
   "ui15cf6bb2": "退出",
   "@ui15cf6bb2": {
-    "description": "Flule34 UI: 退出"
+    "description": "HaRu UI: 退出"
+  },
+  "ui0fc3c7d8": "退出 Hanime 登录？",
+  "@ui0fc3c7d8": {
+    "description": "HaRu UI: 退出 Hanime 登录？"
   },
   "ui61f69587": "退出全屏",
   "@ui61f69587": {
-    "description": "Flule34 UI: 退出全屏"
+    "description": "HaRu UI: 退出全屏"
   },
   "ui27d0dda9": "退出当前账号",
   "@ui27d0dda9": {
-    "description": "Flule34 UI: 退出当前账号"
+    "description": "HaRu UI: 退出当前账号"
   },
   "ui60423290": "退出登录",
   "@ui60423290": {
-    "description": "Flule34 UI: 退出登录"
+    "description": "HaRu UI: 退出登录"
   },
   "ui0c4a5e14": "退出登录？",
   "@ui0c4a5e14": {
-    "description": "Flule34 UI: 退出登录？"
+    "description": "HaRu UI: 退出登录？"
+  },
+  "ui2b4f5fd9": "适用于 R34V、Hanime 首页和普通视频列表，以及搜索结果和本地分类库。",
+  "@ui2b4f5fd9": {
+    "description": "HaRu UI: 适用于 R34V、Hanime 首页和普通视频列表，以及搜索结果和本地分类库。"
+  },
+  "ui736d6f73": "选择一个分类开始浏览，也可以直接在上方输入关键词搜索。",
+  "@ui736d6f73": {
+    "description": "HaRu UI: 选择一个分类开始浏览，也可以直接在上方输入关键词搜索。"
   },
   "ui1d37ed9d": "选择下载清晰度",
   "@ui1d37ed9d": {
-    "description": "Flule34 UI: 选择下载清晰度"
+    "description": "HaRu UI: 选择下载清晰度"
   },
   "ui38e27fe6": "选择当前结果",
   "@ui38e27fe6": {
-    "description": "Flule34 UI: 选择当前结果"
+    "description": "HaRu UI: 选择当前结果"
   },
   "ui63947462": "选择本地库",
   "@ui63947462": {
-    "description": "Flule34 UI: 选择本地库"
+    "description": "HaRu UI: 选择本地库"
   },
   "ui2bbcf0c4": "选择模型",
   "@ui2bbcf0c4": {
-    "description": "Flule34 UI: 选择模型"
+    "description": "HaRu UI: 选择模型"
   },
   "ui53e6ce38": "选择跟随系统或固定使用一种界面语言",
   "@ui53e6ce38": {
-    "description": "Flule34 UI: 选择跟随系统或固定使用一种界面语言"
+    "description": "HaRu UI: 选择跟随系统或固定使用一种界面语言"
   },
   "ui5b975d06": "通过配置的 GitHub Releases 源检查",
   "@ui5b975d06": {
-    "description": "Flule34 UI: 通过配置的 GitHub Releases 源检查"
+    "description": "HaRu UI: 通过配置的 GitHub Releases 源检查"
+  },
+  "ui650c8807": "週",
+  "@ui650c8807": {
+    "description": "HaRu UI: 週"
+  },
+  "ui441fd1bc": "邮箱",
+  "@ui441fd1bc": {
+    "description": "HaRu UI: 邮箱"
   },
   "ui359a4400": "邮箱（可选）",
   "@ui359a4400": {
-    "description": "Flule34 UI: 邮箱（可选）"
+    "description": "HaRu UI: 邮箱（可选）"
   },
   "ui273538ab": "部分自动补全暂时不可用。",
   "@ui273538ab": {
-    "description": "Flule34 UI: 部分自动补全暂时不可用。"
+    "description": "HaRu UI: 部分自动补全暂时不可用。"
+  },
+  "ui40cbba27": "里番",
+  "@ui40cbba27": {
+    "description": "HaRu UI: 里番"
   },
   "ui37f64133": "重命名",
   "@ui37f64133": {
-    "description": "Flule34 UI: 重命名"
+    "description": "HaRu UI: 重命名"
   },
   "ui6fd9a2aa": "重命名本地库",
   "@ui6fd9a2aa": {
-    "description": "Flule34 UI: 重命名本地库"
+    "description": "HaRu UI: 重命名本地库"
   },
   "ui68e799c1": "重新下载",
   "@ui68e799c1": {
-    "description": "Flule34 UI: 重新下载"
+    "description": "HaRu UI: 重新下载"
   },
   "ui3161da01": "重新检查",
   "@ui3161da01": {
-    "description": "Flule34 UI: 重新检查"
+    "description": "HaRu UI: 重新检查"
   },
   "ui611079ce": "重置",
   "@ui611079ce": {
-    "description": "Flule34 UI: 重置"
+    "description": "HaRu UI: 重置"
   },
   "ui3e06d854": "重试",
   "@ui3e06d854": {
-    "description": "Flule34 UI: 重试"
+    "description": "HaRu UI: 重试"
   },
   "ui2fc2172a": "重试刷新",
   "@ui2fc2172a": {
-    "description": "Flule34 UI: 重试刷新"
+    "description": "HaRu UI: 重试刷新"
   },
   "ui1f5c932b": "重试加载下一页",
   "@ui1f5c932b": {
-    "description": "Flule34 UI: 重试加载下一页"
+    "description": "HaRu UI: 重试加载下一页"
   },
   "ui4a255d3c": "锁定控件",
   "@ui4a255d3c": {
-    "description": "Flule34 UI: 锁定控件"
+    "description": "HaRu UI: 锁定控件"
   },
   "ui4e1780ec": "长按视频封面预览",
   "@ui4e1780ec": {
-    "description": "Flule34 UI: 长按视频封面预览"
+    "description": "HaRu UI: 长按视频封面预览"
   },
   "ui06efd73d": "随机",
   "@ui06efd73d": {
-    "description": "Flule34 UI: 随机"
+    "description": "HaRu UI: 随机"
   },
   "ui74a56f94": "随机探索",
   "@ui74a56f94": {
-    "description": "Flule34 UI: 随机探索"
+    "description": "HaRu UI: 随机探索"
   },
   "ui5d3798d3": "隐私与数据",
   "@ui5d3798d3": {
-    "description": "Flule34 UI: 隐私与数据"
+    "description": "HaRu UI: 隐私与数据"
   },
   "ui249b111a": "隐私说明",
   "@ui249b111a": {
-    "description": "Flule34 UI: 隐私说明"
+    "description": "HaRu UI: 隐私说明"
   },
   "ui1c5806b0": "隐私说明：日志已自动脱敏，发送前仍建议自行检查。",
   "@ui1c5806b0": {
-    "description": "Flule34 UI: 隐私说明：日志已自动脱敏，发送前仍建议自行检查。"
+    "description": "HaRu UI: 隐私说明：日志已自动脱敏，发送前仍建议自行检查。"
   },
   "ui4b4e6624": "隐藏密码",
   "@ui4b4e6624": {
-    "description": "Flule34 UI: 隐藏密码"
+    "description": "HaRu UI: 隐藏密码"
   },
   "ui25621c61": "需要通知权限才能可靠显示后台下载进度。",
   "@ui25621c61": {
-    "description": "Flule34 UI: 需要通知权限才能可靠显示后台下载进度。"
+    "description": "HaRu UI: 需要通知权限才能可靠显示后台下载进度。"
   },
   "ui2555aad7": "音乐",
   "@ui2555aad7": {
-    "description": "Flule34 UI: 音乐"
+    "description": "HaRu UI: 音乐"
   },
   "ui0727f3bc": "音量 {p0}%",
   "@ui0727f3bc": {
-    "description": "Flule34 UI: 音量 {p0}%",
+    "description": "HaRu UI: 音量 {p0}%",
     "placeholders": {
       "p0": {
         "type": "String"
       }
     }
   },
+  "ui7746148e": "页面加载失败，可以点重试。",
+  "@ui7746148e": {
+    "description": "HaRu UI: 页面加载失败，可以点重试。"
+  },
+  "ui17a3b28f": "页面完成",
+  "@ui17a3b28f": {
+    "description": "HaRu UI: 页面完成"
+  },
   "ui7f532d14": "顺序播放",
   "@ui7f532d14": {
-    "description": "Flule34 UI: 顺序播放"
+    "description": "HaRu UI: 顺序播放"
   },
   "ui73db46a3": "预发布版",
   "@ui73db46a3": {
-    "description": "Flule34 UI: 预发布版"
+    "description": "HaRu UI: 预发布版"
   },
   "ui17cde1d0": "频道",
   "@ui17cde1d0": {
-    "description": "Flule34 UI: 频道"
-  },
-  "ui4bb87ce1": "首页",
-  "@ui4bb87ce1": {
-    "description": "Flule34 UI: 首页"
+    "description": "HaRu UI: 频道"
   },
   "ui75c36c5d": "首页、搜索和媒体库的视频卡片会模糊显示封面。",
   "@ui75c36c5d": {
-    "description": "Flule34 UI: 首页、搜索和媒体库的视频卡片会模糊显示封面。"
+    "description": "HaRu UI: 首页、搜索和媒体库的视频卡片会模糊显示封面。"
   },
   "ui11750af9": "首页默认内容取向",
   "@ui11750af9": {
-    "description": "Flule34 UI: 首页默认内容取向"
+    "description": "HaRu UI: 首页默认内容取向"
   },
   "ui669768f7": "高评分",
   "@ui669768f7": {
-    "description": "Flule34 UI: 高评分"
+    "description": "HaRu UI: 高评分"
   },
   "ui1773f316": "高评分视频",
   "@ui1773f316": {
-    "description": "Flule34 UI: 高评分视频"
+    "description": "HaRu UI: 高评分视频"
+  },
+  "ui669c4c11": "默认排序",
+  "@ui669c4c11": {
+    "description": "HaRu UI: 默认排序"
   },
   "ui349affc5": "默认播放清晰度",
   "@ui349affc5": {
-    "description": "Flule34 UI: 默认播放清晰度"
+    "description": "HaRu UI: 默认播放清晰度"
   },
   "ui41526a4f": "默认顺序",
   "@ui41526a4f": {
-    "description": "Flule34 UI: 默认顺序"
+    "description": "HaRu UI: 默认顺序"
   },
   "ui5c240b03": "（API {p0}、用户 {p1}）；",
   "@ui5c240b03": {
-    "description": "Flule34 UI: （API {p0}、用户 {p1}）；",
+    "description": "HaRu UI: （API {p0}、用户 {p1}）；",
     "placeholders": {
       "p0": {
         "type": "String"
@@ -3084,6 +4381,6 @@
   },
   "ui2102bc09": "（精选）",
   "@ui2102bc09": {
-    "description": "Flule34 UI: （精选）"
+    "description": "HaRu UI: （精选）"
   }
 }

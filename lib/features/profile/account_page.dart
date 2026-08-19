@@ -79,7 +79,7 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const AppText('账号与安全')),
+      appBar: AppBar(title: const AppText('Rule34Video 账号')),
       body: AnimatedBuilder(
         animation: widget.api.sessionStore,
         builder: (context, _) {

@@ -46,7 +46,7 @@ Future<String> _downloadSource() async {
   final client = HttpClient();
   try {
     final request = await client.getUrl(Uri.parse(sourceUrl));
-    request.headers.set(HttpHeaders.userAgentHeader, 'Flule34 catalog builder');
+    request.headers.set(HttpHeaders.userAgentHeader, 'HaRu catalog builder');
     final response = await request.close();
     if (response.statusCode != HttpStatus.ok) {
       throw HttpException(

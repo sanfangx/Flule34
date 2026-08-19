@@ -1,11 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flule34/l10n/ui_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/models/video_models.dart';
+import '../../core/models/content_source.dart';
+import '../../core/models/hanime_search_models.dart';
 import '../../core/database/app_database.dart';
-import '../../features/discover/discover_page.dart';
 import '../../features/discover/collection_page.dart';
 import '../../features/discover/discovery_directory_page.dart';
 import '../../features/discover/rankings_page.dart';
@@ -17,21 +20,25 @@ import '../../features/library/playlist_page.dart';
 import '../../features/library/playlist_playback_page.dart';
 import '../../features/library/subscription_page.dart';
 import '../../features/profile/account_page.dart';
+import '../../features/profile/hanime_account_page.dart';
+import '../../features/hanime/hanime_library_pages.dart';
 import '../../features/profile/profile_page.dart';
 import '../../features/profile/uploader_page.dart';
 import '../../features/search/search_page.dart';
 import '../../features/settings/presentation/settings_pages.dart';
+import '../../features/settings/domain/app_settings.dart';
 import '../../features/settings/presentation/support_pages.dart';
 import '../../features/settings/presentation/translation_catalog_page.dart';
 import '../../features/shell/app_shell.dart';
 import '../../features/video/video_detail_page.dart';
+import '../../features/home/hanime_home_page.dart';
 import '../../shared/scroll_to_top_overlay.dart';
 import '../providers.dart';
 import 'route_names.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final _homeNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'home');
-final _discoverNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'discover');
+final _hanimeNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'hanime');
 final _libraryNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'library');
 final _profileNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'profile');
 final appRouteObserver = RouteObserver<PageRoute<dynamic>>();
@@ -40,6 +47,23 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   final api = ref.watch(rule34VideoApiProvider);
   final searchHistoryRepository = ref.watch(searchHistoryRepositoryProvider);
   final scrollToTopController = ref.watch(scrollToTopControllerProvider);
+  final initialDestination = ref
+      .read(appSettingsRepositoryProvider)
+      .settings
+      .navigationOrder
+      .first;
+  final initialSite = switch (initialDestination) {
+    AppDestination.rule34video => ContentSite.rule34video,
+    AppDestination.hanime => ContentSite.hanime1,
+    _ => null,
+  };
+  if (initialSite != null &&
+      ref.read(appSettingsRepositoryProvider).settings.activeSite !=
+          initialSite) {
+    unawaited(
+      ref.read(appSettingsRepositoryProvider).setActiveSite(initialSite),
+    );
+  }
   Widget scrollablePage(GoRouterState state, Widget child) {
     return ScrollToTopOverlay(
       key: ValueKey(state.uri.toString()),
@@ -50,7 +74,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 
   final router = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: '/',
+    initialLocation: _initialLocation(initialDestination),
     observers: [appRouteObserver],
     routes: [
       StatefulShellRoute.indexedStack(
@@ -70,13 +94,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
           StatefulShellBranch(
-            navigatorKey: _discoverNavigatorKey,
+            navigatorKey: _hanimeNavigatorKey,
             routes: [
               GoRoute(
-                path: '/discover',
-                name: AppRouteNames.discover,
+                path: '/hanime',
+                name: AppRouteNames.hanimeHome,
                 builder: (context, state) =>
-                    scrollablePage(state, const DiscoverPage()),
+                    scrollablePage(state, HanimeHomePage(api: api)),
               ),
             ],
           ),
@@ -96,6 +120,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                     prefetchService: ref.read(
                       predictivePrefetchServiceProvider,
                     ),
+                    downloadRepository: ref.read(downloadRepositoryProvider),
                   ),
                 ),
                 routes: [
@@ -133,6 +158,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                     name: AppRouteNames.account,
                     builder: (context, state) =>
                         scrollablePage(state, AccountPage(api: api)),
+                  ),
+                  GoRoute(
+                    path: 'hanime-account',
+                    name: AppRouteNames.hanimeAccount,
+                    builder: (context, state) =>
+                        scrollablePage(state, HanimeAccountPage(api: api)),
                   ),
                   GoRoute(
                     path: 'appearance',
@@ -230,13 +261,53 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: _rootNavigatorKey,
         path: '/search',
         name: AppRouteNames.search,
+        builder: (context, state) {
+          final launch = state.extra;
+          return scrollablePage(
+            state,
+            SearchPage(
+              api: api,
+              historyRepository: searchHistoryRepository,
+              prefetchService: ref.read(predictivePrefetchServiceProvider),
+              translationService: ref.read(translationServiceProvider),
+              settingsRepository: ref.read(appSettingsRepositoryProvider),
+              hanimeLaunch: launch is HanimeSearchLaunch ? launch : null,
+              initialSite: state.uri.queryParameters['site'] == null
+                  ? null
+                  : ContentSite.fromId(state.uri.queryParameters['site']),
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/hanime/likes',
+        name: AppRouteNames.hanimeLikes,
         builder: (context, state) => scrollablePage(
           state,
-          SearchPage(
+          HanimeLikesPage(
             api: api,
-            historyRepository: searchHistoryRepository,
-            prefetchService: ref.read(predictivePrefetchServiceProvider),
-            translationService: ref.read(translationServiceProvider),
+            prefetch: ref.read(predictivePrefetchServiceProvider),
+          ),
+        ),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/hanime/playlists',
+        name: AppRouteNames.hanimePlaylists,
+        builder: (context, state) =>
+            scrollablePage(state, HanimePlaylistsPage(api: api)),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/hanime/playlist',
+        name: AppRouteNames.hanimePlaylist,
+        builder: (context, state) => scrollablePage(
+          state,
+          HanimePlaylistContentPage(
+            api: api,
+            prefetch: ref.read(predictivePrefetchServiceProvider),
+            listCode: state.uri.queryParameters['list'] ?? '',
           ),
         ),
       ),
@@ -325,6 +396,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   id: state.pathParameters['id']!,
                   slug: state.pathParameters['slug']!,
                   title: '视频 ${state.pathParameters['id']!}',
+                  siteId: state.uri.queryParameters['site'] ?? 'rule34video',
                 );
           return scrollablePage(state, VideoDetailPage(api: api, video: video));
         },
@@ -418,3 +490,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   ref.onDispose(router.dispose);
   return router;
 });
+
+String _initialLocation(AppDestination destination) => switch (destination) {
+  AppDestination.rule34video => '/',
+  AppDestination.hanime => '/hanime',
+  AppDestination.library => '/library',
+  AppDestination.profile => '/profile',
+};

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flule34/l10n/ui_localization.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/providers.dart';
+import '../../core/models/content_source.dart';
+import '../settings/domain/app_settings.dart';
+import '../../shared/site_badge.dart';
 
 class AppShell extends ConsumerWidget {
   const AppShell({super.key, required this.navigationShell});
@@ -15,6 +20,7 @@ class AppShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final dark = theme.brightness == Brightness.dark;
+    final settingsRepository = ref.watch(appSettingsRepositoryProvider);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: theme.scaffoldBackgroundColor,
@@ -26,41 +32,77 @@ class AppShell extends ConsumerWidget {
             : Brightness.dark,
         systemNavigationBarContrastEnforced: false,
       ),
-      child: Scaffold(
-        body: SafeArea(bottom: false, child: navigationShell),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: navigationShell.currentIndex,
-          onDestinationSelected: (index) {
-            ref.read(predictivePrefetchServiceProvider).prioritizeForeground();
-            navigationShell.goBranch(
-              index,
-              initialLocation: index == navigationShell.currentIndex,
-            );
-          },
-          destinations: [
-            NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home),
-              label: context.uiText('首页'),
+      child: ListenableBuilder(
+        listenable: settingsRepository,
+        builder: (context, _) {
+          final order = settingsRepository.settings.navigationOrder;
+          final selected = order.indexWhere(
+            (item) => _branchIndex(item) == navigationShell.currentIndex,
+          );
+          return Scaffold(
+            body: SafeArea(bottom: false, child: navigationShell),
+            bottomNavigationBar: NavigationBar(
+              selectedIndex: selected < 0 ? 0 : selected,
+              onDestinationSelected: (displayIndex) {
+                final destination = order[displayIndex];
+                final branchIndex = _branchIndex(destination);
+                ref
+                    .read(predictivePrefetchServiceProvider)
+                    .prioritizeForeground();
+                if (destination == AppDestination.rule34video) {
+                  unawaited(
+                    settingsRepository.setActiveSite(ContentSite.rule34video),
+                  );
+                } else if (destination == AppDestination.hanime) {
+                  unawaited(
+                    settingsRepository.setActiveSite(ContentSite.hanime1),
+                  );
+                }
+                navigationShell.goBranch(
+                  branchIndex,
+                  initialLocation: branchIndex == navigationShell.currentIndex,
+                );
+              },
+              destinations: order
+                  .map((item) => _destination(context, item))
+                  .toList(growable: false),
             ),
-            NavigationDestination(
-              icon: Icon(Icons.explore_outlined),
-              selectedIcon: Icon(Icons.explore),
-              label: context.uiText('发现'),
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.video_library_outlined),
-              selectedIcon: Icon(Icons.video_library),
-              label: context.uiText('媒体库'),
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.person_outline),
-              selectedIcon: Icon(Icons.person),
-              label: context.uiText('我的'),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 }
+
+int _branchIndex(AppDestination destination) => switch (destination) {
+  AppDestination.rule34video => 0,
+  AppDestination.hanime => 1,
+  AppDestination.library => 2,
+  AppDestination.profile => 3,
+};
+
+NavigationDestination _destination(
+  BuildContext context,
+  AppDestination destination,
+) => switch (destination) {
+  AppDestination.rule34video => const NavigationDestination(
+    icon: SiteBadge(site: ContentSite.rule34video, size: 22),
+    selectedIcon: SiteBadge(site: ContentSite.rule34video, size: 22),
+    label: 'R34V',
+  ),
+  AppDestination.hanime => const NavigationDestination(
+    icon: SiteBadge(site: ContentSite.hanime1, size: 22),
+    selectedIcon: SiteBadge(site: ContentSite.hanime1, size: 22),
+    label: 'Hanime',
+  ),
+  AppDestination.library => NavigationDestination(
+    icon: const Icon(Icons.video_library_outlined),
+    selectedIcon: const Icon(Icons.video_library),
+    label: context.uiText('媒体库'),
+  ),
+  AppDestination.profile => NavigationDestination(
+    icon: const Icon(Icons.person_outline),
+    selectedIcon: const Icon(Icons.person),
+    label: context.uiText('我的'),
+  ),
+};

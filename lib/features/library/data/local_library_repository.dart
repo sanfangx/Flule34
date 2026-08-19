@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 
 import '../../../core/database/app_database.dart';
 import '../../../core/models/video_models.dart';
+import '../../../core/models/content_source.dart';
 
 final class LocalLibraryException implements Exception {
   const LocalLibraryException(this.message);
@@ -39,7 +40,17 @@ abstract interface class LocalLibraryRepository {
   Future<void> removeVideo({required int libraryId, required String videoId});
 }
 
-final class DriftLocalLibraryRepository implements LocalLibraryRepository {
+abstract interface class SourceAwareLocalLibraryRepository {
+  Future<Set<int>> libraryIdsForVideoItem(VideoItem video);
+
+  Future<void> removeVideoItem({
+    required int libraryId,
+    required VideoItem video,
+  });
+}
+
+final class DriftLocalLibraryRepository
+    implements LocalLibraryRepository, SourceAwareLocalLibraryRepository {
   const DriftLocalLibraryRepository(this._database);
 
   final AppDatabase _database;
@@ -93,7 +104,8 @@ final class DriftLocalLibraryRepository implements LocalLibraryRepository {
       (rows) => rows
           .map(
             (row) => VideoItem(
-              id: row.videoId,
+              id: _videoId(row.videoId),
+              siteId: _siteId(row.videoId),
               title: row.title,
               slug: row.slug,
               thumbnailUrl: row.thumbnailUrl,
@@ -110,10 +122,19 @@ final class DriftLocalLibraryRepository implements LocalLibraryRepository {
   }
 
   @override
-  Future<Set<int>> libraryIdsForVideo(String videoId) async {
+  Future<Set<int>> libraryIdsForVideo(String videoId) {
+    return _libraryIdsForStoredVideoId(videoId);
+  }
+
+  @override
+  Future<Set<int>> libraryIdsForVideoItem(VideoItem video) {
+    return _libraryIdsForStoredVideoId(_storageId(video.siteId, video.id));
+  }
+
+  Future<Set<int>> _libraryIdsForStoredVideoId(String storedVideoId) async {
     final rows = await (_database.select(
       _database.localLibraryVideos,
-    )..where((item) => item.videoId.equals(videoId))).get();
+    )..where((item) => item.videoId.equals(storedVideoId))).get();
     return rows.map((row) => row.libraryId).toSet();
   }
 
@@ -209,7 +230,7 @@ final class DriftLocalLibraryRepository implements LocalLibraryRepository {
           .insertOnConflictUpdate(
             LocalLibraryVideosCompanion.insert(
               libraryId: libraryId,
-              videoId: video.id,
+              videoId: _storageId(video.siteId, video.id),
               title: video.title,
               slug: video.slug,
               thumbnailUrl: Value(video.thumbnailUrl),
@@ -229,16 +250,47 @@ final class DriftLocalLibraryRepository implements LocalLibraryRepository {
   }
 
   @override
-  Future<void> removeVideo({
+  Future<void> removeVideo({required int libraryId, required String videoId}) {
+    return _removeStoredVideo(libraryId: libraryId, storedVideoId: videoId);
+  }
+
+  @override
+  Future<void> removeVideoItem({
     required int libraryId,
-    required String videoId,
+    required VideoItem video,
+  }) {
+    return _removeStoredVideo(
+      libraryId: libraryId,
+      storedVideoId: _storageId(video.siteId, video.id),
+    );
+  }
+
+  Future<void> _removeStoredVideo({
+    required int libraryId,
+    required String storedVideoId,
   }) async {
     await (_database.delete(_database.localLibraryVideos)..where(
           (item) =>
-              item.libraryId.equals(libraryId) & item.videoId.equals(videoId),
+              item.libraryId.equals(libraryId) &
+              item.videoId.equals(storedVideoId),
         ))
         .go();
   }
 
   String _normalizeName(String value) => value.trim().toLowerCase();
+
+  String _storageId(String siteId, String videoId) =>
+      siteId == 'rule34video' ? videoId : '$siteId:$videoId';
+
+  String _siteId(String storedId) {
+    final separator = storedId.indexOf(':');
+    return separator <= 0
+        ? ContentSite.rule34video.id
+        : storedId.substring(0, separator);
+  }
+
+  String _videoId(String storedId) {
+    final separator = storedId.indexOf(':');
+    return separator <= 0 ? storedId : storedId.substring(separator + 1);
+  }
 }

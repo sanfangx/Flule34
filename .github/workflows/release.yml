@@ -74,7 +74,10 @@ jobs:
 
       - name: Android Lint
         working-directory: android
-        run: ./gradlew :app:lintDebug --no-daemon
+        shell: bash
+        run: |
+          CRONET_DEFINE="$(printf 'cronetHttpNoPlay=true' | base64 -w0)"
+          ./gradlew :app:lintDebug --no-daemon "-Pdart-defines=$CRONET_DEFINE"
 
       - name: 构建 arm64 Release APK
         shell: bash
@@ -88,6 +91,7 @@ jobs:
           BUILD_TIME="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           flutter build apk --release --split-per-abi --target-platform android-arm64 --obfuscate \
             --split-debug-info=build/symbols \
+            --dart-define=cronetHttpNoPlay=true \
             --build-name="$VERSION" \
             --build-number="$PUBSPEC_BUILD" \
             --dart-define=FLULE34_UPDATE_API_URL="$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/releases" \
@@ -109,13 +113,13 @@ jobs:
           done
 
           mkdir -p release
-          cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk "release/Flule34-$VERSION-arm64-v8a.apk"
+          cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk "release/HaRu-$VERSION-arm64-v8a.apk"
           (cd release && sha256sum ./*.apk > SHA256SUMS.txt)
 
       - name: 上传 Release 与符号文件
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: flule34-release-${{ github.ref_name }}
+          name: haru-release-${{ github.ref_name }}
           path: |
             release/
             build/symbols/
@@ -144,4 +148,4 @@ jobs:
             release/SHA256SUMS.txt \
             --verify-tag \
             "${NOTES_ARGS[@]}" \
-            --title "Flule34 ${GITHUB_REF_NAME#v}"
+            --title "HaRu ${GITHUB_REF_NAME#v}"

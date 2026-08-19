@@ -194,7 +194,21 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.byTooltip('取消订阅'), findsOneWidget);
+    expect(find.text('取消订阅'), findsOneWidget);
+
+    await tester.tap(find.text('取消订阅'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('确定'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('HydraFXX'), findsOneWidget);
+    expect(find.text('订阅'), findsOneWidget);
+    expect(api.subscriptionStates, [false]);
+
+    await tester.tap(find.text('订阅'));
+    await tester.pumpAndSettle();
+    expect(find.text('取消订阅'), findsOneWidget);
+    expect(api.subscriptionStates, [false, true]);
   });
 }
 
@@ -207,6 +221,7 @@ final class _SubscriptionsApi extends Rule34VideoApi {
 
   final List<List<SubscriptionItem>> _responses;
   final List<String> unsubscribedPaths = [];
+  final List<bool> subscriptionStates = [];
   var loads = 0;
 
   @override
@@ -231,6 +246,14 @@ final class _SubscriptionsApi extends Rule34VideoApi {
   @override
   Future<void> unsubscribeSubscription(SubscriptionItem subscription) async {
     unsubscribedPaths.add(subscription.path);
+  }
+
+  @override
+  Future<void> setSubscriptionState(
+    SubscriptionItem subscription, {
+    required bool subscribe,
+  }) async {
+    subscriptionStates.add(subscribe);
   }
 
   @override

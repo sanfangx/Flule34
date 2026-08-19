@@ -14,6 +14,7 @@ import 'package:flule34/core/services/screen_wake_lock_service.dart';
 import 'package:flule34/features/downloads/domain/download_models.dart';
 import 'package:flule34/features/settings/data/app_settings_store.dart';
 import 'package:flule34/features/video/video_detail_page.dart';
+import 'package:flule34/features/video/video_player_page.dart';
 
 import '../../helpers/test_session_harness.dart';
 
@@ -23,7 +24,7 @@ void main() {
     expect(shouldPauseVideoForRoutePush(false), isTrue);
   });
 
-  testWidgets('视频详情固定播放器并只读展示评分', (tester) async {
+  testWidgets('播放时锁定播放器，明确暂停后才可上推并固定详情页签', (tester) async {
     final originalPlatform = VideoPlayerPlatform.instance;
     final platform = _FakeVideoPlayerPlatform();
     VideoPlayerPlatform.instance = platform;
@@ -36,6 +37,8 @@ void main() {
     await harness.sessionStore.load();
     await harness.sessionStore.authenticate('1001');
     final api = _FakeVideoApi(harness.sessionStore);
+    final playerHandle = VideoPlayerHandle();
+    addTearDown(playerHandle.dispose);
     final container = ProviderContainer(
       overrides: [
         rule34VideoApiProvider.overrideWithValue(api),
@@ -58,30 +61,118 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
-          home: VideoDetailPage(api: api, video: _video),
+          home: VideoDetailPage(
+            api: api,
+            video: _video,
+            playerHandle: playerHandle,
+          ),
         ),
       ),
     );
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+    });
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
+    playerHandle.debugSetPlaybackState(playing: true, buffering: false);
+    await tester.pump();
+    expect(playerHandle.canCollapseDetails, isFalse);
 
     expect(find.text('喜欢'), findsNothing);
     expect(find.text('不喜欢'), findsNothing);
     expect(find.text('播放列表'), findsOneWidget);
     expect(find.text('本地分类库'), findsOneWidget);
     expect(find.text('3D · ↑12 ↓3'), findsOneWidget);
-    expect(find.textContaining('评论'), findsNothing);
+    // 新布局：简介|评论 Tab（rule34video 评论 Tab 为占位，无真实输入框）。
+    expect(find.text('简介'), findsOneWidget);
+    expect(find.text('评论'), findsOneWidget);
+    expect(find.text('新增一则公开评论...'), findsNothing);
     expect(find.text('播放'), findsNothing);
-    final playerFinder = find.byKey(const ValueKey('inline-video-player'));
+    final playerFinder = find.byKey(
+      const ValueKey('video-detail-player-region'),
+    );
     expect(playerFinder, findsOneWidget);
     final playerTop = tester.getTopLeft(playerFinder).dy;
+    final nestedState = tester.state<NestedScrollViewState>(
+      find.byType(NestedScrollView),
+    );
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is NotificationListener<OverscrollIndicatorNotification>,
+      ),
+      findsOneWidget,
+    );
+    final innerScrollable = find.descendant(
+      of: find.byType(ListView),
+      matching: find.byType(Scrollable),
+    );
+    final innerPosition = tester
+        .state<ScrollableState>(innerScrollable)
+        .position;
 
-    await tester.drag(find.byType(ListView), const Offset(0, -300));
-    await tester.pump();
-    expect(tester.getTopLeft(playerFinder).dy, playerTop);
+    final playingGesture = await tester.startGesture(
+      tester.getCenter(find.byType(ListView)),
+    );
+    for (var index = 0; index < 6; index += 1) {
+      await playingGesture.moveBy(const Offset(0, -100));
+      await tester.pump(const Duration(milliseconds: 16));
+      expect(nestedState.outerController.offset, closeTo(0, 0.01));
+      expect(tester.getTopLeft(playerFinder).dy, closeTo(playerTop, 0.1));
+    }
+    await playingGesture.up();
+    await tester.pumpAndSettle();
+    expect(nestedState.outerController.offset, closeTo(0, 0.01));
+    expect(tester.getTopLeft(playerFinder).dy, closeTo(playerTop, 0.1));
 
-    await tester.pumpWidget(const SizedBox.shrink());
+    final reverseGesture = await tester.startGesture(
+      tester.getCenter(find.byType(ListView)),
+    );
+    for (var index = 0; index < 3; index += 1) {
+      await reverseGesture.moveBy(const Offset(0, 60));
+      await tester.pump(const Duration(milliseconds: 16));
+      expect(nestedState.outerController.offset, closeTo(0, 0.01));
+      expect(tester.getTopLeft(playerFinder).dy, closeTo(playerTop, 0.1));
+    }
+    await reverseGesture.up();
+    await tester.pumpAndSettle();
+    expect(nestedState.outerController.offset, closeTo(0, 0.01));
+    expect(tester.getTopLeft(playerFinder).dy, closeTo(playerTop, 0.1));
+    final innerBeforePause = innerPosition.pixels;
+    expect(innerBeforePause, greaterThan(0));
+
+    playerHandle.debugSetPlaybackState(playing: false, buffering: false);
     await tester.pump();
+    expect(playerHandle.canCollapseDetails, isTrue);
+    expect(nestedState.outerController.offset, closeTo(0, 0.01));
+    expect(innerPosition.pixels, closeTo(innerBeforePause, 0.01));
+
+    await tester.fling(find.byType(ListView), const Offset(0, -1200), 3000);
+    await tester.pumpAndSettle();
+    expect(nestedState.outerController.offset, greaterThan(0));
+    final innerBeforeResume = innerPosition.pixels;
+    expect(innerBeforeResume, greaterThanOrEqualTo(0));
+    expect(tester.getTopLeft(find.text('简介')).dy, greaterThanOrEqualTo(0));
+
+    playerHandle.debugSetPlaybackState(playing: true, buffering: false);
+    await tester.pump();
+    expect(nestedState.outerController.offset, greaterThan(0));
+    expect(innerPosition.pixels, closeTo(innerBeforeResume, 0.01));
+    final outerSamples = <double>[];
+    for (var index = 0; index < 5; index += 1) {
+      await tester.pump(const Duration(milliseconds: 50));
+      outerSamples.add(nestedState.outerController.offset);
+      expect(innerPosition.pixels, closeTo(innerBeforeResume, 0.01));
+    }
+    expect(
+      outerSamples,
+      contains(isNot(nestedState.outerController.position.maxScrollExtent)),
+    );
+    await tester.pumpAndSettle();
+    expect(nestedState.outerController.offset, closeTo(0, 0.01));
+    expect(innerPosition.pixels, closeTo(innerBeforeResume, 0.01));
+    expect(tester.getTopLeft(playerFinder).dy, closeTo(playerTop, 0.1));
   });
 
   testWidgets('视频详情加载失败后可原位重试且不会因重建重复请求', (tester) async {
@@ -214,13 +305,7 @@ const _video = VideoItem(id: '123', title: '测试视频', slug: 'test-video');
 
 const _details = VideoDetails(
   video: _video,
-  sources: [
-    VideoSource(
-      label: '720p',
-      url: 'https://example.com/video.mp4',
-      isHd: true,
-    ),
-  ],
+  sources: [],
   categories: ['3D'],
   tags: ['example'],
   models: ['Artist'],
@@ -356,7 +441,14 @@ final class _FakeVideoPlayerPlatform extends VideoPlayerPlatform {
   }
 
   @override
-  Future<void> pause(int playerId) async {}
+  Future<void> pause(int playerId) async {
+    _events.add(
+      VideoEvent(
+        eventType: VideoEventType.isPlayingStateUpdate,
+        isPlaying: false,
+      ),
+    );
+  }
 
   @override
   Future<void> seekTo(int playerId, Duration value) async {}

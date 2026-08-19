@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../app/providers.dart';
 import '../core/api/rule34video_api.dart';
+import '../core/models/content_source.dart';
 import '../core/models/video_models.dart';
 import '../features/auth/login_sheet.dart';
 import '../features/library/local_library_picker.dart';
@@ -39,10 +40,15 @@ class VideoCard extends ConsumerWidget {
 
   Future<void> _showActions(BuildContext context, WidgetRef ref) async {
     final api = ref.read(rule34VideoApiProvider);
-    final loggedIn = api.sessionStore.isLoggedIn;
-    final initialFavorite =
-        video.isFavorite ??
-        (loggedIn ? api.cachedFavoriteStatus(video.id) : null);
+    final capabilities = video.site.capabilities;
+    final isHanime = video.site == ContentSite.hanime1;
+    final hanimeLoggedIn = isHanime && api.sessionStore.isHanimeLoggedIn;
+    final loggedIn =
+        capabilities.accountFavorites && api.sessionStore.isLoggedIn;
+    final initialFavorite = capabilities.accountFavorites
+        ? video.isFavorite ??
+              (loggedIn ? api.cachedFavoriteStatus(video.id) : null)
+        : null;
     final Future<bool>? favoriteFuture = loggedIn
         ? initialFavorite == null
               ? api.favoriteStatus(video)
@@ -61,14 +67,14 @@ class VideoCard extends ConsumerWidget {
         builder: (context) => SafeArea(
           child: Wrap(
             children: [
-              if (!loggedIn)
+              if (capabilities.accountFavorites && !loggedIn)
                 ListTile(
                   leading: const Icon(Icons.favorite_border),
                   title: const AppText('收藏'),
                   onTap: () =>
                       Navigator.pop(context, _VideoCardAction.favorite),
                 )
-              else
+              else if (capabilities.accountFavorites)
                 FutureBuilder<bool>(
                   future: favoriteFuture,
                   initialData: initialFavorite,
@@ -104,6 +110,82 @@ class VideoCard extends ConsumerWidget {
                     );
                   },
                 ),
+              if (isHanime && !hanimeLoggedIn)
+                ListTile(
+                  leading: const Icon(Icons.thumb_up_outlined),
+                  title: const AppText('点赞'),
+                  onTap: () =>
+                      Navigator.pop(context, _VideoCardAction.hanimeLike),
+                )
+              else if (isHanime)
+                FutureBuilder<VideoDetails>(
+                  future: detailsFuture,
+                  builder: (context, snapshot) {
+                    final details = snapshot.data;
+                    final loading = details == null && !snapshot.hasError;
+                    final liked = details?.hanimeLiked ?? false;
+                    return ListTile(
+                      leading: loading
+                          ? const SizedBox.square(
+                              dimension: 22,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Icon(
+                              liked ? Icons.thumb_up : Icons.thumb_up_outlined,
+                            ),
+                      title: AppText(
+                        loading
+                            ? '正在读取点赞状态'
+                            : snapshot.hasError
+                            ? '点赞状态读取失败，点击重试'
+                            : liked
+                            ? '取消点赞'
+                            : '点赞',
+                      ),
+                      onTap: loading
+                          ? null
+                          : () => Navigator.pop(
+                              context,
+                              _VideoCardAction.hanimeLike,
+                            ),
+                    );
+                  },
+                ),
+              if (isHanime)
+                FutureBuilder<VideoDetails>(
+                  future: hanimeLoggedIn ? detailsFuture : null,
+                  builder: (context, snapshot) {
+                    final details = snapshot.data;
+                    final loading =
+                        hanimeLoggedIn && details == null && !snapshot.hasError;
+                    final saved = details?.isSaved ?? false;
+                    return ListTile(
+                      leading: loading
+                          ? const SizedBox.square(
+                              dimension: 22,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Icon(
+                              saved ? Icons.bookmark : Icons.bookmark_border,
+                            ),
+                      title: AppText(
+                        loading
+                            ? '正在读取稍后观看状态'
+                            : snapshot.hasError
+                            ? '稍后观看状态读取失败，点击重试'
+                            : saved
+                            ? '移出稍后观看'
+                            : '稍后观看',
+                      ),
+                      onTap: loading
+                          ? null
+                          : () => Navigator.pop(
+                              context,
+                              _VideoCardAction.hanimeSave,
+                            ),
+                    );
+                  },
+                ),
               ListTile(
                 leading: const Icon(Icons.download_outlined),
                 title: const AppText('下载'),
@@ -115,11 +197,13 @@ class VideoCard extends ConsumerWidget {
                 onTap: () =>
                     Navigator.pop(context, _VideoCardAction.localLibrary),
               ),
-              ListTile(
-                leading: const Icon(Icons.playlist_add),
-                title: const AppText('播放列表'),
-                onTap: () => Navigator.pop(context, _VideoCardAction.playlist),
-              ),
+              if (capabilities.accountPlaylists)
+                ListTile(
+                  leading: const Icon(Icons.playlist_add),
+                  title: const AppText('播放列表'),
+                  onTap: () =>
+                      Navigator.pop(context, _VideoCardAction.playlist),
+                ),
               ListTile(
                 leading: const Icon(Icons.share_outlined),
                 title: const AppText('分享'),
@@ -147,6 +231,7 @@ class VideoCard extends ConsumerWidget {
         case _VideoCardAction.share:
           await ref.read(shareServiceProvider).shareVideo(video);
         case _VideoCardAction.favorite:
+          if (!capabilities.accountFavorites) return;
           if (!await _ensureLogin(context, api) || !context.mounted) {
             return;
           }
@@ -157,6 +242,38 @@ class VideoCard extends ConsumerWidget {
           if (context.mounted) {
             _message(context, isFavorite ? '已取消收藏。' : '已加入收藏。');
           }
+        case _VideoCardAction.hanimeLike:
+          if (!isHanime) return;
+          if (!await _ensureHanimeLogin(context, api) || !context.mounted) {
+            return;
+          }
+          final details = await detailsFuture;
+          final wasLiked = details.hanimeLiked;
+          final pending = api.setHanimeLike(
+            video,
+            liked: !wasLiked,
+            current: wasLiked,
+          );
+          if (context.mounted) {
+            _message(context, wasLiked ? '已取消点赞。' : '已点赞。');
+          }
+          await pending;
+        case _VideoCardAction.hanimeSave:
+          if (!isHanime) return;
+          if (!await _ensureHanimeLogin(context, api) || !context.mounted) {
+            return;
+          }
+          final details = await detailsFuture;
+          final wasSaved = details.isSaved;
+          final pending = api.setHanimeSaved(
+            video,
+            saved: !wasSaved,
+            current: wasSaved,
+          );
+          if (context.mounted) {
+            _message(context, wasSaved ? '已移出稍后观看。' : '已加入稍后观看。');
+          }
+          await pending;
         case _VideoCardAction.download:
           final details = await _loadDetailsWithProgress(
             context,
@@ -195,6 +312,7 @@ class VideoCard extends ConsumerWidget {
             _message(context, message);
           }
         case _VideoCardAction.playlist:
+          if (!capabilities.accountPlaylists) return;
           if (!await _ensureLogin(context, api) || !context.mounted) {
             return;
           }
@@ -223,6 +341,16 @@ class VideoCard extends ConsumerWidget {
     return showLoginSheet(context, api);
   }
 
+  Future<bool> _ensureHanimeLogin(
+    BuildContext context,
+    Rule34VideoApi api,
+  ) async {
+    if (api.sessionStore.isHanimeLoggedIn) {
+      return true;
+    }
+    return showLoginSheet(context, api, site: ContentSite.hanime1);
+  }
+
   Future<VideoSource?> _chooseQuality(
     BuildContext context,
     List<VideoSource> sources,
@@ -236,7 +364,7 @@ class VideoCard extends ConsumerWidget {
         builder: (context) => ListView(
           shrinkWrap: true,
           children: [
-            for (final source in sources.reversed)
+            for (final source in sources)
               ListTile(
                 leading: Icon(source.isHd ? Icons.hd : Icons.sd),
                 title: Text(source.label),
@@ -308,6 +436,7 @@ class VideoCard extends ConsumerWidget {
         if (translationService.shouldAutoTranslateTitle(
           video.id,
           video.title,
+          siteId: video.siteId,
         )) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             unawaited(
@@ -315,6 +444,7 @@ class VideoCard extends ConsumerWidget {
                 videoId: video.id,
                 raw: video.title,
                 videoSlug: video.slug,
+                siteId: video.siteId,
               ),
             );
           });
@@ -334,7 +464,9 @@ class VideoCard extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _PreviewRegion(
-                  enabled: settings.videoPreviewEnabled,
+                  enabled:
+                      settings.videoPreviewEnabled &&
+                      video.site.capabilities.videoPreviews,
                   onLongPress: () {
                     ref
                         .read(videoPreviewControllerProvider)
@@ -442,6 +574,7 @@ class VideoCard extends ConsumerWidget {
                     videoId: video.id,
                     english: video.title,
                     videoSlug: video.slug,
+                    siteId: video.siteId,
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -463,6 +596,7 @@ class VideoCard extends ConsumerWidget {
                               value: translationService.resolveTitle(
                                 video.id,
                                 video.title,
+                                siteId: video.siteId,
                               ),
                               style: Theme.of(context).textTheme.titleSmall,
                             ),
@@ -581,6 +715,8 @@ class _PreviewRegion extends StatelessWidget {
 
 enum _VideoCardAction {
   favorite,
+  hanimeLike,
+  hanimeSave,
   download,
   localLibrary,
   playlist,

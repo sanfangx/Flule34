@@ -7,6 +7,8 @@ import 'transient_focus.dart';
 enum VideoListSort {
   sourceOrder('默认顺序'),
   newest('最新'),
+  popular('最热'),
+  oldest('最早'),
   title('标题'),
   rating('评分最高'),
   votes('票数最多'),
@@ -15,6 +17,52 @@ enum VideoListSort {
   const VideoListSort(this.label);
 
   final String label;
+}
+
+@immutable
+class VideoListFilterOptions {
+  const VideoListFilterOptions({
+    this.sorts = VideoListSort.values,
+    this.showDuration = true,
+    this.showMinRating = true,
+    this.showMinVotes = true,
+    this.defaultSortLabel = '网站顺序',
+  });
+
+  const VideoListFilterOptions.hanime({
+    this.sorts = const [
+      VideoListSort.sourceOrder,
+      VideoListSort.newest,
+      VideoListSort.title,
+      VideoListSort.rating,
+      VideoListSort.duration,
+    ],
+    this.showDuration = true,
+    this.showMinRating = true,
+    this.showMinVotes = false,
+    this.defaultSortLabel = '网站顺序',
+  });
+
+  const VideoListFilterOptions.hanimeHistory({
+    this.sorts = const [
+      VideoListSort.sourceOrder,
+      VideoListSort.popular,
+      VideoListSort.oldest,
+      VideoListSort.title,
+      VideoListSort.rating,
+      VideoListSort.duration,
+    ],
+    this.showDuration = true,
+    this.showMinRating = true,
+    this.showMinVotes = false,
+    this.defaultSortLabel = '最近观看',
+  });
+
+  final List<VideoListSort> sorts;
+  final bool showDuration;
+  final bool showMinRating;
+  final bool showMinVotes;
+  final String defaultSortLabel;
 }
 
 class VideoListFilters {
@@ -109,6 +157,23 @@ List<VideoItem> filterAndSortVideos(
         final compared = leftAge.compareTo(rightAge);
         return compared == 0 ? sourceOrder(left, right) : compared;
       });
+    case VideoListSort.popular:
+      result.sort((left, right) {
+        final compared = (right.views ?? -1).compareTo(left.views ?? -1);
+        return compared == 0 ? sourceOrder(left, right) : compared;
+      });
+    case VideoListSort.oldest:
+      result.sort((left, right) {
+        final leftAge = publishedAgeSeconds(left.publishedLabel);
+        final rightAge = publishedAgeSeconds(right.publishedLabel);
+        if (leftAge == null && rightAge == null) {
+          return sourceOrder(left, right);
+        }
+        if (leftAge == null) return 1;
+        if (rightAge == null) return -1;
+        final compared = rightAge.compareTo(leftAge);
+        return compared == 0 ? sourceOrder(left, right) : compared;
+      });
     case VideoListSort.title:
       result.sort((left, right) {
         final compared = left.title.toLowerCase().compareTo(
@@ -143,7 +208,7 @@ Future<VideoListFilters?> showVideoListFilters(
   BuildContext context, {
   required VideoListFilters initialValue,
   required String title,
-  String defaultSortLabel = '默认顺序',
+  VideoListFilterOptions options = const VideoListFilterOptions(),
 }) {
   var value = initialValue;
   return runWithoutRestoringInputFocus(
@@ -169,13 +234,13 @@ Future<VideoListFilters?> showVideoListFilters(
               DropdownButtonFormField<VideoListSort>(
                 initialValue: value.sort,
                 decoration: InputDecoration(labelText: context.uiText('排序')),
-                items: VideoListSort.values
+                items: options.sorts
                     .map(
                       (item) => DropdownMenuItem(
                         value: item,
                         child: AppText(
                           item == VideoListSort.sourceOrder
-                              ? defaultSortLabel
+                              ? options.defaultSortLabel
                               : item.label,
                         ),
                       ),
@@ -187,68 +252,83 @@ Future<VideoListFilters?> showVideoListFilters(
                   }
                 },
               ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<VideoDurationPreset>(
-                initialValue: value.duration,
-                decoration: InputDecoration(labelText: context.uiText('时长')),
-                items: VideoDurationPreset.values
-                    .map(
-                      (item) => DropdownMenuItem(
-                        value: item,
-                        child: AppText(item.label),
-                      ),
-                    )
-                    .toList(growable: false),
-                onChanged: (next) {
-                  if (next != null) {
-                    setModalState(() => value = value.copyWith(duration: next));
-                  }
-                },
-              ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<int>(
-                initialValue: value.minRating,
-                decoration: InputDecoration(labelText: context.uiText('最低点赞率')),
-                items: const [0, 70, 80, 90, 95]
-                    .map(
-                      (item) => DropdownMenuItem(
-                        value: item,
-                        child: AppText(item == 0 ? '不限' : '$item%'),
-                      ),
-                    )
-                    .toList(growable: false),
-                onChanged: (next) {
-                  if (next != null) {
-                    setModalState(
-                      () => value = value.copyWith(minRating: next),
-                    );
-                  }
-                },
-              ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<int>(
-                initialValue: value.minVotes,
-                decoration: InputDecoration(labelText: context.uiText('最低票数')),
-                items: const [0, 5, 10, 25, 50, 100]
-                    .map(
-                      (item) => DropdownMenuItem(
-                        value: item,
-                        child: AppText(item == 0 ? '不限' : '$item 票'),
-                      ),
-                    )
-                    .toList(growable: false),
-                onChanged: (next) {
-                  if (next != null) {
-                    setModalState(() => value = value.copyWith(minVotes: next));
-                  }
-                },
-              ),
+              if (options.showDuration) ...[
+                const SizedBox(height: 12),
+                DropdownButtonFormField<VideoDurationPreset>(
+                  initialValue: value.duration,
+                  decoration: InputDecoration(labelText: context.uiText('时长')),
+                  items: VideoDurationPreset.values
+                      .map(
+                        (item) => DropdownMenuItem(
+                          value: item,
+                          child: AppText(item.label),
+                        ),
+                      )
+                      .toList(growable: false),
+                  onChanged: (next) {
+                    if (next != null) {
+                      setModalState(
+                        () => value = value.copyWith(duration: next),
+                      );
+                    }
+                  },
+                ),
+              ],
+              if (options.showMinRating) ...[
+                const SizedBox(height: 12),
+                DropdownButtonFormField<int>(
+                  initialValue: value.minRating,
+                  decoration: InputDecoration(
+                    labelText: context.uiText('最低点赞率'),
+                  ),
+                  items: const [0, 70, 80, 90, 95]
+                      .map(
+                        (item) => DropdownMenuItem(
+                          value: item,
+                          child: AppText(item == 0 ? '不限' : '$item%'),
+                        ),
+                      )
+                      .toList(growable: false),
+                  onChanged: (next) {
+                    if (next != null) {
+                      setModalState(
+                        () => value = value.copyWith(minRating: next),
+                      );
+                    }
+                  },
+                ),
+              ],
+              if (options.showMinVotes) ...[
+                const SizedBox(height: 12),
+                DropdownButtonFormField<int>(
+                  initialValue: value.minVotes,
+                  decoration: InputDecoration(
+                    labelText: context.uiText('最低票数'),
+                  ),
+                  items: const [0, 5, 10, 25, 50, 100]
+                      .map(
+                        (item) => DropdownMenuItem(
+                          value: item,
+                          child: AppText(item == 0 ? '不限' : '$item 票'),
+                        ),
+                      )
+                      .toList(growable: false),
+                  onChanged: (next) {
+                    if (next != null) {
+                      setModalState(
+                        () => value = value.copyWith(minVotes: next),
+                      );
+                    }
+                  },
+                ),
+              ],
               const SizedBox(height: 20),
               Row(
                 children: [
                   TextButton(
-                    onPressed: () =>
-                        setModalState(() => value = const VideoListFilters()),
+                    onPressed: () => setModalState(
+                      () => value = VideoListFilters(sort: options.sorts.first),
+                    ),
                     child: const AppText('重置'),
                   ),
                   const Spacer(),
@@ -290,10 +370,10 @@ int? publishedAgeSeconds(String? label, {DateTime? now}) {
   if (normalized.isEmpty) {
     return null;
   }
-  if (normalized == 'just now' || normalized == 'today') {
+  if (normalized == 'just now' || normalized == 'today' || normalized == '今天') {
     return 0;
   }
-  if (normalized == 'yesterday') {
+  if (normalized == 'yesterday' || normalized == '昨天') {
     return const Duration(days: 1).inSeconds;
   }
   final relative = RegExp(
@@ -309,6 +389,23 @@ int? publishedAgeSeconds(String? label, {DateTime? now}) {
       'week' => 604800,
       'month' => 2592000,
       'year' => 31536000,
+      _ => 0,
+    };
+    return amount * unitSeconds;
+  }
+  final chineseRelative = RegExp(
+    r'(\d+)\s*(秒|分钟|分鐘|小时|小時|天|周|週|个月|個月|月|年)\s*前',
+  ).firstMatch(normalized);
+  if (chineseRelative != null) {
+    final amount = int.parse(chineseRelative.group(1)!);
+    final unitSeconds = switch (chineseRelative.group(2)) {
+      '秒' => 1,
+      '分钟' || '分鐘' => 60,
+      '小时' || '小時' => 3600,
+      '天' => 86400,
+      '周' || '週' => 604800,
+      '个月' || '個月' || '月' => 2592000,
+      '年' => 31536000,
       _ => 0,
     };
     return amount * unitSeconds;

@@ -167,7 +167,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
       context,
       initialValue: _filters,
       title: '筛选播放列表',
-      defaultSortLabel: '列表顺序',
+      options: const VideoListFilterOptions(defaultSortLabel: '列表顺序'),
     );
     if (selected != null && mounted) {
       final wasActive = _hasActiveFiltering;

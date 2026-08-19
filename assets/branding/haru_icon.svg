@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" role="img" aria-labelledby="title desc">
+  <title id="title">HaRu app icon</title>
+  <desc id="desc">A red H and R monogram with aligned waist strokes sharing a slender full-height purple center axis.</desc>
+  <rect width="108" height="108" rx="24" fill="#F7F2E8"/>
+  <rect x="50" width="8" height="108" fill="#A92DAF"/>
+  <path d="M19 24h14v24h17v12H33v24H19V24z" fill="#E53935"/>
+  <path d="M58 30h18c7 0 12 5 12 12s-5 12-12 12H58" fill="none" stroke="#E53935" stroke-width="12" stroke-linecap="butt" stroke-linejoin="round"/>
+  <path d="M71 54l18 30" fill="none" stroke="#E53935" stroke-width="14" stroke-linecap="butt" stroke-linejoin="miter"/>
+</svg>

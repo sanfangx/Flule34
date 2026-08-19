@@ -50,7 +50,7 @@ void main() {
       client: dio,
       updateApiUri: Uri.parse('https://api.github.com/repos/example/releases'),
       packageInfoLoader: () async => PackageInfo(
-        appName: 'Flule34',
+        appName: 'HaRu',
         packageName: 'com.hanestl.flule34',
         version: '1.0.0',
         buildNumber: '1',
@@ -99,7 +99,7 @@ void main() {
       updateApiUri: Uri.parse('https://api.github.com/repos/example/releases'),
       releaseFeedUri: Uri.parse('https://github.com/example/releases.atom'),
       packageInfoLoader: () async => PackageInfo(
-        appName: 'Flule34',
+        appName: 'HaRu',
         packageName: 'com.hanestl.flule34',
         version: '1.1.1',
         buildNumber: '1',

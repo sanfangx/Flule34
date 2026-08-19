@@ -175,11 +175,11 @@ void main() {
     );
 
     expect(details.sources.map((item) => item.label), [
-      '360p',
-      '1080p',
       '2160p (4K)',
+      '1080p',
+      '360p',
     ]);
-    expect(details.sources.last.isHd, isTrue);
+    expect(details.sources.first.isHd, isTrue);
   });
 
   test('视频源宽高标签使用第二个数字作为高度', () {
@@ -200,7 +200,33 @@ void main() {
       fallback: const VideoItem(id: '123', title: 'Example', slug: 'example'),
     );
 
-    expect(details.sources.map((item) => item.isHd), [isFalse, isTrue]);
+    // 高清晰度在上：1080p 排最前，540p 兜底在最后。
+    expect(details.sources.map((item) => item.isHd), [isTrue, isFalse]);
+  });
+
+  test('详情脚本标题可解析转义直引号和 Unicode', () {
+    const source = r'''
+      <link rel="canonical" href="/video/123/tifa-cloud-gongaga/">
+      <script>
+        flashvars = {
+          video_title: '\'Tifa \u0026 Cloud: Gongaga\'',
+          video_url: 'https:\/\/cdn.example.com\/tifa.mp4',
+          video_url_text: '1080p'
+        };
+      </script>
+    ''';
+
+    final details = SiteParser.videoDetails(
+      source: source,
+      fallback: const VideoItem(
+        id: '123',
+        title: 'Fallback title',
+        slug: 'tifa-cloud-gongaga',
+      ),
+    );
+
+    expect(details.video.title, "'Tifa & Cloud: Gongaga'");
+    expect(details.sources.single.url, 'https://cdn.example.com/tifa.mp4');
   });
 
   test('收藏状态只读取当前视频主操作区', () {
@@ -224,6 +250,31 @@ void main() {
     expect(
       SiteParser.videoDetails(source: current, fallback: fallback).isFavorite,
       isTrue,
+    );
+  });
+
+  test('视频评论解析评论者头像', () {
+    const source = '''
+      <div id="video_comments_video_comments_items">
+        <div class="item row" data-comment-id="77">
+          <div class="user-logo">
+            <img data-original="/contents/avatars/77.png">
+          </div>
+          <div class="comment-info">
+            <div class="inner"><a>Example User</a></div>
+            <div class="date"><span>1 hour ago</span></div>
+            <div class="coment-text">Example comment</div>
+          </div>
+        </div>
+      </div>
+    ''';
+
+    final comments = SiteParser.videoComments(source);
+
+    expect(comments, hasLength(1));
+    expect(
+      comments.single.avatarUrl,
+      'https://rule34video.com/contents/avatars/77.png',
     );
   });
 
@@ -398,5 +449,87 @@ void main() {
       'IP already voted',
     );
     expect(SiteParser.asyncActionError('<success/>'), isNull);
+  });
+
+  test('解析 Rule34Video 详情页评论（真实结构）', () {
+    // 来自 rule34video.com/video/3087141 的浏览器实测结构。
+    const source = '''
+      <div id="video_comments_video_comments_items">
+        <div class="item row " data-comment-id="1116991">
+          <div class="comment-inner">
+            <div class="user-logo">
+              <div class="wrap_image">
+                <a href="https://rule34video.com/members/4270719/">
+                  <svg class="custom-svg custom-brand"><use xlink:href="#custom-brand"></use></svg>
+                </a>
+              </div>
+            </div>
+            <div class="comment-info">
+              <div class="inner">
+                <a href="https://rule34video.com/members/4270719/">Isaxx</a>
+                <div class="date"><span>7 months ago</span></div>
+              </div>
+              <div class="coment-text">
+                I wanna be fucked like this btw
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="item row " data-comment-id="1107428">
+          <div class="comment-inner">
+            <div class="comment-info">
+              <div class="inner">
+                <a href="https://rule34video.com/members/3757078/">snsnsnn</a>
+                <div class="date"><span>7 months ago</span></div>
+              </div>
+              <div class="coment-text">
+                i want fuck her
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    ''';
+
+    final comments = SiteParser.videoComments(source);
+
+    expect(comments, hasLength(2));
+    expect(comments[0].id, '1116991');
+    expect(comments[0].username, 'Isaxx');
+    expect(comments[0].content, 'I wanna be fucked like this btw');
+    expect(comments[0].dateLabel, '7 months ago');
+    expect(comments[1].id, '1107428');
+    expect(comments[1].username, 'snsnsnn');
+    expect(comments[1].content, 'i want fuck her');
+  });
+
+  test('评论解析在容器缺失或缺少字段时跳过或返回空', () {
+    expect(SiteParser.videoComments('<html></html>'), isEmpty);
+    expect(
+      SiteParser.videoComments(
+        '<div id="video_comments_video_comments_items"></div>',
+      ),
+      isEmpty,
+    );
+    // 缺少 data-comment-id 或评论内容时跳过该条。
+    const partial = '''
+      <div id="video_comments_video_comments_items">
+        <div class="item row" data-comment-id="1">
+          <div class="comment-info">
+            <div class="inner"><a href="/members/1/">Alice</a></div>
+          </div>
+        </div>
+        <div class="item row" data-comment-id="2">
+          <div class="comment-info">
+            <div class="inner"><a href="/members/2/">Bob</a></div>
+            <div class="coment-text">valid</div>
+          </div>
+        </div>
+      </div>
+    ''';
+    final comments = SiteParser.videoComments(partial);
+    expect(comments, hasLength(1));
+    expect(comments.single.username, 'Bob');
+    expect(comments.single.content, 'valid');
   });
 }

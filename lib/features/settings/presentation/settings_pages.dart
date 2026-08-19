@@ -78,7 +78,8 @@ class AppearanceSettingsPage extends ConsumerWidget {
           ),
         ),
         SettingsField(
-          title: '视频布局',
+          title: '标准视频列表布局',
+          description: '适用于 R34V、Hanime 首页和普通视频列表，以及搜索结果和本地分类库。',
           child: SegmentedButton<ContentLayout>(
             expandedInsets: EdgeInsets.zero,
             segments: ContentLayout.values
@@ -120,10 +121,111 @@ class AppearanceSettingsPage extends ConsumerWidget {
             },
           ),
         ),
+        const SizedBox(height: 12),
+        AppText('底部导航顺序', style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 4),
+        AppText(
+          '拖动调整；冷启动时默认进入第一项。',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        _OrderEditor<AppDestination>(
+          values: settings.navigationOrder,
+          labelFor: _destinationLabel,
+          iconFor: _destinationIcon,
+          onReorder: (values) =>
+              unawaited(_save(context, repository.setNavigationOrder(values))),
+        ),
+        const SizedBox(height: 12),
+        AppText('媒体库范围顺序', style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 4),
+        AppText(
+          '调整本机、R34V 与 Hanime 的显示顺序。',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        _OrderEditor<LibraryScopePreference>(
+          values: settings.libraryScopeOrder,
+          labelFor: _libraryScopeLabel,
+          iconFor: _libraryScopeIcon,
+          onReorder: (values) => unawaited(
+            _save(context, repository.setLibraryScopeOrder(values)),
+          ),
+        ),
       ],
     );
   }
 }
+
+class _OrderEditor<T> extends StatelessWidget {
+  const _OrderEditor({
+    required this.values,
+    required this.labelFor,
+    required this.iconFor,
+    required this.onReorder,
+  });
+
+  final List<T> values;
+  final String Function(T value) labelFor;
+  final IconData Function(T value) iconFor;
+  final ValueChanged<List<T>> onReorder;
+
+  @override
+  Widget build(BuildContext context) {
+    return ReorderableListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      buildDefaultDragHandles: false,
+      itemCount: values.length,
+      onReorderItem: (oldIndex, newIndex) {
+        final reordered = values.toList(growable: true);
+        final item = reordered.removeAt(oldIndex);
+        reordered.insert(newIndex, item);
+        onReorder(reordered);
+      },
+      itemBuilder: (context, index) {
+        final value = values[index];
+        return ListTile(
+          key: ValueKey<T>(value),
+          contentPadding: EdgeInsets.zero,
+          leading: Icon(iconFor(value)),
+          title: AppText(labelFor(value)),
+          trailing: ReorderableDragStartListener(
+            index: index,
+            child: const Padding(
+              padding: EdgeInsets.all(12),
+              child: Icon(Icons.drag_handle),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+String _destinationLabel(AppDestination value) => switch (value) {
+  AppDestination.rule34video => 'R34V',
+  AppDestination.hanime => 'Hanime',
+  AppDestination.library => '媒体库',
+  AppDestination.profile => '我的',
+};
+
+IconData _destinationIcon(AppDestination value) => switch (value) {
+  AppDestination.rule34video => Icons.play_circle_outline,
+  AppDestination.hanime => Icons.movie_outlined,
+  AppDestination.library => Icons.video_library_outlined,
+  AppDestination.profile => Icons.person_outline,
+};
+
+String _libraryScopeLabel(LibraryScopePreference value) => switch (value) {
+  LibraryScopePreference.local => '本机',
+  LibraryScopePreference.rule34video => 'R34V',
+  LibraryScopePreference.hanime => 'Hanime',
+};
+
+IconData _libraryScopeIcon(LibraryScopePreference value) => switch (value) {
+  LibraryScopePreference.local => Icons.smartphone_outlined,
+  LibraryScopePreference.rule34video => Icons.play_circle_outline,
+  LibraryScopePreference.hanime => Icons.movie_outlined,
+};
 
 class PlaybackSettingsPage extends ConsumerWidget {
   const PlaybackSettingsPage({super.key});
@@ -591,7 +693,7 @@ class _PrivacySettingsPageState extends ConsumerState<PrivacySettingsPage> {
       final logs = await ref.read(appLogServiceProvider).readAll();
       final now = DateTime.now();
       final content = StringBuffer()
-        ..writeln('Flule34 本地诊断日志')
+        ..writeln('HaRu 本地诊断日志')
         ..writeln('导出时间：${now.toIso8601String()}')
         ..writeln('隐私说明：日志已自动脱敏，发送前仍建议自行检查。')
         ..writeln()
@@ -600,17 +702,14 @@ class _PrivacySettingsPageState extends ConsumerState<PrivacySettingsPage> {
         ..writeln()
         ..writeln('===== 最近 7 天日志 =====')
         ..write(logs.isEmpty ? '没有可导出的日志。\n' : logs);
-      final fileName =
-          'Flule34-logs-${now.year.toString().padLeft(4, '0')}'
-          '${now.month.toString().padLeft(2, '0')}'
-          '${now.day.toString().padLeft(2, '0')}.txt';
+      final fileName = logExportFileName(now);
       final export = await ref
           .read(appLogServiceProvider)
           .createExportFile(content.toString(), fileName: fileName);
       await SharePlus.instance.share(
         ShareParams(
           files: [XFile(export.path, mimeType: 'text/plain')],
-          subject: 'Flule34 本地诊断日志',
+          subject: 'HaRu 本地诊断日志',
         ),
       );
     } catch (error, stackTrace) {

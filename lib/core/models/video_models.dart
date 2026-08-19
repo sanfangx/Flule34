@@ -1,3 +1,5 @@
+import 'content_source.dart';
+
 enum FeedKind { newest, popular, topRated }
 
 enum VideoSort {
@@ -320,6 +322,7 @@ class VideoItem {
     required this.id,
     required this.title,
     required this.slug,
+    this.siteId = 'rule34video',
     this.thumbnailUrl,
     this.previewUrl,
     this.duration,
@@ -328,6 +331,7 @@ class VideoItem {
     this.rating,
     this.ratingVotes,
     this.isFavorite,
+    this.creatorLabel,
   });
 
   static const Object _unset = Object();
@@ -335,6 +339,7 @@ class VideoItem {
   final String id;
   final String title;
   final String slug;
+  final String siteId;
   final String? thumbnailUrl;
   final String? previewUrl;
   final String? duration;
@@ -343,13 +348,32 @@ class VideoItem {
   final int? rating;
   final int? ratingVotes;
   final bool? isFavorite;
+  final String? creatorLabel;
 
-  String get detailPath => '/video/$id/$slug/';
+  ContentSite get site => ContentSite.fromId(siteId);
+
+  String get contentKey => '$siteId:$id';
+
+  String get legacyCompatibleStorageId =>
+      site == ContentSite.rule34video ? id : contentKey;
+
+  String get detailPath => site == ContentSite.hanime1
+      ? '/watch?v=${Uri.encodeQueryComponent(id)}'
+      : '/video/$id/$slug/';
+
+  Uri get canonicalUri => site == ContentSite.hanime1
+      ? site.origin.replace(path: '/watch', queryParameters: {'v': id})
+      : site.origin.replace(path: detailPath);
 
   String? get highResolutionThumbnailUrl {
     final value = thumbnailUrl;
     if (value == null) {
       return null;
+    }
+    // 该升级规则只对 rule34video 的缩略图路径有效；
+    // hanime1 缩略图路径不同，原样返回以免破坏图片地址。
+    if (site != ContentSite.rule34video) {
+      return value;
     }
     final uri = Uri.tryParse(value);
     if (uri == null) {
@@ -366,6 +390,7 @@ class VideoItem {
   }
 
   VideoItem copyWith({
+    String? siteId,
     String? title,
     String? slug,
     String? thumbnailUrl,
@@ -376,11 +401,13 @@ class VideoItem {
     int? rating,
     int? ratingVotes,
     Object? isFavorite = _unset,
+    Object? creatorLabel = _unset,
   }) {
     return VideoItem(
       id: id,
       title: title ?? this.title,
       slug: slug ?? this.slug,
+      siteId: siteId ?? this.siteId,
       thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
       previewUrl: identical(previewUrl, _unset)
           ? this.previewUrl
@@ -393,6 +420,9 @@ class VideoItem {
       isFavorite: identical(isFavorite, _unset)
           ? this.isFavorite
           : isFavorite as bool?,
+      creatorLabel: identical(creatorLabel, _unset)
+          ? this.creatorLabel
+          : creatorLabel as String?,
     );
   }
 }
@@ -417,32 +447,52 @@ class VideoDetails {
     required this.tags,
     required this.models,
     required this.isFavorite,
+    this.isSaved = false,
     this.description,
+    this.descriptionTitle,
     this.metadataItems = const [],
     this.relatedVideos = const [],
     this.ratingVotes,
     this.uploader,
     this.playlistIds = const {},
+    this.hanimeLiked = false,
+    this.hanimeDisliked = false,
+    this.hanimeLikes = 0,
+    this.hanimeDislikes = 0,
+    this.isUploaderSubscribed = false,
   });
 
   final VideoItem video;
   final String? description;
+  final String? descriptionTitle;
   final List<String> categories;
   final List<String> tags;
   final List<String> models;
   final List<VideoSource> sources;
   final bool isFavorite;
+  final bool isSaved;
   final List<VideoMetadataItem> metadataItems;
   final List<VideoItem> relatedVideos;
   final int? ratingVotes;
   final UploaderSummary? uploader;
   final Set<String> playlistIds;
+  final bool hanimeLiked;
+  final bool hanimeDisliked;
+  final int hanimeLikes;
+  final int hanimeDislikes;
+  final bool isUploaderSubscribed;
 
   VideoDetails copyWith({
     VideoItem? video,
     List<VideoSource>? sources,
     bool? isFavorite,
+    bool? isSaved,
     Set<String>? playlistIds,
+    bool? hanimeLiked,
+    bool? hanimeDisliked,
+    int? hanimeLikes,
+    int? hanimeDislikes,
+    bool? isUploaderSubscribed,
   }) {
     return VideoDetails(
       video: video ?? this.video,
@@ -451,14 +501,28 @@ class VideoDetails {
       tags: tags,
       models: models,
       isFavorite: isFavorite ?? this.isFavorite,
+      isSaved: isSaved ?? this.isSaved,
       description: description,
+      descriptionTitle: descriptionTitle,
       metadataItems: metadataItems,
       relatedVideos: relatedVideos,
       ratingVotes: ratingVotes,
       uploader: uploader,
       playlistIds: playlistIds ?? this.playlistIds,
+      hanimeLiked: hanimeLiked ?? this.hanimeLiked,
+      hanimeDisliked: hanimeDisliked ?? this.hanimeDisliked,
+      hanimeLikes: hanimeLikes ?? this.hanimeLikes,
+      hanimeDislikes: hanimeDislikes ?? this.hanimeDislikes,
+      isUploaderSubscribed: isUploaderSubscribed ?? this.isUploaderSubscribed,
     );
   }
+}
+
+class HanimeHomeSection {
+  const HanimeHomeSection({required this.title, required this.items});
+
+  final String title;
+  final List<VideoItem> items;
 }
 
 class UploaderSummary {
@@ -487,6 +551,7 @@ class VideoMetadataItem {
     this.thumbnailUrl,
     this.upScore = 0,
     this.downScore = 0,
+    this.count,
   });
 
   final String id;
@@ -496,6 +561,9 @@ class VideoMetadataItem {
   final String? thumbnailUrl;
   final int upScore;
   final int downScore;
+
+  /// hanime 标签旁的用户添加计数（如 `NTR（7）` 的 7），与标签本体分离。
+  final int? count;
 
   bool get canSubscribe =>
       kind == DiscoveryKind.category || kind == DiscoveryKind.model;

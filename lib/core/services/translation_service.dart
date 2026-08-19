@@ -46,6 +46,9 @@ final class TranslationService extends ChangeNotifier {
   static const _builtInPackKey = 'rule34video_zh';
   static const _builtInPackVersion = 1;
   static const _siteId = 'rule34video';
+  static const _hanimeSiteId = 'hanime1';
+
+  String get _activeSiteId => settingsRepository.settings.activeSite.id;
 
   final AppSettingsRepository settingsRepository;
   final AppDatabase? database;
@@ -118,13 +121,23 @@ final class TranslationService extends ChangeNotifier {
     final overrideDatabase = database;
     if (overrideDatabase != null) {
       try {
-        final rows = await overrideDatabase.loadAllTranslationOverrides();
+        final rows = [
+          ...await overrideDatabase.loadAllTranslationOverrides(),
+          ...await overrideDatabase.loadAllTranslationOverrides(
+            siteId: _hanimeSiteId,
+          ),
+        ];
         _overrides
           ..clear()
           ..addEntries(
             rows.map(
               (row) => MapEntry(
-                _recordKey(row.targetLanguage, row.kind, row.canonicalName),
+                _recordKey(
+                  row.targetLanguage,
+                  row.kind,
+                  row.canonicalName,
+                  siteId: row.siteId,
+                ),
                 row.translation,
               ),
             ),
@@ -134,7 +147,12 @@ final class TranslationService extends ChangeNotifier {
           ..addEntries(
             rows.map(
               (row) => MapEntry(
-                _recordKey(row.targetLanguage, row.kind, row.canonicalName),
+                _recordKey(
+                  row.targetLanguage,
+                  row.kind,
+                  row.canonicalName,
+                  siteId: row.siteId,
+                ),
                 row.sourceText,
               ),
             ),
@@ -144,7 +162,12 @@ final class TranslationService extends ChangeNotifier {
           ..addEntries(
             rows.map(
               (row) => MapEntry(
-                _recordKey(row.targetLanguage, row.kind, row.canonicalName),
+                _recordKey(
+                  row.targetLanguage,
+                  row.kind,
+                  row.canonicalName,
+                  siteId: row.siteId,
+                ),
                 row.videoSlug,
               ),
             ),
@@ -154,7 +177,12 @@ final class TranslationService extends ChangeNotifier {
           ..addEntries(
             rows.map(
               (row) => MapEntry(
-                _recordKey(row.targetLanguage, row.kind, row.canonicalName),
+                _recordKey(
+                  row.targetLanguage,
+                  row.kind,
+                  row.canonicalName,
+                  siteId: row.siteId,
+                ),
                 row.sourceLanguage,
               ),
             ),
@@ -164,19 +192,34 @@ final class TranslationService extends ChangeNotifier {
           ..addEntries(
             rows.map(
               (row) => MapEntry(
-                _recordKey(row.targetLanguage, row.kind, row.canonicalName),
+                _recordKey(
+                  row.targetLanguage,
+                  row.kind,
+                  row.canonicalName,
+                  siteId: row.siteId,
+                ),
                 row.updatedAt,
               ),
             ),
           );
 
-        final learnedRows = await overrideDatabase.loadAllLearnedTranslations();
+        final learnedRows = [
+          ...await overrideDatabase.loadAllLearnedTranslations(),
+          ...await overrideDatabase.loadAllLearnedTranslations(
+            siteId: _hanimeSiteId,
+          ),
+        ];
         _learned
           ..clear()
           ..addEntries(
             learnedRows.map(
               (row) => MapEntry(
-                _recordKey(row.targetLanguage, row.kind, row.canonicalName),
+                _recordKey(
+                  row.targetLanguage,
+                  row.kind,
+                  row.canonicalName,
+                  siteId: row.siteId,
+                ),
                 _LearnedValue(
                   siteId: row.siteId,
                   sourceLanguage: row.sourceLanguage,
@@ -216,6 +259,7 @@ final class TranslationService extends ChangeNotifier {
                     state.targetLanguage,
                     state.kind,
                     state.canonicalName,
+                    siteId: state.siteId,
                   ),
                 ),
           );
@@ -240,11 +284,15 @@ final class TranslationService extends ChangeNotifier {
     _initialized = true;
   }
 
-  String renderMetadata(DiscoveryKind kind, String raw) {
-    return resolveMetadata(kind, raw).plainText;
+  String renderMetadata(DiscoveryKind kind, String raw, {String? siteId}) {
+    return resolveMetadata(kind, raw, siteId: siteId).plainText;
   }
 
-  LocalizedTranslation resolveMetadata(DiscoveryKind kind, String raw) {
+  LocalizedTranslation resolveMetadata(
+    DiscoveryKind kind,
+    String raw, {
+    String? siteId,
+  }) {
     final value = raw.trim();
     if (value.isEmpty ||
         kind == DiscoveryKind.model ||
@@ -257,7 +305,7 @@ final class TranslationService extends ChangeNotifier {
     }
 
     final settings = settingsRepository.settings;
-    final chinese = lookupChinese(value, kind: kind);
+    final chinese = lookupChinese(value, kind: kind, siteId: siteId);
     return LocalizedTranslation(
       original: raw,
       translation: chinese,
@@ -274,14 +322,29 @@ final class TranslationService extends ChangeNotifier {
     String raw, {
     DiscoveryKind kind = DiscoveryKind.tag,
     TranslationLanguage? language,
+    String? siteId,
   }) {
     final canonical = _normalize(raw);
-    final key = _learnedKey(kind.name, canonical, language);
-    return _overrides[_overrideKey(kind.name, canonical, language)] ??
+    final key = _learnedKey(
+      kind.name,
+      canonical,
+      language: language,
+      siteId: siteId,
+    );
+    return _overrides[_overrideKey(
+          kind.name,
+          canonical,
+          language: language,
+          siteId: siteId,
+        )] ??
         (_protectedLearnedKeys.contains(key)
             ? _learned[key]?.translation
             : null) ??
-        _builtInDictionary(kind, language: language)[canonical] ??
+        _builtInDictionary(
+          kind,
+          language: language,
+          siteId: siteId,
+        )[canonical] ??
         _learned[key]?.translation;
   }
 
@@ -297,8 +360,14 @@ final class TranslationService extends ChangeNotifier {
     String raw, {
     DiscoveryKind kind = DiscoveryKind.tag,
     TranslationLanguage? language,
+    String? siteId,
   }) {
-    return _learned[_learnedKey(kind.name, _normalize(raw), language)]
+    return _learned[_learnedKey(
+          kind.name,
+          _normalize(raw),
+          language: language,
+          siteId: siteId,
+        )]
         ?.translation;
   }
 
@@ -306,9 +375,15 @@ final class TranslationService extends ChangeNotifier {
     DiscoveryKind kind,
     String raw, {
     TranslationLanguage? language,
+    String? siteId,
   }) {
     return _overrides.containsKey(
-      _overrideKey(kind.name, _normalize(raw), language),
+      _overrideKey(
+        kind.name,
+        _normalize(raw),
+        language: language,
+        siteId: siteId,
+      ),
     );
   }
 
@@ -316,9 +391,15 @@ final class TranslationService extends ChangeNotifier {
     DiscoveryKind kind,
     String raw, {
     TranslationLanguage? language,
+    String? siteId,
   }) {
     return _learned.containsKey(
-      _learnedKey(kind.name, _normalize(raw), language),
+      _learnedKey(
+        kind.name,
+        _normalize(raw),
+        language: language,
+        siteId: siteId,
+      ),
     );
   }
 
@@ -326,19 +407,33 @@ final class TranslationService extends ChangeNotifier {
     String videoId, {
     String? raw,
     TranslationLanguage? language,
+    String? siteId,
   }) {
-    final value = _learned[_learnedKey('title', videoId.trim(), language)];
-    return value != null && _sourceMatches(value.sourceText, raw);
+    final value =
+        _learned[_learnedKey(
+          'title',
+          videoId.trim(),
+          language: language,
+          siteId: siteId,
+        )];
+    return value != null &&
+        _titleSourceMatches(value.sourceText, raw, siteId: siteId);
   }
 
   bool hasTitleOverride(
     String videoId, {
     String? raw,
     TranslationLanguage? language,
+    String? siteId,
   }) {
-    final key = _overrideKey('title', videoId.trim(), language);
+    final key = _overrideKey(
+      'title',
+      videoId.trim(),
+      language: language,
+      siteId: siteId,
+    );
     return _overrides.containsKey(key) &&
-        _sourceMatches(_overrideSourceTexts[key], raw);
+        _titleSourceMatches(_overrideSourceTexts[key], raw, siteId: siteId);
   }
 
   bool canEditDisplayedTranslation(DiscoveryKind kind, String raw) {
@@ -346,7 +441,11 @@ final class TranslationService extends ChangeNotifier {
     return raw.trim().isNotEmpty;
   }
 
-  bool shouldAutoTranslateMetadata(DiscoveryKind kind, String raw) {
+  bool shouldAutoTranslateMetadata(
+    DiscoveryKind kind,
+    String raw, {
+    String? siteId,
+  }) {
     final settings = settingsRepository.settings;
     return _isEditableKind(kind) &&
         settings.automaticTranslationTargets.contains(
@@ -356,10 +455,10 @@ final class TranslationService extends ChangeNotifier {
         ) &&
         hasEnabledProvider &&
         raw.trim().isNotEmpty &&
-        lookupChinese(raw, kind: kind) == null;
+        lookupChinese(raw, kind: kind, siteId: siteId) == null;
   }
 
-  bool shouldAutoTranslateTitle(String videoId, String raw) {
+  bool shouldAutoTranslateTitle(String videoId, String raw, {String? siteId}) {
     final settings = settingsRepository.settings;
     return settings.automaticTranslationTargets.contains(
           AutomaticTranslationTarget.title,
@@ -367,21 +466,25 @@ final class TranslationService extends ChangeNotifier {
         hasEnabledProvider &&
         videoId.trim().isNotEmpty &&
         raw.trim().isNotEmpty &&
-        lookupTitleChinese(videoId, raw: raw) == null;
+        lookupTitleChinese(videoId, raw: raw, siteId: siteId) == null;
   }
 
   Future<void> requestAutomaticMetadataTranslation(
     DiscoveryKind kind,
-    String raw,
-  ) {
-    if (!shouldAutoTranslateMetadata(kind, raw)) return Future.value();
+    String raw, {
+    String? siteId,
+  }) {
+    if (!shouldAutoTranslateMetadata(kind, raw, siteId: siteId)) {
+      return Future.value();
+    }
     final canonical = _normalize(raw);
     return _requestAutomatic(
-      _learnedKey(kind.name, canonical),
+      _learnedKey(kind.name, canonical, siteId: siteId),
       () => _translateAndLearn(
         kind: kind.name,
         canonicalName: canonical,
         sourceText: raw.trim(),
+        siteId: siteId,
       ),
     );
   }
@@ -390,16 +493,20 @@ final class TranslationService extends ChangeNotifier {
     required String videoId,
     required String raw,
     String? videoSlug,
+    String? siteId,
   }) {
-    if (!shouldAutoTranslateTitle(videoId, raw)) return Future.value();
+    if (!shouldAutoTranslateTitle(videoId, raw, siteId: siteId)) {
+      return Future.value();
+    }
     final canonical = videoId.trim();
     return _requestAutomatic(
-      _learnedKey('title', canonical),
+      _learnedKey('title', canonical, siteId: siteId),
       () => _translateAndLearn(
         kind: 'title',
         canonicalName: canonical,
         sourceText: raw.trim(),
         videoSlug: videoSlug,
+        siteId: siteId,
       ),
     );
   }
@@ -408,6 +515,7 @@ final class TranslationService extends ChangeNotifier {
     DiscoveryKind kind,
     String raw, {
     TranslationLanguage? language,
+    String? siteId,
   }) async {
     final contentKind = _contentKind(kind);
     final result = await _translateOnline(contentKind, raw, language: language);
@@ -417,6 +525,7 @@ final class TranslationService extends ChangeNotifier {
       sourceText: raw.trim(),
       result: result,
       language: language,
+      siteId: siteId,
     );
     return result;
   }
@@ -425,26 +534,44 @@ final class TranslationService extends ChangeNotifier {
     String videoId, {
     String? raw,
     TranslationLanguage? language,
+    String? siteId,
   }) {
-    final key = _overrideKey('title', videoId.trim(), language);
+    final key = _overrideKey(
+      'title',
+      videoId.trim(),
+      language: language,
+      siteId: siteId,
+    );
     final override = _overrides[key];
-    if (override != null && _sourceMatches(_overrideSourceTexts[key], raw)) {
+    if (override != null &&
+        _titleSourceMatches(_overrideSourceTexts[key], raw, siteId: siteId)) {
       return override;
     }
-    final learned = _learned[_learnedKey('title', videoId.trim(), language)];
-    if (learned != null && _sourceMatches(learned.sourceText, raw)) {
+    final learned =
+        _learned[_learnedKey(
+          'title',
+          videoId.trim(),
+          language: language,
+          siteId: siteId,
+        )];
+    if (learned != null &&
+        _titleSourceMatches(learned.sourceText, raw, siteId: siteId)) {
       return learned.translation;
     }
     return null;
   }
 
-  String renderTitle(String videoId, String raw) {
-    return resolveTitle(videoId, raw).plainText;
+  String renderTitle(String videoId, String raw, {String? siteId}) {
+    return resolveTitle(videoId, raw, siteId: siteId).plainText;
   }
 
-  LocalizedTranslation resolveTitle(String videoId, String raw) {
+  LocalizedTranslation resolveTitle(
+    String videoId,
+    String raw, {
+    String? siteId,
+  }) {
     final settings = settingsRepository.settings;
-    final chinese = lookupTitleChinese(videoId, raw: raw);
+    final chinese = lookupTitleChinese(videoId, raw: raw, siteId: siteId);
     return LocalizedTranslation(
       original: raw,
       translation: chinese,
@@ -458,22 +585,31 @@ final class TranslationService extends ChangeNotifier {
     String? sourceText,
     String? videoSlug,
     TranslationLanguage? language,
+    String? siteId,
   }) async {
     final target = language ?? targetLanguage;
+    final recordSiteId = siteId ?? _activeSiteId;
     final key = videoId.trim();
     final chinese = translation.trim();
     if (key.isEmpty || chinese.isEmpty) {
       throw ArgumentError.value(translation, 'translation', '翻译不能为空');
     }
-    final learned = _learned[_learnedKey('title', key, target)];
+    final learned =
+        _learned[_learnedKey(
+          'title',
+          key,
+          language: target,
+          siteId: recordSiteId,
+        )];
     if (learned != null &&
         (sourceText == null ||
             _sourceMatches(learned.sourceText, sourceText)) &&
         chinese == learned.translation) {
-      await removeTitleOverride(key, language: target);
+      await removeTitleOverride(key, language: target, siteId: recordSiteId);
       return;
     }
     await database?.upsertTranslationOverride(
+      siteId: recordSiteId,
       kind: 'title',
       canonicalName: key,
       sourceLanguage: _inferSourceLanguage(sourceText ?? ''),
@@ -482,7 +618,12 @@ final class TranslationService extends ChangeNotifier {
       videoSlug: videoSlug,
       translation: chinese,
     );
-    final recordKey = _overrideKey('title', key, target);
+    final recordKey = _overrideKey(
+      'title',
+      key,
+      language: target,
+      siteId: recordSiteId,
+    );
     _overrides[recordKey] = chinese;
     _overrideSourceLanguages[recordKey] = _inferSourceLanguage(
       sourceText ?? '',
@@ -496,15 +637,23 @@ final class TranslationService extends ChangeNotifier {
   Future<void> removeTitleOverride(
     String videoId, {
     TranslationLanguage? language,
+    String? siteId,
   }) async {
     final target = language ?? targetLanguage;
+    final recordSiteId = siteId ?? _activeSiteId;
     final key = videoId.trim();
     await database?.deleteTranslationOverride(
+      siteId: recordSiteId,
       kind: 'title',
       canonicalName: key,
       targetLanguage: target.code,
     );
-    final overrideKey = _overrideKey('title', key, target);
+    final overrideKey = _overrideKey(
+      'title',
+      key,
+      language: target,
+      siteId: recordSiteId,
+    );
     final removed = _overrides.remove(overrideKey) != null;
     _overrideSourceTexts.remove(overrideKey);
     _overrideVideoSlugs.remove(overrideKey);
@@ -518,6 +667,7 @@ final class TranslationService extends ChangeNotifier {
     String? videoId,
     String? videoSlug,
     TranslationLanguage? language,
+    String? siteId,
   }) async {
     final result = await _translateOnline(
       TranslationContentKind.title,
@@ -533,6 +683,7 @@ final class TranslationService extends ChangeNotifier {
         videoSlug: videoSlug,
         result: result,
         language: language,
+        siteId: siteId,
       );
     }
     return result;
@@ -543,8 +694,10 @@ final class TranslationService extends ChangeNotifier {
     String raw,
     String translation, {
     TranslationLanguage? language,
+    String? siteId,
   }) async {
     final target = language ?? targetLanguage;
+    final recordSiteId = siteId ?? _activeSiteId;
     if (!_isEditableKind(kind)) return;
     final canonical = _normalize(raw);
     final chinese = translation.trim();
@@ -552,11 +705,18 @@ final class TranslationService extends ChangeNotifier {
       throw ArgumentError.value(translation, 'translation', '翻译不能为空');
     }
     if (chinese == lookupBuiltInChinese(raw, kind: kind, language: target) ||
-        chinese == lookupLearnedChinese(raw, kind: kind, language: target)) {
-      await removeOverride(kind, raw, language: target);
+        chinese ==
+            lookupLearnedChinese(
+              raw,
+              kind: kind,
+              language: target,
+              siteId: recordSiteId,
+            )) {
+      await removeOverride(kind, raw, language: target, siteId: recordSiteId);
       return;
     }
     await database?.upsertTranslationOverride(
+      siteId: recordSiteId,
       kind: kind.name,
       canonicalName: canonical,
       sourceLanguage: _inferSourceLanguage(raw),
@@ -564,7 +724,12 @@ final class TranslationService extends ChangeNotifier {
       sourceText: raw.trim(),
       translation: chinese,
     );
-    final key = _overrideKey(kind.name, canonical, target);
+    final key = _overrideKey(
+      kind.name,
+      canonical,
+      language: target,
+      siteId: recordSiteId,
+    );
     _overrides[key] = chinese;
     _overrideSourceLanguages[key] = _inferSourceLanguage(raw);
     _overrideSourceTexts[key] = raw.trim();
@@ -576,16 +741,24 @@ final class TranslationService extends ChangeNotifier {
     DiscoveryKind kind,
     String raw, {
     TranslationLanguage? language,
+    String? siteId,
   }) async {
     final target = language ?? targetLanguage;
+    final recordSiteId = siteId ?? _activeSiteId;
     if (!_isEditableKind(kind)) return;
     final canonical = _normalize(raw);
     await database?.deleteTranslationOverride(
+      siteId: recordSiteId,
       kind: kind.name,
       canonicalName: canonical,
       targetLanguage: target.code,
     );
-    final key = _overrideKey(kind.name, canonical, target);
+    final key = _overrideKey(
+      kind.name,
+      canonical,
+      language: target,
+      siteId: recordSiteId,
+    );
     final removed = _overrides.remove(key) != null;
     _overrideSourceTexts.remove(key);
     _overrideSourceLanguages.remove(key);
@@ -596,11 +769,17 @@ final class TranslationService extends ChangeNotifier {
   Future<void> clearLearnedTranslations() async {
     final language = targetLanguage.code;
     await database?.clearLearnedTranslations(
-      siteId: _siteId,
+      siteId: _activeSiteId,
       targetLanguage: language,
     );
     final keys = _learned.keys
-        .where((key) => _keyTargetsLanguage(key, language))
+        .where(
+          (key) => _keyMatchesSiteAndLanguage(
+            key,
+            siteId: _activeSiteId,
+            targetLanguage: language,
+          ),
+        )
         .toList(growable: false);
     if (keys.isNotEmpty) {
       for (final key in keys) {
@@ -789,9 +968,19 @@ final class TranslationService extends ChangeNotifier {
   List<TranslationCatalogItem> catalogItems() {
     final keys = <String>{
       for (final key in _builtinTagEnglishToChinese.keys)
-        _recordKey(TranslationLanguage.simplifiedChinese.code, 'tag', key),
+        _recordKey(
+          TranslationLanguage.simplifiedChinese.code,
+          'tag',
+          key,
+          siteId: _siteId,
+        ),
       for (final key in _builtinCategoryEnglishToChinese.keys)
-        _recordKey(TranslationLanguage.simplifiedChinese.code, 'category', key),
+        _recordKey(
+          TranslationLanguage.simplifiedChinese.code,
+          'category',
+          key,
+          siteId: _siteId,
+        ),
       ..._learned.keys,
       ..._overrides.keys,
     };
@@ -940,6 +1129,7 @@ final class TranslationService extends ChangeNotifier {
       final candidate = TranslatedTitleSuggestion(
         videoId: videoId,
         slug: slug,
+        siteId: _activeSiteId,
         english: english?.trim().isNotEmpty == true ? english!.trim() : videoId,
         displayChinese: chinese,
         aliasSource: source,
@@ -1012,6 +1202,7 @@ final class TranslationService extends ChangeNotifier {
     required String canonicalName,
     required String sourceText,
     String? videoSlug,
+    String? siteId,
   }) async {
     final result = await _translateOnline(
       _contentKindFromName(kind),
@@ -1023,6 +1214,7 @@ final class TranslationService extends ChangeNotifier {
       sourceText: sourceText,
       videoSlug: videoSlug,
       result: result,
+      siteId: siteId,
     );
   }
 
@@ -1079,16 +1271,24 @@ final class TranslationService extends ChangeNotifier {
     required TranslationProviderResult result,
     String? videoSlug,
     TranslationLanguage? language,
+    String? siteId,
   }) async {
     final target = language ?? targetLanguage;
+    final recordSiteId = siteId ?? _activeSiteId;
     if (!result.shouldPersist ||
         (target == TranslationLanguage.english &&
             result.translation.trim() == sourceText.trim())) {
       _sameLanguageTexts.add('${target.code}\u0000${sourceText.trim()}');
       return;
     }
-    final recordKey = _learnedKey(kind, canonicalName, target);
+    final recordKey = _learnedKey(
+      kind,
+      canonicalName,
+      language: target,
+      siteId: recordSiteId,
+    );
     await database?.upsertLearnedTranslation(
+      siteId: recordSiteId,
       kind: kind,
       canonicalName: canonicalName,
       sourceLanguage:
@@ -1102,7 +1302,7 @@ final class TranslationService extends ChangeNotifier {
       videoSlug: videoSlug,
     );
     _learned[recordKey] = _LearnedValue(
-      siteId: _siteId,
+      siteId: recordSiteId,
       sourceLanguage:
           result.detectedSourceLanguage?.code ??
           _inferSourceLanguage(sourceText),
@@ -1174,8 +1374,11 @@ final class TranslationService extends ChangeNotifier {
   Map<String, String> _builtInDictionary(
     DiscoveryKind kind, {
     TranslationLanguage? language,
+    String? siteId,
   }) {
-    if ((language ?? targetLanguage) != TranslationLanguage.simplifiedChinese) {
+    final effectiveSiteId = siteId ?? _activeSiteId;
+    if (effectiveSiteId != _siteId ||
+        (language ?? targetLanguage) != TranslationLanguage.simplifiedChinese) {
       return const {};
     }
     return switch (kind) {
@@ -1188,6 +1391,19 @@ final class TranslationService extends ChangeNotifier {
   static bool _sourceMatches(String? saved, String? current) {
     if (saved == null || saved.trim().isEmpty || current == null) return true;
     return _normalize(saved) == _normalize(current);
+  }
+
+  /// hanime1 的列表卡片标题与详情页标题文本可能不同（同一 videoId 下），
+  /// 若强行校验源文本，同一视频的译文会在列表/详情间互相失效并反复触发
+  /// 自动翻译（译文消失又出现）。因此 hanime1 的标题翻译按 videoId 直接
+  /// 生效，不做源文本一致性校验。
+  static bool _titleSourceMatches(
+    String? saved,
+    String? current, {
+    String? siteId,
+  }) {
+    if (siteId == _hanimeSiteId) return true;
+    return _sourceMatches(saved, current);
   }
 
   static String _normalize(String value) => value
@@ -1237,26 +1453,45 @@ final class TranslationService extends ChangeNotifier {
 
   String _overrideKey(
     String kind,
-    String canonical, [
+    String canonical, {
     TranslationLanguage? language,
-  ]) => _recordKey((language ?? targetLanguage).code, kind, canonical);
+    String? siteId,
+  }) => _recordKey(
+    (language ?? targetLanguage).code,
+    kind,
+    canonical,
+    siteId: siteId,
+  );
 
   String _learnedKey(
     String kind,
-    String canonical, [
+    String canonical, {
     TranslationLanguage? language,
-  ]) => _recordKey((language ?? targetLanguage).code, kind, canonical);
+    String? siteId,
+  }) => _recordKey(
+    (language ?? targetLanguage).code,
+    kind,
+    canonical,
+    siteId: siteId,
+  );
 
-  static String _recordKey(
+  String _recordKey(
     String targetLanguage,
     String kind,
     String canonical, {
-    String siteId = _siteId,
-  }) => '$siteId\u0000$targetLanguage\u0000$kind\u0000$canonical';
+    String? siteId,
+  }) =>
+      '${siteId ?? _activeSiteId}\u0000$targetLanguage\u0000$kind\u0000$canonical';
 
-  static bool _keyTargetsLanguage(String key, String targetLanguage) {
+  static bool _keyMatchesSiteAndLanguage(
+    String key, {
+    required String siteId,
+    required String targetLanguage,
+  }) {
     final parts = key.split('\u0000');
-    return parts.length == 4 && parts[1] == targetLanguage;
+    return parts.length == 4 &&
+        parts[0] == siteId &&
+        parts[1] == targetLanguage;
   }
 
   static String _inferSourceLanguage(String text) {

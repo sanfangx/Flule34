@@ -21,7 +21,8 @@ class SubscriptionPage extends StatefulWidget {
 }
 
 class _SubscriptionPageState extends State<SubscriptionPage> {
-  var _unsubscribing = false;
+  var _updatingSubscription = false;
+  var _subscribed = true;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
         title: Text(widget.subscription.title),
         actions: [
           if (widget.api.canUnsubscribeSubscription(widget.subscription))
-            _unsubscribing
+            _updatingSubscription
                 ? const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Center(
@@ -40,10 +41,14 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                       ),
                     ),
                   )
-                : IconButton(
-                    tooltip: context.uiText('取消订阅'),
-                    onPressed: _unsubscribe,
-                    icon: const Icon(Icons.notifications_off_outlined),
+                : TextButton.icon(
+                    onPressed: _toggleSubscription,
+                    icon: Icon(
+                      _subscribed
+                          ? Icons.notifications_off_outlined
+                          : Icons.notifications_active_outlined,
+                    ),
+                    label: AppText(_subscribed ? '取消订阅' : '订阅'),
                   ),
         ],
       ),
@@ -57,21 +62,29 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     );
   }
 
-  Future<void> _unsubscribe() async {
-    if (_unsubscribing ||
-        !await confirmUnsubscribeSubscription(context, widget.subscription) ||
-        !mounted) {
+  Future<void> _toggleSubscription() async {
+    if (_updatingSubscription) {
       return;
     }
-    setState(() => _unsubscribing = true);
+    if (_subscribed &&
+        (!await confirmUnsubscribeSubscription(context, widget.subscription) ||
+            !mounted)) {
+      return;
+    }
+    setState(() => _updatingSubscription = true);
     try {
-      await widget.api.unsubscribeSubscription(widget.subscription);
+      final next = !_subscribed;
+      await widget.api.setSubscriptionState(
+        widget.subscription,
+        subscribe: next,
+      );
       if (!mounted) {
         return;
       }
-      final messenger = ScaffoldMessenger.of(context);
-      Navigator.of(context).pop(true);
-      messenger.showSnackBar(const SnackBar(content: AppText('已取消订阅。')));
+      setState(() => _subscribed = next);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: AppText(next ? '已订阅。' : '已取消订阅。')));
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(
@@ -80,7 +93,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       }
     } finally {
       if (mounted) {
-        setState(() => _unsubscribing = false);
+        setState(() => _updatingSubscription = false);
       }
     }
   }

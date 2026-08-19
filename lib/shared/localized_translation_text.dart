@@ -17,6 +17,7 @@ class TranslatedMetadataText extends StatelessWidget {
     this.prefix = '',
     this.suffix = '',
     this.constrainToScreen = false,
+    this.siteId,
   });
 
   final TranslationService translationService;
@@ -28,11 +29,12 @@ class TranslatedMetadataText extends StatelessWidget {
   final String prefix;
   final String suffix;
   final bool constrainToScreen;
+  final String? siteId;
 
   @override
   Widget build(BuildContext context) {
     return LocalizedTranslationText(
-      value: translationService.resolveMetadata(kind, original),
+      value: translationService.resolveMetadata(kind, original, siteId: siteId),
       style: style,
       textAlign: textAlign,
       maxLines: maxLines,

@@ -5,12 +5,56 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:flule34/core/api/hanime1_api.dart';
 import 'package:flule34/core/api/rule34video_api.dart';
 import 'package:flule34/core/models/video_models.dart';
 
 import '../../helpers/test_session_harness.dart';
 
 void main() {
+  test('Hanime 详情预取走正确站点并与正式加载共用缓存', () async {
+    final harness = TestSessionHarness.create();
+    addTearDown(harness.dispose);
+    await harness.sessionStore.load();
+    var requests = 0;
+    final hanimeApi = Hanime1Api(
+      sessionStore: harness.sessionStore,
+      httpClientAdapter: _TestAdapter((options) {
+        requests += 1;
+        expect(options.uri.host, 'hanime1.me');
+        expect(options.uri.path, '/watch');
+        expect(options.uri.queryParameters['v'], 'same-id');
+        return _htmlResponse('''
+          <h3 id="shareBtn-title">Hanime detail</h3>
+          <video id="player">
+            <source src="https://media.example/hanime.mp4" size="720">
+          </video>
+        ''');
+      }),
+    );
+    final api = Rule34VideoApi(
+      sessionStore: harness.sessionStore,
+      hanimeApi: hanimeApi,
+    );
+    addTearDown(api.close);
+    const video = VideoItem(
+      id: 'same-id',
+      title: 'Hanime detail',
+      slug: 'same-id',
+      siteId: 'hanime1',
+    );
+
+    await api.prefetchVideoDetails(video, cancelToken: CancelToken());
+    final cached = await api.loadVideoDetails(video);
+
+    expect(requests, 1);
+    expect(cached.video.siteId, 'hanime1');
+    expect(cached.sources.single.url, 'https://media.example/hanime.mp4');
+
+    await api.refreshVideoDetails(video);
+    expect(requests, 2);
+  });
+
   test('登录会逐跳保存 Cookie 并以页面 userId 建立身份', () async {
     final harness = TestSessionHarness.create();
     addTearDown(harness.dispose);
@@ -87,6 +131,25 @@ void main() {
 
     expect(loginRequests, 1);
     expect(harness.sessionStore.currentUserId, '2421071');
+  });
+
+  test('没有 Rule34 凭据时启动恢复不会删除 Hanime Cookie', () async {
+    final harness = TestSessionHarness.create();
+    addTearDown(harness.dispose);
+    await harness.sessionStore.load();
+    final hanimeUri = Uri.parse('https://hanime1.me/');
+    await harness.sessionStore.cookieJar.saveFromResponse(hanimeUri, [
+      Cookie('cf_clearance', 'persisted-clearance')..path = '/',
+    ]);
+    final api = Rule34VideoApi(sessionStore: harness.sessionStore);
+    addTearDown(api.close);
+
+    await api.restoreSession();
+
+    expect(
+      await harness.sessionStore.cookieHeaderFor(hanimeUri),
+      'cf_clearance=persisted-clearance',
+    );
   });
 
   test('失效凭据不会递归登录，并发会话恢复只发送一次登录请求', () async {
@@ -375,6 +438,167 @@ void main() {
         ),
       ),
     );
+  });
+
+  test('Rule34Video GET 遇到瞬时 502 会有限重试并恢复', () async {
+    final harness = TestSessionHarness.create();
+    addTearDown(harness.dispose);
+    await harness.sessionStore.load();
+    var requests = 0;
+    final api = Rule34VideoApi(
+      sessionStore: harness.sessionStore,
+      httpClientAdapter: _TestAdapter((_) {
+        requests += 1;
+        if (requests < 3) {
+          return ResponseBody.fromString('Bad Gateway', 502);
+        }
+        return _htmlResponse(
+          _videoListItem(
+            id: '1',
+            slug: 'retry-success',
+            title: '重试成功',
+            published: 'today',
+          ),
+        );
+      }),
+    );
+    addTearDown(api.close);
+
+    final items = await api.loadFeed(FeedKind.newest, 1);
+
+    expect(items.single.id, '1');
+    expect(requests, 3);
+  });
+
+  test('Rule34Video 首页相同并发请求合并且后续命中缓存', () async {
+    final harness = TestSessionHarness.create();
+    addTearDown(harness.dispose);
+    await harness.sessionStore.load();
+    var requests = 0;
+    final api = Rule34VideoApi(
+      sessionStore: harness.sessionStore,
+      httpClientAdapter: _TestAdapter((_) async {
+        requests += 1;
+        await Future<void>.delayed(const Duration(milliseconds: 10));
+        return _htmlResponse(
+          _videoListItem(
+            id: '991',
+            slug: 'cached-home',
+            title: '缓存首页',
+            published: 'today',
+          ),
+        );
+      }),
+    );
+    addTearDown(api.close);
+
+    final first = api.loadFeed(FeedKind.newest, 1);
+    final second = api.loadFeed(FeedKind.newest, 1);
+
+    final concurrent = await Future.wait([first, second]);
+    final cached = await api.loadFeed(FeedKind.newest, 1);
+
+    expect(concurrent.first.single.id, '991');
+    expect(concurrent.last.single.id, '991');
+    expect(cached.single.id, '991');
+    expect(requests, 1);
+  });
+
+  test('Hanime 稍后观看在服务端响应前预提交详情缓存', () async {
+    final harness = TestSessionHarness.create();
+    addTearDown(harness.dispose);
+    await harness.sessionStore.load();
+    await harness.sessionStore.authenticateHanime('2002');
+    var watchRequests = 0;
+    var saveRequests = 0;
+    final saveResponse = Completer<ResponseBody>();
+    final hanimeApi = Hanime1Api(
+      sessionStore: harness.sessionStore,
+      httpClientAdapter: _TestAdapter((options) {
+        if (options.uri.path == '/watch') {
+          watchRequests += 1;
+          return _htmlResponse('''
+            <meta name="csrf-token" content="token-123">
+            <h3 id="shareBtn-title">Hanime cache</h3>
+            <video id="player">
+              <source src="https://media.example/hanime.mp4" size="720">
+            </video>
+          ''');
+        }
+        if (options.uri.path == '/save') {
+          saveRequests += 1;
+          return saveResponse.future;
+        }
+        return ResponseBody.fromString('{}', 200);
+      }),
+    );
+    final api = Rule34VideoApi(
+      sessionStore: harness.sessionStore,
+      hanimeApi: hanimeApi,
+    );
+    addTearDown(api.close);
+    const video = VideoItem(
+      id: 'cache-save',
+      title: 'Hanime cache',
+      slug: 'cache-save',
+      siteId: 'hanime1',
+    );
+
+    final before = await api.loadVideoDetails(video);
+    expect(before.isSaved, isFalse);
+    final pending = api.setHanimeSaved(video, saved: true, current: false);
+    final duringRequest = await api.loadVideoDetails(video);
+
+    expect(duringRequest.isSaved, isTrue);
+    while (saveRequests == 0) {
+      await Future<void>.delayed(Duration.zero);
+    }
+    saveResponse.complete(ResponseBody.fromString('{}', 200));
+    expect(await pending, isTrue);
+    final confirmed = await api.loadVideoDetails(video);
+
+    expect(confirmed.isSaved, isTrue);
+    expect(watchRequests, 2);
+  });
+
+  test('Hanime 稍后观看同步失败后回滚详情缓存', () async {
+    final harness = TestSessionHarness.create();
+    addTearDown(harness.dispose);
+    await harness.sessionStore.load();
+    await harness.sessionStore.authenticateHanime('2002');
+    final hanimeApi = Hanime1Api(
+      sessionStore: harness.sessionStore,
+      httpClientAdapter: _TestAdapter((options) {
+        if (options.uri.path == '/watch') {
+          return _htmlResponse('''
+            <meta name="csrf-token" content="token-123">
+            <h3 id="shareBtn-title">Hanime cache rollback</h3>
+            <video id="player">
+              <source src="https://media.example/hanime.mp4" size="720">
+            </video>
+          ''');
+        }
+        return ResponseBody.fromString('failed', 500);
+      }),
+    );
+    final api = Rule34VideoApi(
+      sessionStore: harness.sessionStore,
+      hanimeApi: hanimeApi,
+    );
+    addTearDown(api.close);
+    const video = VideoItem(
+      id: 'cache-save-rollback',
+      title: 'Hanime cache rollback',
+      slug: 'cache-save-rollback',
+      siteId: 'hanime1',
+    );
+
+    await api.loadVideoDetails(video);
+    final pending = api.setHanimeSaved(video, saved: true, current: false);
+    expect((await api.loadVideoDetails(video)).isSaved, isTrue);
+    await expectLater(pending, throwsA(isA<HttpStatusException>()));
+
+    expect((await api.loadVideoDetails(video)).isSaved, isFalse);
   });
 
   test('收藏第一页会复用在途请求和短时缓存，强制刷新才重新请求', () async {
@@ -1422,6 +1646,142 @@ void main() {
       'unsubscribe_model_id': '639',
     });
   });
+
+  test('评论读取解析详情页服务端渲染的评论列表', () async {
+    final harness = TestSessionHarness.create();
+    addTearDown(harness.dispose);
+    await harness.sessionStore.load();
+    final requests = <Uri>[];
+    final api = Rule34VideoApi(
+      sessionStore: harness.sessionStore,
+      httpClientAdapter: _TestAdapter((options) {
+        requests.add(options.uri);
+        expect(options.method, 'GET');
+        return _htmlResponse('''
+          <div id="video_comments_video_comments_items">
+            <div class="item row " data-comment-id="1116991">
+              <div class="comment-inner">
+                <div class="comment-info">
+                  <div class="inner">
+                    <a href="https://rule34video.com/members/4270719/">Isaxx</a>
+                    <div class="date"><span>7 months ago</span></div>
+                  </div>
+                  <div class="coment-text">I wanna be fucked like this btw</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ''');
+      }),
+    );
+    addTearDown(api.close);
+    const video = VideoItem(
+      id: '3087141',
+      title: 'Tifa Lockhart Rave',
+      slug: 'tifa-lockhart-rave-4k-no-music-nagoonimation',
+    );
+
+    final comments = await api.loadComments(video);
+
+    expect(
+      requests.single.path,
+      '/video/3087141/tifa-lockhart-rave-4k-no-music-nagoonimation/',
+    );
+    expect(comments, hasLength(1));
+    expect(comments.single.id, '1116991');
+    expect(comments.single.username, 'Isaxx');
+    expect(comments.single.content, 'I wanna be fucked like this btw');
+    expect(comments.single.dateLabel, '7 months ago');
+  });
+
+  test('发表评论需要登录并提交 add_comment 表单字段', () async {
+    final harness = TestSessionHarness.create();
+    addTearDown(harness.dispose);
+    await harness.sessionStore.load();
+
+    const video = VideoItem(
+      id: '3087141',
+      title: 'Tifa Lockhart Rave',
+      slug: 'tifa-lockhart-rave-4k-no-music-nagoonimation',
+    );
+    final anonymousApi = _postingApi(
+      harness,
+      (_) => _htmlResponse('<success/>'),
+    );
+    addTearDown(anonymousApi.close);
+    await expectLater(
+      anonymousApi.postComment(video: video, text: '测试评论'),
+      throwsA(isA<ApiException>()),
+    );
+
+    await harness.sessionStore.authenticate('2421071');
+    final requests = <Uri>[];
+    final posts = <RequestOptions>[];
+    final api = Rule34VideoApi(
+      sessionStore: harness.sessionStore,
+      httpClientAdapter: _TestAdapter((options) {
+        requests.add(options.uri);
+        posts.add(options);
+        return _htmlResponse('<success/>');
+      }),
+    );
+    addTearDown(api.close);
+
+    await api.postComment(video: video, text: '测试评论');
+
+    final post = posts.single;
+    expect(post.method, 'POST');
+    expect(
+      requests.single.path,
+      '/video/3087141/tifa-lockhart-rave-4k-no-music-nagoonimation/',
+    );
+    expect(post.headers['X-Requested-With'], 'XMLHttpRequest');
+    expect(_requestFields(post.data), {
+      'action': 'add_comment',
+      'video_id': '3087141',
+      'comment': '测试评论',
+    });
+  });
+
+  test('发表评论遇到服务端错误提示时抛出 ApiException', () async {
+    final harness = TestSessionHarness.create();
+    addTearDown(harness.dispose);
+    await harness.sessionStore.load();
+    await harness.sessionStore.authenticate('2421071');
+    final api = Rule34VideoApi(
+      sessionStore: harness.sessionStore,
+      httpClientAdapter: _TestAdapter(
+        (_) => _htmlResponse('<error>Comment too short</error>'),
+      ),
+    );
+    addTearDown(api.close);
+    const video = VideoItem(
+      id: '3087141',
+      title: 'Tifa Lockhart Rave',
+      slug: 'tifa-lockhart-rave-4k-no-music-nagoonimation',
+    );
+
+    await expectLater(
+      api.postComment(video: video, text: 'x'),
+      throwsA(
+        isA<ApiException>().having(
+          (error) => error.message,
+          'message',
+          'Comment too short',
+        ),
+      ),
+    );
+  });
+}
+
+Rule34VideoApi _postingApi(
+  TestSessionHarness harness,
+  FutureOr<ResponseBody> Function(RequestOptions) handler,
+) {
+  return Rule34VideoApi(
+    sessionStore: harness.sessionStore,
+    httpClientAdapter: _TestAdapter(handler),
+  );
 }
 
 ResponseBody _htmlResponse(String body) {

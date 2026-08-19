@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+  <body>
+    <video
+      id="player"
+      controls
+      crossorigin
+      playsinline
+      poster="https://media.example/thumbnail/example.jpg"
+    >
+      <source src="https://media.example/example-720p.mp4" type="video/mp4" size="720">
+      <source src="https://media.example/example-1080p.mp4" type="video/mp4" size="1080">
+    </video>
+
+    <h3 id="shareBtn-title" class="video-details-wrapper">Example Hanime</h3>
+    <div class="video-details-wrapper">觀看次數：819次&nbsp;&nbsp;2026-08-10</div>
+
+    <a href="https://hanime1.me/user/1720316">
+      <img id="video-user-avatar" src="https://media.example/avatar.jpg" alt="Example Artist">
+    </a>
+    <a id="video-artist-name" href="https://hanime1.me/search?query=Example+Artist">
+      Example Artist
+    </a>
+
+    <div class="video-details-wrapper video-tags-wrapper">
+      <div class="single-video-tag"><a href="/search?query=3D"><span>#</span> 3D</a></div>
+      <div class="single-video-tag"><a href="/search?query=MMD"><span>#</span> MMD</a></div>
+    </div>
+
+    <div id="related-tabcontent">
+      <div class="video-item-container">
+        <div class="horizontal-card">
+          <a class="video-link" href="/watch?v=related-1">
+            <img class="main-thumb" src="https://media.example/related.jpg">
+            <div class="title">Related Hanime</div>
+            <div class="duration">02:30</div>
+            <div class="stats-container">
+              <div class="stat-item">98%</div>
+              <div class="stat-item">1.2K</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

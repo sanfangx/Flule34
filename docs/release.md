@@ -1,14 +1,14 @@
-# Flule34 Android 发布流程
+# HaRu Android 发布流程
 
 ## 1. 一次性准备签名密钥
 
 正式发布必须始终使用同一把私钥。密钥库、密码和 `android/key.properties` 不得提交到 Git，也不要通过聊天、Issue 或构建日志传递。
 
 ```powershell
-New-Item -ItemType Directory -Force -Path 'D:\secure\flule34' | Out-Null
+New-Item -ItemType Directory -Force -Path 'D:\secure\haru' | Out-Null
 keytool -genkeypair `
-  -keystore 'D:\secure\flule34\flule34-release.jks' `
-  -alias flule34 `
+  -keystore 'D:\secure\haru\haru-release.jks' `
+  -alias haru `
   -keyalg RSA `
   -keysize 4096 `
   -validity 10000
@@ -25,15 +25,18 @@ keytool -genkeypair `
 & 'D:\tools\flutter\bin\flutter.bat' analyze --no-pub
 & 'D:\tools\flutter\bin\flutter.bat' test --no-pub
 & 'D:\tools\flutter\bin\dart.bat' run tool\check_sensitive_files.dart
+$cronetDefine = [Convert]::ToBase64String(
+  [Text.Encoding]::UTF8.GetBytes('cronetHttpNoPlay=true')
+)
 Set-Location android
-.\gradlew.bat :app:lintDebug --no-daemon
+.\gradlew.bat :app:lintDebug --no-daemon "-Pdart-defines=$cronetDefine"
 Set-Location ..
 ```
 
 ```powershell
 $flutter = 'D:\tools\flutter\bin\flutter.bat'
-$version = '1.4.5'
-$buildNumber = '20'
+$version = '2.0.0'
+$buildNumber = '42'
 $commit = git rev-parse HEAD
 $buildTime = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
 
@@ -42,11 +45,12 @@ $buildTime = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
   --split-per-abi `
   --target-platform android-arm64 `
   --obfuscate `
+  --dart-define=cronetHttpNoPlay=true `
   --split-debug-info=build\symbols `
   --build-name=$version `
   --build-number=$buildNumber `
-  --dart-define=FLULE34_UPDATE_API_URL=https://api.github.com/repos/Hanestl/Flule34/releases `
-  --dart-define=FLULE34_REPOSITORY_URL=https://github.com/Hanestl/Flule34 `
+  --dart-define=FLULE34_UPDATE_API_URL=https://api.github.com/repos/Hanestl/HaRu/releases `
+  --dart-define=FLULE34_REPOSITORY_URL=https://github.com/Hanestl/HaRu `
   --dart-define=FLULE34_FLUTTER_VERSION=3.44.8 `
   --dart-define=GIT_COMMIT=$commit `
   --dart-define=BUILD_TIME=$buildTime
@@ -88,11 +92,11 @@ Windows 生成单行 Base64：
 
 ```powershell
 [Convert]::ToBase64String(
-  [IO.File]::ReadAllBytes('D:\secure\flule34\flule34-release.jks')
+  [IO.File]::ReadAllBytes('D:\secure\haru\haru-release.jks')
 ) | Set-Clipboard
 ```
 
-推送形如 `v1.4.5` 的已审核标签后，工作流会先校验标签版本与 `pubspec.yaml` 一致，再使用其中显式维护的构建号运行测试、只构建 arm64 APK、生成 SHA256、生成公开仓库构建证明并创建 GitHub Release。每次发布必须递增构建号，确保已安装用户可以覆盖升级。若 `docs/releases/<标签>.md` 存在，工作流会把它作为逐条 Release 说明。符号文件只作为 Actions artifact 保存，不上传到公开 Release。
+推送形如 `v2.0.0` 的已审核标签后，工作流会先校验标签版本与 `pubspec.yaml` 一致，再使用其中显式维护的构建号运行测试、只构建 arm64 APK、生成 SHA256、生成公开仓库构建证明并创建 GitHub Release。每次发布必须递增构建号，确保已安装用户可以覆盖升级。若 `docs/releases/<标签>.md` 存在，工作流会把它作为逐条 Release 说明。符号文件只作为 Actions artifact 保存，不上传到公开 Release。
 
 ## 5. 发布前验收
 

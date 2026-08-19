@@ -32,7 +32,7 @@ void main() {
       harness.sessionStore,
       AppSettings.defaults,
       packageInfoLoader: () async => PackageInfo(
-        appName: 'Flule34',
+        appName: 'HaRu',
         packageName: 'com.hanestl.flule34',
         version: '1.1.1',
         buildNumber: '2003',

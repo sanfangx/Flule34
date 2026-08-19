@@ -47,4 +47,43 @@ void main() {
 
     expect(result.map((item) => item.id), ['2', '1']);
   });
+
+  test('发布时间解析兼容 Hanime 中文相对时间', () {
+    expect(publishedAgeSeconds('2 小時前'), 7200);
+    expect(publishedAgeSeconds('3 天前'), 259200);
+    expect(publishedAgeSeconds('昨天'), 86400);
+  });
+
+  test('最热与最早排序分别使用观看量和发布时间', () {
+    const videos = [
+      VideoItem(
+        id: '1',
+        title: 'A',
+        slug: 'a',
+        views: 10,
+        publishedLabel: '1 天前',
+      ),
+      VideoItem(
+        id: '2',
+        title: 'B',
+        slug: 'b',
+        views: 30,
+        publishedLabel: '3 天前',
+      ),
+    ];
+    expect(
+      filterAndSortVideos(
+        videos,
+        filters: const VideoListFilters(sort: VideoListSort.popular),
+      ).map((video) => video.id),
+      ['2', '1'],
+    );
+    expect(
+      filterAndSortVideos(
+        videos,
+        filters: const VideoListFilters(sort: VideoListSort.oldest),
+      ).map((video) => video.id),
+      ['2', '1'],
+    );
+  });
 }

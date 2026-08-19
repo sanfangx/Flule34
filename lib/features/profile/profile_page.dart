@@ -7,7 +7,9 @@ import 'package:go_router/go_router.dart';
 import '../../app/router/route_names.dart';
 import '../../core/api/rule34video_api.dart';
 import '../../core/models/account_models.dart';
+import '../../core/models/content_source.dart';
 import '../../shared/site_avatar.dart';
+import '../../shared/site_badge.dart';
 import '../auth/login_sheet.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -21,6 +23,7 @@ class ProfilePage extends StatelessWidget {
       animation: api.sessionStore,
       builder: (context, _) {
         final loggedIn = api.sessionStore.isLoggedIn;
+        final hanimeLoggedIn = api.sessionStore.isHanimeLoggedIn;
         return ListView(
           padding: const EdgeInsets.fromLTRB(16, 24, 16, 28),
           children: [
@@ -28,6 +31,12 @@ class ProfilePage extends StatelessWidget {
               key: ValueKey(api.sessionStore.currentUserId),
               api: api,
               loggedIn: loggedIn,
+            ),
+            const SizedBox(height: 12),
+            _HanimeAccountCard(
+              key: ValueKey(api.sessionStore.hanimeUserId),
+              api: api,
+              loggedIn: hanimeLoggedIn,
             ),
             const SizedBox(height: 28),
             _SettingsTile(
@@ -62,7 +71,7 @@ class ProfilePage extends StatelessWidget {
             ),
             _SettingsTile(
               icon: Icons.info_outline,
-              title: '关于 Flule34',
+              title: '关于 HaRu',
               onTap: () => context.pushNamed(AppRouteNames.about),
             ),
           ],
@@ -159,9 +168,108 @@ class _AccountCardState extends State<_AccountCard> {
                 ),
               ),
               const SizedBox(width: 8),
-              widget.loggedIn
-                  ? const Icon(Icons.chevron_right)
-                  : const Icon(Icons.login),
+              SiteBadge(site: ContentSite.rule34video, size: 26),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HanimeAccountCard extends StatefulWidget {
+  const _HanimeAccountCard({
+    super.key,
+    required this.api,
+    required this.loggedIn,
+  });
+
+  final Rule34VideoApi api;
+  final bool loggedIn;
+
+  @override
+  State<_HanimeAccountCard> createState() => _HanimeAccountCardState();
+}
+
+class _HanimeAccountCardState extends State<_HanimeAccountCard> {
+  HanimeAccountProfile? _profile;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.loggedIn) {
+      unawaited(_loadProfile());
+    }
+  }
+
+  Future<void> _loadProfile() async {
+    final userId = widget.api.sessionStore.hanimeUserId;
+    if (userId == null) {
+      return;
+    }
+    try {
+      final profile = await widget.api.hanime1Api.loadHanimeAccountProfile();
+      if (mounted && widget.api.sessionStore.hanimeUserId == userId) {
+        setState(() => _profile = profile);
+      }
+    } on Object {
+      // 登录后资料加载失败不打断“我的”页面，卡片保留已读到的信息。
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = _profile;
+    final avatarUrl = profile?.avatarUrl;
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: widget.loggedIn
+            ? () => context.pushNamed(AppRouteNames.hanimeAccount)
+            : () => showLoginSheet(
+                context,
+                widget.api,
+                site: ContentSite.hanime1,
+              ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 24),
+          child: Row(
+            children: [
+              SiteAvatar(
+                radius: 36,
+                imageUrl: avatarUrl,
+                fallbackIcon: widget.loggedIn
+                    ? Icons.person
+                    : Icons.person_outline,
+                site: ContentSite.hanime1,
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (widget.loggedIn && profile?.displayName != null)
+                      Text(
+                        profile!.displayName,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      )
+                    else
+                      AppText(
+                        widget.loggedIn ? 'Hanime 账号' : '尚未登录',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    const SizedBox(height: 4),
+                    AppText(
+                      widget.loggedIn
+                          ? '用户 ID：${widget.api.sessionStore.hanimeUserId}'
+                          : '登录后同步网站点赞、稍后观看、播放列表和评论。',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              SiteBadge(site: ContentSite.hanime1, size: 26),
             ],
           ),
         ),

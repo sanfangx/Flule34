@@ -233,7 +233,7 @@ class _TranslationCatalogPageState
       await SharePlus.instance.share(
         ShareParams(
           files: [XFile(file.path, mimeType: 'application/json')],
-          subject: 'Flule34 翻译库',
+          subject: 'HaRu 翻译库',
         ),
       );
     } catch (error, stackTrace) {
@@ -256,7 +256,7 @@ class _TranslationCatalogPageState
     setState(() => _transferBusy = true);
     try {
       const typeGroup = XTypeGroup(
-        label: 'Flule34 翻译库',
+        label: 'HaRu 翻译库',
         extensions: ['json'],
         mimeTypes: ['application/json'],
       );
@@ -645,6 +645,7 @@ class _TranslationCatalogPageState
         english: item.sourceText,
         videoSlug: item.videoSlug,
         targetLanguage: item.targetLanguage,
+        siteId: item.siteId,
       );
       return;
     }
@@ -656,6 +657,7 @@ class _TranslationCatalogPageState
           : DiscoveryKind.category,
       english: item.sourceText,
       targetLanguage: item.targetLanguage,
+      siteId: item.siteId,
     );
   }
 
@@ -668,6 +670,7 @@ class _TranslationCatalogPageState
         await service.removeTitleOverride(
           item.canonicalName,
           language: item.targetLanguage,
+          siteId: item.siteId,
         );
       } else {
         await service.removeOverride(
@@ -676,6 +679,7 @@ class _TranslationCatalogPageState
               : DiscoveryKind.category,
           item.sourceText,
           language: item.targetLanguage,
+          siteId: item.siteId,
         );
       }
     }

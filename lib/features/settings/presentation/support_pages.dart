@@ -398,7 +398,7 @@ class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const AppText('关于 Flule34')),
+      appBar: AppBar(title: const AppText('关于 HaRu')),
       body: FutureBuilder<PackageInfo>(
         future: _packageInfo,
         builder: (context, snapshot) {
@@ -413,7 +413,7 @@ class _AboutPageState extends State<AboutPage> {
               const Icon(Icons.play_circle_fill, size: 72),
               const SizedBox(height: 12),
               Text(
-                'Flule34',
+                'HaRu',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
@@ -437,11 +437,11 @@ class _AboutPageState extends State<AboutPage> {
                 child: ListTile(
                   leading: const Icon(Icons.description_outlined),
                   title: const AppText('开源许可'),
-                  subtitle: const AppText('查看 Flule34 与第三方 Flutter 依赖许可'),
+                  subtitle: const AppText('查看 HaRu 与第三方 Flutter 依赖许可'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => showLicensePage(
                     context: context,
-                    applicationName: 'Flule34',
+                    applicationName: 'HaRu',
                     applicationVersion: package == null
                         ? null
                         : '${package.version}+${package.buildNumber}',

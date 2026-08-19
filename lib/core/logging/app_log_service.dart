@@ -6,33 +6,50 @@ import 'package:path_provider/path_provider.dart';
 
 import '../security/error_redaction.dart';
 
+String logExportFileName(DateTime now) =>
+    'HaRu-logs-${now.year.toString().padLeft(4, '0')}'
+    '${now.month.toString().padLeft(2, '0')}'
+    '${now.day.toString().padLeft(2, '0')}'
+    '${now.hour.toString().padLeft(2, '0')}'
+    '${now.minute.toString().padLeft(2, '0')}.txt';
+
 final class AppLogService {
-  AppLogService._({
+  AppLogService._(
+    this._noop, {
     Future<Directory> Function()? supportDirectory,
     DateTime Function()? clock,
   }) : _supportDirectory = supportDirectory ?? getApplicationSupportDirectory,
        _clock = clock ?? DateTime.now;
 
-  static final AppLogService instance = AppLogService._();
+  static final AppLogService instance = AppLogService._(
+    // 测试环境（flutter test）下全局单例直接跳过磁盘写入：真实文件 IO
+    // 在 testWidgets 的 FakeAsync 时钟下永远不会完成，会挂起所有经过日志
+    // 点的网络调用。日志功能本身的测试走 [AppLogService.forTesting]。
+    Platform.environment.containsKey('FLUTTER_TEST'),
+  );
 
   AppLogService.forTesting({
     required Future<Directory> Function() supportDirectory,
     DateTime Function()? clock,
-  }) : this._(supportDirectory: supportDirectory, clock: clock);
+  }) : this._(false, supportDirectory: supportDirectory, clock: clock);
 
   static const _directoryName = 'flule34_logs';
   static const _exportDirectoryName = 'flule34_log_exports';
   static const _filePrefix = 'flule34-';
   static const _fileSuffix = '.log';
   static const _retentionDays = 7;
-  static const _maxFileBytes = 2 * 1024 * 1024;
-  static const _maxTotalBytes = 10 * 1024 * 1024;
+  static const _maxFileBytes = 8 * 1024 * 1024;
+  static const _maxTotalBytes = 48 * 1024 * 1024;
 
   Future<Directory>? _directoryFuture;
   Future<void> _writeChain = Future<void>.value();
   var _cleared = false;
   final Future<Directory> Function() _supportDirectory;
   final DateTime Function() _clock;
+  // 测试环境（flutter test）下全局单例直接跳过磁盘写入：真实文件 IO
+  // 在 testWidgets 的 FakeAsync 时钟下永远不会完成，会挂起所有经过日志
+  // 点的网络调用。日志功能本身的测试走 [AppLogService.forTesting]（noop=false）。
+  final bool _noop;
 
   Future<Directory> _directory() {
     return _directoryFuture ??= _supportDirectory().then((root) {
@@ -81,6 +98,9 @@ final class AppLogService {
     required String component,
     int maxMessageLength = 2000,
   }) {
+    if (_noop) {
+      return Future<void>.value();
+    }
     final operation = _writeChain = _writeChain.then((_) async {
       try {
         if (_cleared) {
@@ -178,7 +198,8 @@ final class AppLogService {
     final buffer = StringBuffer();
     for (final file in files) {
       buffer.writeln('===== ${file.uri.pathSegments.last} =====');
-      buffer.write(await file.readAsString(encoding: utf8));
+      final stored = await file.readAsString(encoding: utf8);
+      buffer.write(stored.replaceAll(r'\n', '\n'));
       if (!buffer.toString().endsWith('\n')) {
         buffer.writeln();
       }
@@ -196,11 +217,7 @@ final class AppLogService {
     }
     await directory.create(recursive: true);
     final now = _clock();
-    final resolvedName =
-        fileName ??
-        'Flule34-logs-${now.year.toString().padLeft(4, '0')}'
-            '${now.month.toString().padLeft(2, '0')}'
-            '${now.day.toString().padLeft(2, '0')}.txt';
+    final resolvedName = fileName ?? logExportFileName(now);
     final file = File(
       '${directory.path}${Platform.pathSeparator}$resolvedName',
     );

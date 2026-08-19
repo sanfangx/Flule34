@@ -5,7 +5,7 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as html_parser;
 
 const _baseUri = 'https://rule34video.com';
-const _userAgent = 'Flule34 translation catalog snapshot/1.0';
+const _userAgent = 'HaRu translation catalog snapshot/2.0';
 const _requestDelay = Duration(milliseconds: 300);
 
 Future<void> main() async {

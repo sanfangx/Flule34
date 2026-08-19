@@ -1,4 +1,5 @@
 import '../../../core/models/video_models.dart';
+import '../../../core/models/content_source.dart';
 import '../../../core/models/translation_models.dart';
 
 enum AppLanguagePreference {
@@ -84,6 +85,10 @@ enum UpdateChannel {
   final String label;
 }
 
+enum AppDestination { rule34video, hanime, library, profile }
+
+enum LibraryScopePreference { local, rule34video, hanime }
+
 final class AppSettings {
   const AppSettings({
     required this.language,
@@ -111,7 +116,11 @@ final class AppSettings {
     required this.categoryTranslationDisplayMode,
     required this.tagTranslationDisplayMode,
     required this.translationTarget,
+    required this.activeSite,
+    required this.hasUsedHanime,
     required this.automaticTranslationTargets,
+    required this.navigationOrder,
+    required this.libraryScopeOrder,
   });
 
   static const defaults = AppSettings(
@@ -120,11 +129,11 @@ final class AppSettings {
     playbackQuality: VideoQualityPreference.p1080,
     networkPlaybackPolicy: NetworkPlaybackPolicy.automatic,
     autoplay: false,
-    loopPlayback: false,
+    loopPlayback: true,
     videoPreviewEnabled: true,
     rememberPlaybackProgress: true,
     keepScreenAwake: true,
-    backgroundPlayback: false,
+    backgroundPlayback: true,
     fullscreenOrientation: FullscreenOrientationPreference.landscape,
     defaultOrientation: ContentOrientation.all,
     blurThumbnails: false,
@@ -140,7 +149,20 @@ final class AppSettings {
     categoryTranslationDisplayMode: TranslationDisplayMode.bilingual,
     tagTranslationDisplayMode: TranslationDisplayMode.bilingual,
     translationTarget: TranslationTargetPreference.followInterface,
+    activeSite: ContentSite.rule34video,
+    hasUsedHanime: false,
     automaticTranslationTargets: <AutomaticTranslationTarget>{},
+    navigationOrder: <AppDestination>[
+      AppDestination.rule34video,
+      AppDestination.hanime,
+      AppDestination.library,
+      AppDestination.profile,
+    ],
+    libraryScopeOrder: <LibraryScopePreference>[
+      LibraryScopePreference.local,
+      LibraryScopePreference.rule34video,
+      LibraryScopePreference.hanime,
+    ],
   );
 
   final AppLanguagePreference language;
@@ -168,6 +190,8 @@ final class AppSettings {
   final TranslationDisplayMode categoryTranslationDisplayMode;
   final TranslationDisplayMode tagTranslationDisplayMode;
   final TranslationTargetPreference translationTarget;
+  final ContentSite activeSite;
+  final bool hasUsedHanime;
 
   /// 兼容旧代码：当三类内容模式不一致时返回双语。
   TranslationDisplayMode get translationDisplayMode =>
@@ -176,6 +200,8 @@ final class AppSettings {
       ? titleTranslationDisplayMode
       : TranslationDisplayMode.bilingual;
   final Set<AutomaticTranslationTarget> automaticTranslationTargets;
+  final List<AppDestination> navigationOrder;
+  final List<LibraryScopePreference> libraryScopeOrder;
 
   AppSettings copyWith({
     AppLanguagePreference? language,
@@ -203,7 +229,11 @@ final class AppSettings {
     TranslationDisplayMode? categoryTranslationDisplayMode,
     TranslationDisplayMode? tagTranslationDisplayMode,
     TranslationTargetPreference? translationTarget,
+    ContentSite? activeSite,
+    bool? hasUsedHanime,
     Set<AutomaticTranslationTarget>? automaticTranslationTargets,
+    List<AppDestination>? navigationOrder,
+    List<LibraryScopePreference>? libraryScopeOrder,
   }) {
     return AppSettings(
       language: language ?? this.language,
@@ -238,8 +268,16 @@ final class AppSettings {
       tagTranslationDisplayMode:
           tagTranslationDisplayMode ?? this.tagTranslationDisplayMode,
       translationTarget: translationTarget ?? this.translationTarget,
+      activeSite: activeSite ?? this.activeSite,
+      hasUsedHanime: hasUsedHanime ?? this.hasUsedHanime,
       automaticTranslationTargets: Set.unmodifiable(
         automaticTranslationTargets ?? this.automaticTranslationTargets,
+      ),
+      navigationOrder: List.unmodifiable(
+        navigationOrder ?? this.navigationOrder,
+      ),
+      libraryScopeOrder: List.unmodifiable(
+        libraryScopeOrder ?? this.libraryScopeOrder,
       ),
     );
   }

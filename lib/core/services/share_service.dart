@@ -9,7 +9,7 @@ abstract interface class ShareService {
 final class PlatformShareService implements ShareService {
   @override
   Future<void> shareVideo(VideoItem video) async {
-    final url = Uri.parse('https://rule34video.com').resolve(video.detailPath);
+    final url = video.canonicalUri;
     await SharePlus.instance.share(
       ShareParams(
         title: video.title,

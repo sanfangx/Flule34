@@ -86,7 +86,7 @@ Future<List<Map<String, dynamic>>> _translateBatch(
   final input = const JsonEncoder().convert(entries);
   final system =
       '''
-你是 Flule34 中文词库的专业编辑。当前处理的是${kind == 'tag' ? 'Rule34Video 标签' : 'Rule34Video 分类'}。
+你是 HaRu 中文词库的专业编辑。当前处理的是${kind == 'tag' ? 'Rule34Video 标签' : 'Rule34Video 分类'}。
 请把英文条目生成简洁、准确、适合中国用户阅读和搜索的简体中文候选译名。
 
 必须输出合法 JSON，格式严格为：

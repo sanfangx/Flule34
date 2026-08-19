@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../features/settings/domain/app_settings.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../shared/video_preview_overlay.dart';
+import '../shared/hanime_cloudflare_gate.dart';
 import 'providers.dart';
 import 'router/app_router.dart';
 import 'theme/app_theme.dart';
@@ -22,7 +23,7 @@ class Flule34App extends ConsumerWidget {
         final preference = settingsRepository.settings.theme;
         final language = settingsRepository.settings.language;
         return MaterialApp.router(
-          title: 'Flule34',
+          title: 'HaRu',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
@@ -37,16 +38,19 @@ class Flule34App extends ConsumerWidget {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           routerConfig: router,
-          builder: (context, child) => VideoPreviewOverlay(
-            navigationListenable: router.routerDelegate,
-            bottomInsetBuilder: (context) {
-              final path = router.routerDelegate.currentConfiguration.uri.path;
-              if (!_showsBottomNavigation(path)) {
-                return 0;
-              }
-              return NavigationBarTheme.of(context).height ?? 80;
-            },
-            child: child ?? const SizedBox.shrink(),
+          builder: (context, child) => HanimeCloudflareGate(
+            child: VideoPreviewOverlay(
+              navigationListenable: router.routerDelegate,
+              bottomInsetBuilder: (context) {
+                final path =
+                    router.routerDelegate.currentConfiguration.uri.path;
+                if (!_showsBottomNavigation(path)) {
+                  return 0;
+                }
+                return NavigationBarTheme.of(context).height ?? 80;
+              },
+              child: child ?? const SizedBox.shrink(),
+            ),
           ),
         );
       },
@@ -56,7 +60,7 @@ class Flule34App extends ConsumerWidget {
 
 bool _showsBottomNavigation(String path) {
   return path == '/' ||
-      path == '/discover' ||
+      path == '/hanime' ||
       path == '/library' ||
       path.startsWith('/library/') ||
       path == '/profile' ||

@@ -1,6 +1,6 @@
 abstract final class AppRouteNames {
   static const home = 'home';
-  static const discover = 'discover';
+  static const hanimeHome = 'hanime-home';
   static const discoveryDirectory = 'discovery-directory';
   static const collection = 'collection';
   static const rankings = 'rankings';
@@ -8,6 +8,10 @@ abstract final class AppRouteNames {
   static const localLibrary = 'local-library';
   static const profile = 'profile';
   static const account = 'account';
+  static const hanimeAccount = 'hanime-account';
+  static const hanimeLikes = 'hanime-likes';
+  static const hanimePlaylists = 'hanime-playlists';
+  static const hanimePlaylist = 'hanime-playlist';
   static const appearanceSettings = 'appearance-settings';
   static const playbackSettings = 'playback-settings';
   static const contentSettings = 'content-settings';

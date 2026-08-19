@@ -7,6 +7,7 @@ import '../../../core/api/rule34video_api.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/logging/app_log_service.dart';
 import '../../../core/models/video_models.dart';
+import '../../../core/models/content_source.dart';
 import '../../../core/security/error_redaction.dart';
 import '../../settings/data/app_settings_repository.dart';
 import '../domain/download_models.dart';
@@ -83,7 +84,7 @@ final class DownloadRepository {
     required VideoSource source,
   }) {
     final quality = source.label.trim();
-    final id = _taskId(details.video.id, quality);
+    final id = _taskId(details.video, quality);
     if (!_enqueueing.add(id)) {
       return Future.error(DownloadException('$quality 正在加入下载队列。'));
     }
@@ -101,13 +102,18 @@ final class DownloadRepository {
   }) async {
     final existing = await _database.findVideoDownload(
       userId: _deviceOwnerId,
-      videoId: details.video.id,
+      videoId: details.video.legacyCompatibleStorageId,
       quality: quality,
     );
     if (existing != null &&
         existing.state != DownloadTaskState.canceled.storageValue) {
       throw DownloadException('$quality 已在下载管理中。');
     }
+    await AppLogService.instance.info(
+      '准备下载；站点=${details.video.siteId}；视频=${details.video.id}；'
+      '清晰度=$quality',
+      component: 'download_enqueue',
+    );
     if (!await _platformService.ensureNotificationPermission()) {
       throw const DownloadException('需要通知权限才能可靠显示后台下载进度。');
     }
@@ -126,13 +132,13 @@ final class DownloadRepository {
     }
     final platformTaskId = _newPlatformTaskId(id);
     final filename = _filename(details.video, quality);
-    final headers = await _headers();
+    final headers = await _headers(video: details.video);
     final now = DateTime.now().toUtc();
     await _database.saveDownloadRecord(
       DownloadRecordsCompanion(
         id: Value(id),
         userId: const Value(_deviceOwnerId),
-        videoId: Value(details.video.id),
+        videoId: Value(_storageVideoId(details.video)),
         title: Value(details.video.title),
         quality: Value(quality),
         thumbnailUrl: Value(
@@ -157,6 +163,7 @@ final class DownloadRepository {
           metadata: jsonEncode({
             'recordId': id,
             'videoId': details.video.id,
+            'siteId': details.video.siteId,
             'quality': quality,
           }),
           headers: headers,
@@ -188,9 +195,10 @@ final class DownloadRepository {
     }
     final previousTaskId = record.taskId ?? record.id;
     final video = VideoItem(
-      id: record.videoId,
+      id: _videoId(record.videoId),
       title: record.title,
       slug: 'video',
+      siteId: _siteId(record.videoId),
     );
     try {
       final details = await _api.refreshVideoDetails(video);
@@ -245,7 +253,7 @@ final class DownloadRepository {
             'videoId': record.videoId,
             'quality': record.quality,
           }),
-          headers: await _headers(),
+          headers: await _headers(video: video),
           requiresWiFi: _settingsRepository.settings.wifiOnlyDownloads,
         ),
       );
@@ -425,16 +433,29 @@ final class DownloadRepository {
     return action(record.taskId ?? record.id);
   }
 
-  Future<Map<String, String>> _headers() async {
-    final headers = <String, String>{
-      'Referer': 'https://rule34video.com/',
-      'User-Agent': 'Flule34 Android/1.4.5',
-    };
-    final cookie = await _api.sessionCookieHeader();
-    if (cookie != null) {
-      headers['Cookie'] = cookie;
+  Future<Map<String, String>> _headers({VideoItem? video}) async {
+    if (video != null) {
+      return _api.mediaHeadersFor(video);
     }
-    return headers;
+    return {
+      ...ContentSite.rule34video.mediaHeaders(
+        cookie: await _api.sessionCookieHeader(),
+      ),
+    };
+  }
+
+  String _storageVideoId(VideoItem video) => video.legacyCompatibleStorageId;
+
+  String _siteId(String value) {
+    final separator = value.indexOf(':');
+    return separator <= 0
+        ? ContentSite.rule34video.id
+        : value.substring(0, separator);
+  }
+
+  String _videoId(String value) {
+    final separator = value.indexOf(':');
+    return separator <= 0 ? value : value.substring(separator + 1);
   }
 
   Future<void> _reconcileActiveDownloads() async {
@@ -544,9 +565,12 @@ final class DownloadRepository {
         ).hasMatch(message ?? '');
   }
 
-  String _taskId(String videoId, String quality) {
+  String _taskId(VideoItem video, String quality) {
     final safeQuality = quality.replaceAll(RegExp(r'[^0-9A-Za-z]+'), '_');
-    return 'flule34_${videoId}_$safeQuality';
+    final sourceId = video.site == ContentSite.rule34video
+        ? video.id
+        : '${video.siteId}_${video.id}';
+    return 'flule34_${sourceId}_$safeQuality';
   }
 
   String _newPlatformTaskId(String recordId) {
@@ -560,7 +584,10 @@ final class DownloadRepository {
         .trim();
     final title = sanitized.isEmpty ? 'video' : sanitized;
     final shortened = title.length > 72 ? title.substring(0, 72).trim() : title;
-    return '${shortened}_${video.id}_$quality.mp4';
+    final sourceId = video.site == ContentSite.rule34video
+        ? video.id
+        : '${video.siteId}_${video.id}';
+    return '${shortened}_${sourceId}_$quality.mp4';
   }
 
   void dispose() {

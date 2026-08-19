@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:better_player_plus/better_player_plus.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart'
+    show ValueListenable, ValueNotifier, visibleForTesting;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flule34/l10n/ui_localization.dart';
@@ -10,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
 import '../../core/api/rule34video_api.dart';
+import '../../core/models/content_source.dart';
 import '../../core/models/video_models.dart';
 import '../../core/security/error_redaction.dart';
 import '../../core/services/network_status_service.dart';
@@ -55,6 +58,60 @@ final class VerifiedSeekResult {
   final bool matched;
 }
 
+String mediaSourceDiagnostic(VideoSource source) {
+  final uri = Uri.tryParse(source.url);
+  final scheme = uri?.scheme.isNotEmpty == true ? uri!.scheme : 'unknown';
+  final host = uri?.host.isNotEmpty == true ? uri!.host : 'unknown';
+  return 'label=${source.label}, scheme=$scheme, host=$host';
+}
+
+String playerErrorDiagnostic(Object? error) {
+  final safeError = redactSensitiveText(error, maxLength: 1200);
+  return safeError.replaceAllMapped(
+    RegExp(r'''https?://[^\s"'<>]+''', caseSensitive: false),
+    (match) {
+      final uri = Uri.tryParse(match.group(0)!);
+      if (uri == null || uri.host.isEmpty) return '<redacted-url>';
+      return '${uri.scheme}://${uri.host}/<redacted>';
+    },
+  );
+}
+
+VideoSource? selectRecoveryVideoSource(
+  List<VideoSource> sources, {
+  required VideoSource failedSource,
+  required Set<String> failedUrls,
+}) {
+  final candidates = sources
+      .where((source) => !failedUrls.contains(source.url))
+      .toList(growable: false);
+  for (final source in candidates) {
+    if (source.label == failedSource.label) return source;
+  }
+  final failedQuality = _sourceQuality(failedSource.label);
+  if (failedQuality != null) {
+    final lower =
+        candidates
+            .where((source) {
+              final quality = _sourceQuality(source.label);
+              return quality != null && quality < failedQuality;
+            })
+            .toList(growable: false)
+          ..sort(
+            (left, right) => _sourceQuality(
+              right.label,
+            )!.compareTo(_sourceQuality(left.label)!),
+          );
+    if (lower.isNotEmpty) return lower.first;
+  }
+  return candidates.firstOrNull;
+}
+
+int? _sourceQuality(String label) {
+  final match = RegExp(r'(\d{3,4})').firstMatch(label);
+  return match == null ? null : int.tryParse(match.group(1)!);
+}
+
 Future<VerifiedSeekResult> verifyPlayerSeek({
   required Duration target,
   required Future<void> Function(Duration position) seek,
@@ -98,9 +155,14 @@ BetterPlayerNotificationConfiguration playbackNotificationConfiguration({
   );
 }
 
-String videoCacheKey(String videoId, VideoSource source) {
+String videoCacheKey(
+  String videoId,
+  VideoSource source, {
+  String siteId = 'rule34video',
+}) {
   final quality = source.label.replaceAll(RegExp(r'[^0-9A-Za-z]+'), '_');
-  return 'flule34_${videoId}_$quality';
+  final sourceId = siteId == 'rule34video' ? videoId : '${siteId}_$videoId';
+  return 'flule34_${sourceId}_$quality';
 }
 
 double videoFullScreenAspectRatio(
@@ -227,6 +289,16 @@ double playerSpeedIndicatorOpacity(double progress, int index) {
 
 class VideoPlayerHandle {
   bool get isFullScreen => _isFullScreen?.call() ?? false;
+  bool get isPlaying => _playing.value;
+  bool get isBuffering => _buffering.value;
+  bool get canCollapseDetails => _canCollapseDetails.value;
+  ValueListenable<bool> get playingListenable => _playing;
+  ValueListenable<bool> get bufferingListenable => _buffering;
+  ValueListenable<bool> get canCollapseDetailsListenable => _canCollapseDetails;
+
+  final ValueNotifier<bool> _playing = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> _buffering = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> _canCollapseDetails = ValueNotifier<bool>(false);
 
   Future<void> pause() async {
     await _pause?.call();
@@ -270,7 +342,37 @@ class VideoPlayerHandle {
       _isFullScreen = null;
       _preCache = null;
       _stopPreCache = null;
+      _setPlaying(false);
+      _setBuffering(false);
+      _setCanCollapseDetails(false);
     }
+  }
+
+  void _setPlaying(bool value) {
+    if (_playing.value != value) _playing.value = value;
+  }
+
+  void _setBuffering(bool value) {
+    if (_buffering.value != value) _buffering.value = value;
+  }
+
+  void _setCanCollapseDetails(bool value) {
+    if (_canCollapseDetails.value != value) {
+      _canCollapseDetails.value = value;
+    }
+  }
+
+  @visibleForTesting
+  void debugSetPlaybackState({required bool playing, required bool buffering}) {
+    _setPlaying(playing);
+    _setBuffering(buffering);
+    _setCanCollapseDetails(!playing && !buffering);
+  }
+
+  void dispose() {
+    _playing.dispose();
+    _buffering.dispose();
+    _canCollapseDetails.dispose();
   }
 }
 
@@ -304,11 +406,6 @@ class VideoPlayerPage extends ConsumerStatefulWidget {
 
 class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
     with WidgetsBindingObserver {
-  static const _mediaHeaders = <String, String>{
-    'Referer': 'https://rule34video.com/',
-    'User-Agent': 'Flule34 Android/1.4.5',
-  };
-
   BetterPlayerController? _controller;
   ValueNotifier<VideoPlayerValue>? _videoController;
   late final PlaybackRepository _playback;
@@ -325,6 +422,7 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
   var _operation = 0;
   var _lastSavedSecond = -1;
   var _lastKnownPlaying = false;
+  var _explicitlyPaused = false;
   var _historyCacheInvalidated = false;
   var _wakeLockEnabled = false;
   var _playbackSpeed = 1.0;
@@ -336,6 +434,8 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
   BetterPlayerDataSource? _preCacheDataSource;
   String? _preCacheKey;
   var _preCacheOperation = 0;
+  Stopwatch? _recoveryStopwatch;
+  VideoSource? _recoverySource;
 
   bool get _effectiveLooping =>
       widget.looping ??
@@ -449,7 +549,11 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
       return Duration.zero;
     }
     try {
-      return await _playback.loadPosition(widget.video.id) ?? Duration.zero;
+      return await _playback.loadPosition(
+            widget.video.id,
+            siteId: widget.video.siteId,
+          ) ??
+          Duration.zero;
     } catch (_) {
       return Duration.zero;
     }
@@ -485,6 +589,10 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
     }
     try {
       await controller.pause();
+      _explicitlyPaused = true;
+      widget.handle?._setPlaying(false);
+      widget.handle?._setBuffering(false);
+      widget.handle?._setCanCollapseDetails(true);
     } on Object {
       // 路由切换不能因为播放器尚在初始化而被阻断。
     }
@@ -552,7 +660,11 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
               controller: controller,
               title: ref
                   .read(translationServiceProvider)
-                  .renderTitle(widget.video.id, widget.video.title),
+                  .renderTitle(
+                    widget.video.id,
+                    widget.video.title,
+                    siteId: widget.video.siteId,
+                  ),
               sources: _sources,
               selectedSource: _selectedSource,
               onSourceChanged: _changeSource,
@@ -577,6 +689,10 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
     bool allowRefresh = true,
   }) async {
     final operation = ++_operation;
+    _explicitlyPaused = false;
+    widget.handle?._setPlaying(false);
+    widget.handle?._setBuffering(true);
+    widget.handle?._setCanCollapseDetails(false);
     final previousValue = _videoController?.value;
     final targetPosition = resumeAt ?? previousValue?.position ?? Duration.zero;
     final continuePlaying =
@@ -591,11 +707,7 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
     }
 
     try {
-      final headers = <String, String>{..._mediaHeaders};
-      final cookie = await widget.api.sessionCookieHeader();
-      if (cookie != null) {
-        headers['Cookie'] = cookie;
-      }
+      final headers = await widget.api.mediaHeadersFor(widget.video);
       final settings = ref.read(appSettingsRepositoryProvider).settings;
       final controller = _controller ??= _createController();
       if (!_controllerReady.isCompleted) {
@@ -608,7 +720,11 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
           useCache: true,
           maxCacheSize: 1024 * 1024 * 1024,
           maxCacheFileSize: 512 * 1024 * 1024,
-          key: videoCacheKey(widget.video.id, source),
+          key: videoCacheKey(
+            widget.video.id,
+            source,
+            siteId: widget.video.siteId,
+          ),
         ),
         bufferingConfiguration: videoBufferingConfiguration,
         notificationConfiguration: playbackNotificationConfiguration(
@@ -643,7 +759,16 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
         actualStart = result.position;
       }
       if (continuePlaying) {
+        _explicitlyPaused = false;
+        widget.handle?._setPlaying(true);
+        widget.handle?._setBuffering(false);
+        widget.handle?._setCanCollapseDetails(false);
         await controller.play();
+      } else {
+        _explicitlyPaused = true;
+        widget.handle?._setPlaying(false);
+        widget.handle?._setBuffering(false);
+        widget.handle?._setCanCollapseDetails(true);
       }
       _lastSavedSecond = actualStart.inSeconds;
       _lastKnownPlaying = continuePlaying;
@@ -659,6 +784,18 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
       }
       return true;
     } catch (error) {
+      widget.handle?._setPlaying(false);
+      widget.handle?._setBuffering(false);
+      widget.handle?._setCanCollapseDetails(false);
+      unawaited(
+        ref
+            .read(appLogServiceProvider)
+            .warning(
+              '播放器装载失败：${mediaSourceDiagnostic(source)}；'
+              '${playerErrorDiagnostic(error)}',
+              component: 'video_player',
+            ),
+      );
       if (!mounted || operation != _operation) {
         return false;
       }
@@ -704,7 +841,11 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
       details.sources,
       _qualityForNetwork(settings, network),
     );
-    final key = videoCacheKey(details.video.id, source);
+    final key = videoCacheKey(
+      details.video.id,
+      source,
+      siteId: details.video.siteId,
+    );
     if (_preCacheKey == key) {
       return;
     }
@@ -719,15 +860,11 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
     if (!mounted || operation != _preCacheOperation) {
       return;
     }
-    final headers = <String, String>{..._mediaHeaders};
-    String? cookie;
+    late final Map<String, String> headers;
     try {
-      cookie = await widget.api.sessionCookieHeader();
+      headers = await widget.api.mediaHeadersFor(details.video);
     } on Object {
       return;
-    }
-    if (cookie != null) {
-      headers['Cookie'] = cookie;
     }
     if (!mounted || operation != _preCacheOperation) {
       return;
@@ -792,10 +929,42 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
     }
     switch (event.betterPlayerEventType) {
       case BetterPlayerEventType.setupDataSource:
+        widget.handle?._setCanCollapseDetails(false);
         _bindVideoController();
       case BetterPlayerEventType.initialized:
         _bindVideoController();
+      case BetterPlayerEventType.play:
+        _explicitlyPaused = false;
+        widget.handle?._setPlaying(true);
+        widget.handle?._setCanCollapseDetails(false);
+      case BetterPlayerEventType.pause:
+        _explicitlyPaused = true;
+        widget.handle?._setPlaying(false);
+        widget.handle?._setBuffering(false);
+        widget.handle?._setCanCollapseDetails(true);
+      case BetterPlayerEventType.bufferingStart:
+        widget.handle?._setBuffering(true);
+        if (!_explicitlyPaused) {
+          widget.handle?._setCanCollapseDetails(false);
+        }
+      case BetterPlayerEventType.bufferingEnd:
+        widget.handle?._setBuffering(false);
+        widget.handle?._setCanCollapseDetails(
+          _explicitlyPaused && !(widget.handle?.isPlaying ?? false),
+        );
       case BetterPlayerEventType.exception:
+        widget.handle?._setPlaying(false);
+        widget.handle?._setBuffering(false);
+        widget.handle?._setCanCollapseDetails(false);
+        unawaited(
+          ref
+              .read(appLogServiceProvider)
+              .warning(
+                '播放器报告异常：${mediaSourceDiagnostic(_selectedSource)}；'
+                '${playerErrorDiagnostic(event.parameters?['exception'])}',
+                component: 'video_player',
+              ),
+        );
         final value = _videoController?.value;
         if (!_refreshingSource && value != null) {
           unawaited(
@@ -807,6 +976,9 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
           );
         }
       case BetterPlayerEventType.finished:
+        widget.handle?._setPlaying(false);
+        widget.handle?._setBuffering(false);
+        widget.handle?._setCanCollapseDetails(false);
         if (!_finishedNotified) {
           _finishedNotified = true;
           widget.onFinished?.call();
@@ -826,6 +998,27 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
       return;
     }
     _lastKnownPlaying = value.isPlaying;
+    widget.handle?._setPlaying(value.isPlaying);
+    widget.handle?._setBuffering(_explicitlyPaused ? false : value.isBuffering);
+    if (value.isPlaying || (value.isBuffering && !_explicitlyPaused)) {
+      widget.handle?._setCanCollapseDetails(false);
+    } else if (_explicitlyPaused) {
+      widget.handle?._setCanCollapseDetails(true);
+    }
+    if (value.isPlaying && _recoverySource != null) {
+      final source = _recoverySource!;
+      final elapsed = _recoveryStopwatch?.elapsedMilliseconds ?? 0;
+      _recoverySource = null;
+      _recoveryStopwatch = null;
+      unawaited(
+        ref
+            .read(appLogServiceProvider)
+            .info(
+              '播放器自动恢复成功；${mediaSourceDiagnostic(source)}；耗时=${elapsed}ms',
+              component: 'video_player',
+            ),
+      );
+    }
     if (value.isPlaying && !_historyCacheInvalidated) {
       _historyCacheInvalidated = true;
       widget.api.invalidateHistoryCache();
@@ -895,6 +1088,16 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
     }
     _failedUrls.add(failedSource.url);
     _automaticSourceRefreshes += 1;
+    final recoveryStopwatch = Stopwatch()..start();
+    unawaited(
+      ref
+          .read(appLogServiceProvider)
+          .info(
+            '播放器开始自动恢复；attempt=$_automaticSourceRefreshes；'
+            '${mediaSourceDiagnostic(failedSource)}；resume=${resumeAt.inSeconds}s',
+            component: 'video_player',
+          ),
+    );
     _refreshingSource = true;
     if (mounted) {
       setState(() {
@@ -916,29 +1119,58 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
         return false;
       }
       _sources = List.of(details.sources);
-      final refreshedSource = _sources.cast<VideoSource?>().firstWhere(
-        (source) => source?.label == failedSource.label,
-        orElse: () => null,
-      );
-      final fallback = selectVideoSource(
+      final nextSource = selectRecoveryVideoSource(
         _sources,
-        ref.read(appSettingsRepositoryProvider).settings.playbackQuality,
+        failedSource: failedSource,
+        failedUrls: force ? const {} : _failedUrls,
       );
-      final nextSource = refreshedSource ?? fallback;
-      if (!force && _failedUrls.contains(nextSource.url)) {
+      if (nextSource == null) {
         setState(() {
           _initializing = false;
           _switchingVideo = false;
-          _error = '视频地址刷新后仍不可用，请稍后重试。';
+          _error = '没有可用的备用清晰度，请稍后重试。';
         });
+        unawaited(
+          ref
+              .read(appLogServiceProvider)
+              .warning(
+                '播放器自动恢复失败；reason=no-alternate-source；'
+                'attempt=$_automaticSourceRefreshes；耗时=${recoveryStopwatch.elapsedMilliseconds}ms',
+                component: 'video_player',
+              ),
+        );
         return false;
       }
-      return _setSource(
+      unawaited(
+        ref
+            .read(appLogServiceProvider)
+            .info(
+              '播放器自动恢复选择备用源；from=${failedSource.label}；'
+              'to=${nextSource.label}；${mediaSourceDiagnostic(nextSource)}',
+              component: 'video_player',
+            ),
+      );
+      final loaded = await _setSource(
         nextSource,
         resumeAt: resumeAt,
         shouldPlay: shouldPlay,
         allowRefresh: false,
       );
+      if (loaded) {
+        _recoverySource = nextSource;
+        _recoveryStopwatch = recoveryStopwatch;
+      } else {
+        unawaited(
+          ref
+              .read(appLogServiceProvider)
+              .warning(
+                '播放器自动恢复装载失败；${mediaSourceDiagnostic(nextSource)}；'
+                '耗时=${recoveryStopwatch.elapsedMilliseconds}ms',
+                component: 'video_player',
+              ),
+        );
+      }
+      return loaded;
     } catch (error) {
       if (mounted) {
         setState(() {
@@ -947,6 +1179,15 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
           _error = '刷新视频地址失败：${redactSensitiveText(error)}';
         });
       }
+      unawaited(
+        ref
+            .read(appLogServiceProvider)
+            .warning(
+              '播放器自动恢复异常；${playerErrorDiagnostic(error)}；'
+              '耗时=${recoveryStopwatch.elapsedMilliseconds}ms',
+              component: 'video_player',
+            ),
+      );
       return false;
     } finally {
       _refreshingSource = false;
@@ -1017,6 +1258,7 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
         if (translationService.shouldAutoTranslateTitle(
           widget.video.id,
           widget.video.title,
+          siteId: widget.video.siteId,
         )) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             unawaited(
@@ -1024,6 +1266,7 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
                 videoId: widget.video.id,
                 raw: widget.video.title,
                 videoSlug: widget.video.slug,
+                siteId: widget.video.siteId,
               ),
             );
           });
@@ -1036,6 +1279,7 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
               value: translationService.resolveTitle(
                 widget.video.id,
                 widget.video.title,
+                siteId: widget.video.siteId,
               ),
               maxLines: 2,
             ),
@@ -1062,7 +1306,7 @@ class _VideoPlayerPageState extends ConsumerState<VideoPlayerPage>
             if (!_hasPreparedSource && widget.video.thumbnailUrl != null)
               CachedNetworkImage(
                 imageUrl: widget.video.thumbnailUrl!,
-                httpHeaders: _mediaHeaders,
+                httpHeaders: widget.video.site.mediaHeaders(),
                 fit: BoxFit.cover,
                 errorWidget: (context, _, _) => const SizedBox.shrink(),
               ),

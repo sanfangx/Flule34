@@ -11,6 +11,7 @@ import '../core/session/session_store.dart';
 import '../core/services/network_status_service.dart';
 import '../core/services/predictive_prefetch_service.dart';
 import '../core/services/media_volume_service.dart';
+import '../core/services/hanime_cloudflare_coordinator.dart';
 import '../core/services/screen_wake_lock_service.dart';
 import '../core/services/share_service.dart';
 import '../core/services/subscription_activity_index.dart';
@@ -137,10 +138,20 @@ final subscriptionActivityStoreProvider = Provider<SubscriptionActivityStore>((
   );
 });
 
+final hanimeCloudflareCoordinatorProvider =
+    Provider<HanimeCloudflareCoordinator>((ref) {
+      final coordinator = HanimeCloudflareCoordinator();
+      ref.onDispose(coordinator.dispose);
+      return coordinator;
+    });
+
 final rule34VideoApiProvider = Provider<Rule34VideoApi>((ref) {
   final api = Rule34VideoApi(
     sessionStore: ref.watch(sessionStoreProvider),
     subscriptionActivityStore: ref.watch(subscriptionActivityStoreProvider),
+    hanimeBrowserPageHandler: ref
+        .watch(hanimeCloudflareCoordinatorProvider)
+        .requestPage,
   );
   ref.onDispose(api.close);
   return api;
@@ -153,6 +164,7 @@ final predictivePrefetchServiceProvider = Provider<PredictivePrefetchService>((
   final service = PredictivePrefetchService(
     api: ref.watch(rule34VideoApiProvider),
     sessionStore: sessionStore,
+    settingsRepository: ref.watch(appSettingsRepositoryProvider),
   );
   sessionStore.addListener(service.onSessionChanged);
   ref.onDispose(() {

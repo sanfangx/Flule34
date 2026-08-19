@@ -143,7 +143,7 @@ final class TranslationCatalogArchiveService {
     }
     final decoded = jsonDecode(utf8.decode(bytes));
     if (decoded is! Map || decoded['format'] != format) {
-      throw const FormatException('不是 Flule34 翻译库文件');
+      throw const FormatException('不是 HaRu 翻译库文件');
     }
     final archiveVersion = decoded['schemaVersion'];
     if (archiveVersion != 1 && archiveVersion != schemaVersion) {
@@ -225,7 +225,7 @@ final class TranslationCatalogArchiveService {
     await directory.create(recursive: true);
     final now = DateTime.now();
     final name =
-        'Flule34-translations-${now.year.toString().padLeft(4, '0')}'
+        'HaRu-translations-${now.year.toString().padLeft(4, '0')}'
         '${now.month.toString().padLeft(2, '0')}'
         '${now.day.toString().padLeft(2, '0')}.json';
     final file = File('${directory.path}${Platform.pathSeparator}$name');

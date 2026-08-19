@@ -23,19 +23,19 @@ final class VideoPreviewResolver {
   Future<String?> resolve(VideoItem video, {bool forceRefresh = false}) {
     final directUrl = _validUrl(video.previewUrl);
     if (!forceRefresh && directUrl != null) {
-      _cache[video.id] = directUrl;
+      _cache[video.contentKey] = directUrl;
       return Future<String?>.value(directUrl);
     }
-    final cached = _cache[video.id];
+    final cached = _cache[video.contentKey];
     if (!forceRefresh && cached != null) {
       return Future<String?>.value(cached);
     }
 
-    final pendingKey = '${video.id}:${forceRefresh ? 1 : 0}';
+    final pendingKey = '${video.contentKey}:${forceRefresh ? 1 : 0}';
     return _pending.putIfAbsent(pendingKey, () async {
       try {
         if (forceRefresh) {
-          _cache.remove(video.id);
+          _cache.remove(video.contentKey);
         }
         return await _lookup(video);
       } finally {
@@ -44,10 +44,10 @@ final class VideoPreviewResolver {
     });
   }
 
-  Future<void> invalidate(String videoId) async {
-    _cache.remove(videoId);
+  Future<void> invalidate(VideoItem video) async {
+    _cache.remove(video.contentKey);
     try {
-      await persist(videoId: videoId, previewUrl: null);
+      await persist(videoId: video.id, previewUrl: null);
     } catch (_) {
       // 播放地址失效时优先允许重新解析，持久层清理失败不阻断预览。
     }
@@ -67,7 +67,7 @@ final class VideoPreviewResolver {
           if (previewUrl == null) {
             continue;
           }
-          _cache[video.id] = previewUrl;
+          _cache[video.contentKey] = previewUrl;
           try {
             await persist(videoId: video.id, previewUrl: previewUrl);
           } catch (_) {

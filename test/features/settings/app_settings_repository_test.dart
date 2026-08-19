@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:flule34/core/models/content_source.dart';
 import 'package:flule34/core/models/video_models.dart';
 import 'package:flule34/features/settings/data/app_settings_repository.dart';
 import 'package:flule34/features/settings/data/app_settings_store.dart';
@@ -19,6 +20,11 @@ void main() {
     expect(repository.settings.askDownloadQuality, isTrue);
     expect(repository.settings.playbackQuality, VideoQualityPreference.p1080);
     expect(repository.settings.videoPreviewEnabled, isTrue);
+    expect(repository.settings.navigationOrder, AppDestination.values);
+    expect(
+      repository.settings.libraryScopeOrder,
+      LibraryScopePreference.values,
+    );
 
     await repository.setTheme(AppThemePreference.light);
     await repository.setLanguage(AppLanguagePreference.japanese);
@@ -39,6 +45,17 @@ void main() {
     await repository.setVideoLayout(ContentLayout.doubleColumn);
     await repository.setSubscriptionLayout(ContentLayout.singleColumn);
     await repository.setVideoPreviewEnabled(false);
+    await repository.setNavigationOrder(const [
+      AppDestination.hanime,
+      AppDestination.library,
+      AppDestination.rule34video,
+      AppDestination.profile,
+    ]);
+    await repository.setLibraryScopeOrder(const [
+      LibraryScopePreference.hanime,
+      LibraryScopePreference.local,
+      LibraryScopePreference.rule34video,
+    ]);
     await repository.setDownloadQualityPreference(
       askEveryTime: false,
       quality: VideoQualityPreference.p720,
@@ -73,6 +90,11 @@ void main() {
     expect(restored.settings.videoLayout, ContentLayout.doubleColumn);
     expect(restored.settings.subscriptionLayout, ContentLayout.singleColumn);
     expect(restored.settings.videoPreviewEnabled, isFalse);
+    expect(restored.settings.navigationOrder.first, AppDestination.hanime);
+    expect(
+      restored.settings.libraryScopeOrder.first,
+      LibraryScopePreference.hanime,
+    );
     expect(restored.settings.askDownloadQuality, isFalse);
     expect(restored.settings.downloadQuality, VideoQualityPreference.p720);
   });
@@ -116,11 +138,30 @@ void main() {
     );
   });
 
+  test('使用过 Hanime 后持续启用后台预热资格', () async {
+    final store = _MemorySettingsStore();
+    final repository = AppSettingsRepository(store);
+    addTearDown(repository.dispose);
+    await repository.load();
+
+    expect(repository.settings.hasUsedHanime, isFalse);
+    await repository.setActiveSite(ContentSite.hanime1);
+    await repository.setActiveSite(ContentSite.rule34video);
+
+    final restored = AppSettingsRepository(store);
+    addTearDown(restored.dispose);
+    await restored.load();
+    expect(restored.settings.activeSite, ContentSite.rule34video);
+    expect(restored.settings.hasUsedHanime, isTrue);
+  });
+
   test('损坏或过时的枚举值回退到默认设置', () async {
     final store = _MemorySettingsStore({
       'flule34.settings.theme': 'removed_theme',
       'flule34.settings.playback_quality': '8k',
       'flule34.settings.autoplay': 'yes',
+      'flule34.settings.navigation_order': 'hanime,removed,hanime',
+      'flule34.settings.library_scope_order': 'hanime,removed',
     });
     final repository = AppSettingsRepository(store);
     addTearDown(repository.dispose);
@@ -133,6 +174,17 @@ void main() {
       AppSettings.defaults.playbackQuality,
     );
     expect(repository.settings.autoplay, AppSettings.defaults.autoplay);
+    expect(repository.settings.navigationOrder, [
+      AppDestination.hanime,
+      AppDestination.rule34video,
+      AppDestination.library,
+      AppDestination.profile,
+    ]);
+    expect(repository.settings.libraryScopeOrder, [
+      LibraryScopePreference.hanime,
+      LibraryScopePreference.local,
+      LibraryScopePreference.rule34video,
+    ]);
   });
 
   test('旧翻译设置迁移到语言模式和自动翻译目标', () async {

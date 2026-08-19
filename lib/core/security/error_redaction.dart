@@ -23,6 +23,14 @@ String redactSensitiveText(Object? value, {int maxLength = 600}) {
     (match) => '${match.group(1)}<redacted>',
   );
   text = text.replaceAllMapped(
+    RegExp(r'(/user/)\d+', caseSensitive: false),
+    (match) => '${match.group(1)}<redacted>',
+  );
+  text = text.replaceAllMapped(
+    RegExp(r'((?:用户|user(?:Id)?)\s*[:=]\s*)[^；;,\s]+', caseSensitive: false),
+    (match) => '${match.group(1)}<redacted>',
+  );
+  text = text.replaceAllMapped(
     RegExp(
       r'''((?:"?(?:password|passwd|pass|email|api[_-]?key|auth[_-]?key|access[_-]?token|token|secret|signature)"?\s*[:=]\s*)["']?)[^"',;\s&}\]]+''',
       caseSensitive: false,

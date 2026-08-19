@@ -183,7 +183,7 @@ void main() {
     expect(adapter.requests, hasLength(2));
     final firstBody = jsonEncode(adapter.requests.first.data);
     expect(firstBody, contains('footjob'));
-    expect(firstBody, contains('成人视频软件 Flule34'));
+    expect(firstBody, contains('成人视频软件 HaRu'));
     expect(firstBody, contains('当前翻译类型：标签'));
     expect(firstBody, contains('含义明确且在目标语言中有自然表达'));
     expect(firstBody, contains('作者名、画师名、制作方名称'));

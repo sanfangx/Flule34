@@ -25,9 +25,14 @@ enum LocalLibraryOverviewSort {
 }
 
 class LocalLibraryOverview extends StatefulWidget {
-  const LocalLibraryOverview({super.key, required this.repository});
+  const LocalLibraryOverview({
+    super.key,
+    required this.repository,
+    this.header,
+  });
 
   final LocalLibraryRepository repository;
+  final Widget? header;
 
   @override
   State<LocalLibraryOverview> createState() => _LocalLibraryOverviewState();
@@ -59,8 +64,13 @@ class _LocalLibraryOverviewState extends State<LocalLibraryOverview> {
         return Material(
           type: MaterialType.transparency,
           child: ListView(
+            key: const PageStorageKey<String>('local-library-overview-scroll'),
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
             children: [
+              if (widget.header case final header?) ...[
+                header,
+                const SizedBox(height: 12),
+              ],
               FilledButton.tonalIcon(
                 onPressed: () => _create(context),
                 icon: const Icon(Icons.create_new_folder_outlined),
@@ -373,6 +383,7 @@ class _LocalLibraryPageState extends ConsumerState<LocalLibraryPage> {
                                 'id': video.id,
                                 'slug': video.slug,
                               },
+                              queryParameters: {'site': video.siteId},
                               extra: video,
                             ),
                           );
@@ -396,10 +407,18 @@ class _LocalLibraryPageState extends ConsumerState<LocalLibraryPage> {
 
   Future<void> _removeVideo(VideoItem video) async {
     try {
-      await widget.repository.removeVideo(
-        libraryId: widget.libraryId,
-        videoId: video.id,
-      );
+      final repository = widget.repository;
+      if (repository is SourceAwareLocalLibraryRepository) {
+        await (repository as SourceAwareLocalLibraryRepository).removeVideoItem(
+          libraryId: widget.libraryId,
+          video: video,
+        );
+      } else {
+        await repository.removeVideo(
+          libraryId: widget.libraryId,
+          videoId: video.id,
+        );
+      }
       if (mounted) {
         _message(context, '已从本地库移出。');
       }
@@ -415,7 +434,7 @@ class _LocalLibraryPageState extends ConsumerState<LocalLibraryPage> {
       context,
       initialValue: _filters,
       title: '筛选此库',
-      defaultSortLabel: '最近添加',
+      options: const VideoListFilterOptions(defaultSortLabel: '最近添加'),
     );
     if (selected != null && mounted) {
       setState(() => _filters = selected);

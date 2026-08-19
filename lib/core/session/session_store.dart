@@ -32,6 +32,9 @@ class SessionStore extends ChangeNotifier {
   static const _userIdKey = 'flule34.session.user_id';
   static const _emailKey = 'flule34.session.email';
   static const _passwordKey = 'flule34.session.password';
+  static const _hanimeUserIdKey = 'flule34.session.hanime1.user_id';
+  static const _hanimeEmailKey = 'flule34.session.hanime1.email';
+  static const _hanimePasswordKey = 'flule34.session.hanime1.password';
   static final _validUserId = RegExp(r'^\d+$');
 
   final PersistCookieJar cookieJar;
@@ -39,11 +42,15 @@ class SessionStore extends ChangeNotifier {
   final AppDatabase database;
 
   SessionUser? _currentUser;
+  SessionUser? _currentHanimeUser;
   bool _loaded = false;
 
   SessionUser? get currentUser => _currentUser;
   String? get currentUserId => _currentUser?.id;
   bool get isLoggedIn => _currentUser != null;
+  SessionUser? get hanimeUser => _currentHanimeUser;
+  String? get hanimeUserId => _currentHanimeUser?.id;
+  bool get isHanimeLoggedIn => _currentHanimeUser != null;
   bool get isLoaded => _loaded;
 
   Future<void> load() async {
@@ -61,6 +68,22 @@ class SessionStore extends ChangeNotifier {
           error,
           stackTrace,
           component: 'session_load',
+        ),
+      );
+    }
+    try {
+      final storedHanimeUserId = await secretStore.read(_hanimeUserIdKey);
+      if (storedHanimeUserId != null &&
+          _validUserId.hasMatch(storedHanimeUserId)) {
+        _currentHanimeUser = SessionUser(id: storedHanimeUserId);
+      }
+    } on Object catch (error, stackTrace) {
+      _currentHanimeUser = null;
+      unawaited(
+        AppLogService.instance.error(
+          error,
+          stackTrace,
+          component: 'session_load_hanime',
         ),
       );
     }
@@ -101,6 +124,77 @@ class SessionStore extends ChangeNotifier {
     return cookies.map(_cookiePair).join('; ');
   }
 
+  Future<void> authenticateHanime(String userId) async {
+    final normalized = userId.trim();
+    if (!_validUserId.hasMatch(normalized)) {
+      throw ArgumentError.value(userId, 'userId', '用户 ID 格式无效');
+    }
+
+    final previousUserId = await secretStore.read(_hanimeUserIdKey);
+    try {
+      await secretStore.write(_hanimeUserIdKey, normalized);
+    } on Object {
+      if (previousUserId == null) {
+        await secretStore.delete(_hanimeUserIdKey);
+      } else {
+        await secretStore.write(_hanimeUserIdKey, previousUserId);
+      }
+      rethrow;
+    }
+    if (_currentHanimeUser?.id == normalized) {
+      return;
+    }
+    _currentHanimeUser = SessionUser(id: normalized);
+    notifyListeners();
+  }
+
+  Future<StoredCredentials?> loadHanimeCredentials() async {
+    final values = await Future.wait([
+      secretStore.read(_hanimeEmailKey),
+      secretStore.read(_hanimePasswordKey),
+    ]);
+    final email = values[0]?.trim() ?? '';
+    final password = values[1] ?? '';
+    if (email.isEmpty || password.isEmpty) {
+      return null;
+    }
+    return StoredCredentials(email: email, password: password);
+  }
+
+  Future<void> saveHanimeCredentials({
+    required String email,
+    required String password,
+  }) async {
+    final normalizedEmail = email.trim();
+    if (normalizedEmail.isEmpty || password.isEmpty) {
+      throw ArgumentError('账号和密码不能为空。');
+    }
+    await Future.wait([
+      secretStore.write(_hanimeEmailKey, normalizedEmail),
+      secretStore.write(_hanimePasswordKey, password),
+    ]);
+  }
+
+  Future<void> forgetHanimeCredentials() async {
+    await Future.wait([
+      secretStore.delete(_hanimeEmailKey),
+      secretStore.delete(_hanimePasswordKey),
+    ]);
+  }
+
+  Future<void> clearHanime({bool forgetCredentials = false}) async {
+    await Future.wait([
+      secretStore.delete(_hanimeUserIdKey),
+      if (forgetCredentials) secretStore.delete(_hanimeEmailKey),
+      if (forgetCredentials) secretStore.delete(_hanimePasswordKey),
+    ]);
+    if (_currentHanimeUser == null) {
+      return;
+    }
+    _currentHanimeUser = null;
+    notifyListeners();
+  }
+
   Future<StoredCredentials?> loadCredentials() async {
     final values = await Future.wait([
       secretStore.read(_emailKey),
@@ -130,9 +224,13 @@ class SessionStore extends ChangeNotifier {
 
   Future<void> clearCookies() => cookieJar.deleteAll();
 
-  Future<void> clear({bool forgetCredentials = false}) async {
+  Future<void> clearCookiesFor(Uri uri) => cookieJar.delete(uri, true);
+
+  Future<void> clear({bool forgetCredentials = false, Uri? cookieScope}) async {
     await Future.wait([
-      cookieJar.deleteAll(),
+      cookieScope == null
+          ? cookieJar.deleteAll()
+          : cookieJar.delete(cookieScope, true),
       secretStore.delete(_userIdKey),
       if (forgetCredentials) secretStore.delete(_emailKey),
       if (forgetCredentials) secretStore.delete(_passwordKey),

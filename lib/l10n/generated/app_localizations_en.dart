@@ -9,7 +9,20 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get ui45be8e30 =>
+      '(\\d+)\\s*(seconds|minutes|minutes|hour|hour|day|week|week|month|month|month|year)\\s* ago';
+
+  @override
+  String get ui7b86fa60 => '2.5D animation';
+
+  @override
   String get ui0aedf15f => '20–60 minutes';
+
+  @override
+  String get ui4a1b4e68 => '2D animation';
+
+  @override
+  String get ui31e98877 => '2D animation';
 
   @override
   String get ui4ebe1e15 => 'Within 5 minutes';
@@ -27,16 +40,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui2e77e7e1 => '===== Diagnostic information =====';
 
   @override
+  String get ui43396a35 => 'AI generated';
+
+  @override
   String get ui186386f2 => 'App Settings';
 
   @override
+  String ui1bb6cf0e(String p0) {
+    return 'Cookie names=$p0';
+  }
+
+  @override
   String get ui14d5d228 => 'DeepL Plans and Endpoints';
-
-  @override
-  String get ui5532d8d0 => 'Flule34 Local Diagnostic Logs';
-
-  @override
-  String get ui514d16fd => 'Flule34 translation library';
 
   @override
   String get ui57e4db6c => 'Git commit';
@@ -49,8 +64,79 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui1bcd541a => 'GitHub source code';
 
   @override
+  String get ui20b6ac2f => 'HaRu Local Diagnostic Logs';
+
+  @override
+  String get ui18362f38 => 'HaRu translation library';
+
+  @override
+  String ui2cd06f4c(String p0) {
+    return 'Hanime landing select category; genre=$p0';
+  }
+
+  @override
+  String get ui3fd23b15 => 'Hanime playlist';
+
+  @override
+  String get ui33a113c4 => 'Liked by Hanime';
+
+  @override
+  String ui12696fd4(String p0) {
+    return 'Hanime filter sheet application; summary=$p0';
+  }
+
+  @override
+  String get ui0136f228 => 'Hanime filtering and sorting';
+
+  @override
+  String ui553f848b(String p0) {
+    return 'Hanime filter applied; summary=$p0';
+  }
+
+  @override
+  String ui3b3b256b(String p0, String p1) {
+    return 'Hanime subscribes to author works filtering; artist=$p0; page=$p1;';
+  }
+
+  @override
+  String ui3deb27cd(String p0, String p1) {
+    return 'Hanime comment submitted successfully; video=$p0; reply=$p1';
+  }
+
+  @override
+  String ui73e7844e(String p0) {
+    return 'Hanime details page metadata click; kind=$p0;';
+  }
+
+  @override
+  String get ui27638fa8 => 'Hanime account';
+
+  @override
+  String ui081c5de6(String p0, String p1, String p2) {
+    return 'Hanime home channel changed; channel=$p0; index=$p1; seed=$p2';
+  }
+
+  @override
+  String get ui77cbd28c => 'Hanime verification';
+
+  @override
+  String ui4a1461a3(String p0, String p1) {
+    return 'Hanime=$p0; current scope=$p1';
+  }
+
+  @override
+  String ui042e6d42(String p0) {
+    return 'Hanime login=$p0';
+  }
+
+  @override
   String get ui103930a8 =>
       'Adding an email address can increase MyMemory\'s free quota.';
+
+  @override
+  String ui35377097(String p0) {
+    return 'R34V login=$p0;';
+  }
 
   @override
   String get ui2c98e3c6 => 'Rule34Video Account';
@@ -61,6 +147,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ui34eda443 => 'Up to 720p on Wi-Fi; up to 360p on mobile data';
+
+  @override
+  String ui0fed973b(String p0, String p1) {
+    return 'attempt=$p0; time consumption=${p1}ms';
+  }
 
   @override
   String ui3bebb943(String p0) {
@@ -88,6 +179,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String ui6aad5282(String p0) {
+    return '$p0 subscribers';
+  }
+
+  @override
   String ui4e278fff(String p0) {
     return '$p0 was added to the download queue.';
   }
@@ -95,6 +191,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String ui5e77ec72(String p0) {
     return '$p0 is already in Downloads.';
+  }
+
+  @override
+  String ui4cc52a83(String p0) {
+    return '$p0 years';
+  }
+
+  @override
+  String ui196d3c87(String p0) {
+    return '$p0 months';
   }
 
   @override
@@ -118,6 +224,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String ui2f3746eb(String p0) {
+    return '$p0 videos';
+  }
+
+  @override
   String ui44f14c54(String p0, String p1) {
     return '$p0% · $p1 votes';
   }
@@ -125,6 +236,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String ui278d8aed(String p0, String p1, String p2, String p3) {
     return '$p0$p1; translation: $p2$p3';
+  }
+
+  @override
+  String ui5d9cbb2c(String p0, String p1) {
+    return '$p0 failed: $p1';
   }
 
   @override
@@ -143,6 +259,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String ui3e04ce6a(String p0) {
+    return '\"$p0\" and its list relationships will be deleted, and the video itself will not be affected.';
+  }
+
+  @override
   String get ui2046553b => 'One column';
 
   @override
@@ -154,6 +275,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String ui772dc31b(String p0) {
     return 'Failed to load uploader data: $p0';
+  }
+
+  @override
+  String ui29700171(String p0) {
+    return 'Uploader: $p0';
   }
 
   @override
@@ -188,6 +314,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'The downloaded file is no longer available, or no app can play this MP4.';
 
   @override
+  String get ui5cade6e1 => 'Download service is temporarily unavailable.';
+
+  @override
   String get ui180a6fbf => 'Download quality';
 
   @override
@@ -216,10 +345,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui7447788f => 'Two columns';
 
   @override
+  String get ui5fde6c76 => 'The new passwords entered twice are inconsistent.';
+
+  @override
+  String get ui7d332b29 => 'months';
+
+  @override
   String get ui557a9537 => 'Theme';
 
   @override
   String get ui7b7ae9f2 => 'Theme mode';
+
+  @override
+  String get ui754aed9c => 'Report';
+
+  @override
+  String ui099fb842(String p0) {
+    return 'Report failed: $p0';
+  }
+
+  @override
+  String get ui0d483756 => 'Report submitted.';
+
+  @override
+  String get ui72607f99 => 'Report comment';
 
   @override
   String get ui11b84182 => 'Download over Wi-Fi only';
@@ -247,7 +396,29 @@ class AppLocalizationsEn extends AppLocalizations {
       'Saved per account after login. When disabled, new searches are no longer recorded.';
 
   @override
+  String get ui42cab9da => 'today';
+
+  @override
   String get ui44ac200e => 'Play continuously from the start';
+
+  @override
+  String ui6d8b62f1(String p0) {
+    return 'Request login from media library; scope=hanime1; section=$p0';
+  }
+
+  @override
+  String ui4aca9b31(String p0, String p1) {
+    return 'Request login from media library; scope=$p0; section=$p1';
+  }
+
+  @override
+  String get ui794510bf => 'Remove from playlist';
+
+  @override
+  String get ui4da21b44 => 'Watching now';
+
+  @override
+  String get ui1c2804ab => 'Watching now';
 
   @override
   String get ui4a42f091 =>
@@ -292,10 +463,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui4f586a83 => 'Keep videos downloaded to the public folder';
 
   @override
+  String get ui06b0c857 => 'Modify';
+
+  @override
+  String ui4ee78cab(String p0) {
+    return 'Modification failed: $p0';
+  }
+
+  @override
   String get ui30350f33 => 'Change password';
 
   @override
+  String get ui3daf2795 => 'Modify display name and email address';
+
+  @override
   String get ui043de786 => 'Change email address';
+
+  @override
+  String get ui1d0485f9 => 'months';
 
   @override
   String get ui4fcf2a14 => 'Full screen';
@@ -320,18 +505,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get ui166298c5 => 'About Flule34';
-
-  @override
-  String get ui13bc9fa5 => 'Follow';
-
-  @override
-  String get ui54d03562 =>
-      'The categories, artists, or users you follow have no videos to show right now.';
-
-  @override
-  String get ui47de51e1 =>
-      'The Following feed brings together categories, artists, users, and playlists you subscribe to on the website.';
+  String get ui64efd37a => 'About HaRu';
 
   @override
   String get ui29c40c72 =>
@@ -344,6 +518,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui08354b81 => 'Turn off resume playback?';
 
   @override
+  String get ui19d54932 => 'Other reasons for reporting';
+
+  @override
+  String get ui25e3dc9e => 'Other reasons for reporting';
+
+  @override
   String get ui2bbc0423 => 'Content preference';
 
   @override
@@ -353,16 +533,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui38d59e4d => 'Built-in';
 
   @override
+  String ui4d75ae49(String p0, String p1) {
+    return 'Preparing download; site=$p0; video=$p1;';
+  }
+
+  @override
   String get ui2f5fd7d1 => 'Share';
 
   @override
   String get ui55599ffb => 'Category';
 
   @override
+  String ui685042ae(String p0) {
+    return 'Category:$p0';
+  }
+
+  @override
+  String get ui748ee6f9 => 'minutes';
+
+  @override
+  String get ui75929c3a => 'minutes';
+
+  @override
   String get ui38fe9b1d => 'Repeat list';
 
   @override
   String get ui309e167e => 'List order';
+
+  @override
+  String get ui542b3ce5 => 'create';
 
   @override
   String get ui0c2c660a =>
@@ -400,7 +599,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Delete every download record whose exact file can no longer be found. External files are not modified.';
 
   @override
+  String get ui7a6fcf0e => 'Delete history';
+
+  @override
   String get ui42079bac => 'Delete selected API translations?';
+
+  @override
+  String get ui16040b00 => 'Delete playlist?';
 
   @override
   String get ui6882566e => 'Delete file and record';
@@ -477,15 +682,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui54ec6c15 => 'Original + translation';
 
   @override
-  String get ui2e2d0cb3 => 'Published';
+  String get ui6c687b2d => 'Post a comment...';
 
   @override
-  String get ui0ccf8adf => 'Discover';
+  String get ui2d79226f => 'Release date';
+
+  @override
+  String get ui2e2d0cb3 => 'Published';
 
   @override
   String ui0e705d18(String p0) {
     return 'New version $p0 found.';
   }
+
+  @override
+  String get ui7d443475 => 'publish';
+
+  @override
+  String ui057b0ee1(String p0) {
+    return 'Posting failed: $p0';
+  }
+
+  @override
+  String get ui7a5d619c => 'send';
 
   @override
   String ui07cfc2d2(String p0) {
@@ -496,7 +715,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui1cdb9be3 => 'Cancel';
 
   @override
+  String get ui4c580a79 => 'Cancel reply';
+
+  @override
   String get ui0d684dfd => 'Remove from favorites';
+
+  @override
+  String get ui20eeb984 => 'Cancel like';
 
   @override
   String get ui5eb70fab => 'Unsubscribe';
@@ -547,11 +772,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui09e67cd1 => 'Also delete matching videos from the public folder';
 
   @override
+  String ui30e251a0(String p0) {
+    return 'Synchronization failed and the original state has been restored: $p0';
+  }
+
+  @override
   String get ui3898538c =>
       'All conditions are combined with AND. You can select up to five options of each type.';
 
   @override
   String get ui73f2614f => 'Name';
+
+  @override
+  String get ui06e91ae0 => 'Backstage/Frontstage';
 
   @override
   String get ui3a38a6d4 => 'Background task in progress';
@@ -563,10 +796,38 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui4763b5c2 => 'No';
 
   @override
+  String get ui2f676191 => 'week';
+
+  @override
   String get ui63f37124 => 'Videos matching any exclusion condition are hidden';
 
   @override
+  String get ui7ff6d3a0 => 'brand';
+
+  @override
   String get ui3791c2b8 => 'Back to top';
+
+  @override
+  String get ui2c3700bb => 'Reply';
+
+  @override
+  String ui452cfc99(String p0) {
+    return 'Reply $p0';
+  }
+
+  @override
+  String get ui1b8fd367 => 'Reply...';
+
+  @override
+  String ui24039614(String p0) {
+    return 'Reply loading failed: $p0';
+  }
+
+  @override
+  String get ui54c6440e => 'Reply posted.';
+
+  @override
+  String get ui649f8b36 => 'pictures';
 
   @override
   String get ui03a2a222 => 'Image cache cleared.';
@@ -574,6 +835,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get ui796e3b4c =>
       'Stored on this device, independent of the signed-in account';
+
+  @override
+  String get ui164112a2 => 'Online viewing history is temporarily empty.';
 
   @override
   String get ui12562321 =>
@@ -616,10 +880,64 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui3be928a0 => 'The external file cannot currently be read.';
 
   @override
+  String get ui31f6973f => 'day';
+
+  @override
+  String get ui281b9ca1 => 'Avatar has been updated.';
+
+  @override
+  String ui5ea25aa8(String p0) {
+    return 'Avatar update failed: $p0';
+  }
+
+  @override
   String get ui158640ea => 'Always use the default quality';
 
   @override
   String get ui17588e00 => 'Library';
+
+  @override
+  String ui38869fe7(String p0) {
+    return 'Media library secondary page switching; range=hanime1; section=$p0';
+  }
+
+  @override
+  String ui7a3a4547(String p0) {
+    return 'Media library secondary page switching; scope=local; section=$p0';
+  }
+
+  @override
+  String ui1c3a6602(String p0) {
+    return 'Media library secondary page switching; range=rule34video; section=$p0';
+  }
+
+  @override
+  String ui0ee3985f(String p0) {
+    return 'Media library list request completed; scope=rule34video; section=$p0;';
+  }
+
+  @override
+  String ui1e113600(String p0) {
+    return 'Media library list request starts; scope=rule34video; section=$p0;';
+  }
+
+  @override
+  String ui14cdfa21(String p0) {
+    return 'Media library open;scope=$p0;';
+  }
+
+  @override
+  String ui5e9a8d3f(String p0) {
+    return 'Media library login status change; R34V=$p0;';
+  }
+
+  @override
+  String ui21db214e(String p0, String p1) {
+    return 'Media library range switching; from=$p0; to=$p1';
+  }
+
+  @override
+  String get ui2a120a57 => 'Media library range order';
 
   @override
   String get ui344971fc => 'Exists';
@@ -628,7 +946,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui60514b78 => 'Merge safely';
 
   @override
+  String get ui2cfae1da => 'Broad search';
+
+  @override
   String get ui5baf4155 => 'Password';
+
+  @override
+  String get ui0a68072d => 'Password has been updated.';
 
   @override
   String ui65cceef6(String p0) {
@@ -671,6 +995,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get ui410820fb =>
+      'The Hanime account, password and login session saved on this machine will be deleted.';
+
+  @override
   String get ui5116cc17 =>
       'Accounts, passwords, and login sessions saved on this device will be deleted. Downloads and local libraries are not affected.';
 
@@ -684,6 +1012,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get ui1ba660cc => 'hours';
+
+  @override
+  String get ui17aba12e => 'hours';
+
+  @override
   String get ui2d851aa0 => 'Not signed in';
 
   @override
@@ -694,6 +1028,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get ui7d437796 =>
       'No translation service is configured. The built-in dictionary and manually entered translations are still available.';
+
+  @override
+  String get ui59bc6fa1 => 'Expand';
 
   @override
   String get ui0543d520 => 'Downloaded';
@@ -741,13 +1078,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui670889d8 => 'Added to favorites.';
 
   @override
+  String get ui0b279e7e => 'Added to watch later.';
+
+  @override
   String get ui37453e63 => 'Canceled';
 
   @override
   String get ui7bbd0e24 => 'Removed from favorites.';
 
   @override
+  String get ui5cbef487 => 'Like canceled.';
+
+  @override
   String get ui34a0e3be => 'Unsubscribed.';
+
+  @override
+  String get ui67f81f43 => 'Artist has been unsubscribed.';
 
   @override
   String ui1db0bde1(String p0) {
@@ -774,6 +1120,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui1a7827b1 => 'Paused';
 
   @override
+  String get ui24c8bd29 => 'Liked.';
+
+  @override
+  String get ui76ec3129 => 'Moved out of Watch Later.';
+
+  @override
+  String get ui7acf6891 => 'Watched later';
+
+  @override
   String get ui49531ef1 => 'You\'ve reached the end';
 
   @override
@@ -792,6 +1147,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui59a2ec21 => 'Subscribed to uploader.';
 
   @override
+  String get ui7bf7bdc9 => 'Subscribed artist.';
+
+  @override
+  String ui1d63803b(String p0) {
+    return '$p0 selected';
+  }
+
+  @override
   String ui21a8fcc4(String p0) {
     return '$p0 items selected';
   }
@@ -807,6 +1170,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ui62a81a58 => 'Platform';
+
+  @override
+  String get ui4b2a99fd => 'year';
+
+  @override
+  String get ui25461fa7 => 'Year';
+
+  @override
+  String get ui1fb0206d => 'Advertising or spam';
 
   @override
   String get ui70131201 => 'Library name';
@@ -835,8 +1207,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui390d6cf3 => 'Apply (no limit)';
 
   @override
+  String get ui37fc4085 => 'Bottom navigation order';
+
+  @override
+  String get ui68701249 => 'Advertising or spam';
+
+  @override
   String get ui0a663237 =>
       'When enabled, audio keeps playing after switching apps or turning off the screen.';
+
+  @override
+  String ui08cdac2b(String p0, String p1) {
+    return 'Start video preview; site=$p0; video=$p1;';
+  }
 
   @override
   String get ui13034753 => 'Open source license';
@@ -847,6 +1230,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get ui573acdd9 =>
       'The active task is canceled first. You can delete only its record or also remove the incomplete file.';
+
+  @override
+  String get ui2073fb01 => 'current password';
 
   @override
   String get ui3c131161 =>
@@ -898,6 +1284,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui608e380c => 'Restore learned translations';
 
   @override
+  String ui351ef4b1(String p0) {
+    return 'Playback resumed; expanding player automatically; video=$p0;';
+  }
+
+  @override
   String get ui67d3b06d => 'Profile';
 
   @override
@@ -932,6 +1323,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui0fb6d05e => 'Open the website message center';
 
   @override
+  String get ui2d1cd088 => 'Open artist video';
+
+  @override
   String get ui5c30a6ab => 'Futanari';
 
   @override
@@ -948,6 +1342,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ui7d6a579d => 'Fetch model list';
+
+  @override
+  String get ui1a86336b =>
+      'Drag to adjust; default to the first item during cold start.';
+
+  @override
+  String get ui4c4f7a5b => 'Specify month…';
 
   @override
   String get ui65af3a45 => 'Sort by original text';
@@ -1004,6 +1405,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui4aa4bf66 => 'Description (optional)';
 
   @override
+  String get ui1d31a7a0 => 'Submit';
+
+  @override
   String ui0c0bc8f8(String p0) {
     return 'Failed to submit background download task: $p0';
   }
@@ -1039,6 +1443,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Search originals, translations, or translation services';
 
   @override
+  String get ui7e4e2643 => 'Search online viewing history';
+
+  @override
   String get ui6e169d07 => 'Search loaded videos';
 
   @override
@@ -1062,6 +1469,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ui6cb88a74 => 'Search videos in this subscription';
+
+  @override
+  String get ui6a8599b3 => 'Search for liked videos';
+
+  @override
+  String get ui43f9c5a0 => 'Search to watch later';
 
   @override
   String get ui35231688 => 'Search watch history';
@@ -1094,7 +1507,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'The playlist will be deleted from the website account.';
 
   @override
+  String ui766b41bc(String p0) {
+    return 'Playlist loading failed: $p0';
+  }
+
+  @override
   String get ui1f1bcb06 => 'Playlist created.';
+
+  @override
+  String get ui74ffe4ad =>
+      'The playlist has been created with the current video added.';
 
   @override
   String get ui32c513bd =>
@@ -1110,8 +1532,65 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui5ba71ce6 => 'Invalid playlist playback parameters.';
 
   @override
+  String get ui201d2aa4 => 'Playlist operations';
+
+  @override
   String get ui7e8be483 =>
       'The player did not report the video duration after initialization.';
+
+  @override
+  String ui536e06b3(String p0) {
+    return 'The player starts to resume automatically; attempt=$p0;';
+  }
+
+  @override
+  String ui7479d54b(String p0) {
+    return 'Player collapse permission updated; video=$p0;';
+  }
+
+  @override
+  String ui5b401ab2(String p0) {
+    return 'Player reported an error: $p0;';
+  }
+
+  @override
+  String ui5a50b4ab(String p0) {
+    return 'Player finished expanding automatically; video=$p0;';
+  }
+
+  @override
+  String get ui78522c85 =>
+      'Player automatic recovery failed; reason=no-alternate-source;';
+
+  @override
+  String ui0dd3d83f(String p0) {
+    return 'Player automatic recovery exception; $p0;';
+  }
+
+  @override
+  String ui19faffc9(String p0, String p1) {
+    return 'The player automatically resumed successfully; $p0; time consumption = ${p1}ms';
+  }
+
+  @override
+  String ui0146f5aa(String p0) {
+    return 'Player automatic recovery failed to load; $p0;';
+  }
+
+  @override
+  String ui4e45686b(String p0) {
+    return 'The player automatically resumes selecting the alternate source; from=$p0;';
+  }
+
+  @override
+  String ui4cee68a6(String p0) {
+    return 'Player failed to load: $p0;';
+  }
+
+  @override
+  String ui09679598(String p0) {
+    return 'Detail scrolling reached the boundary during playback; visual overscroll disabled; video=$p0;';
+  }
 
   @override
   String get ui206c2436 => 'Play file';
@@ -1136,6 +1615,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui21658def => 'Playback issues';
 
   @override
+  String ui1c251464(String p0) {
+    return 'Operation failed: $p0';
+  }
+
+  @override
   String get ui31d7af87 =>
       'The operation could not be completed. Try again later.';
 
@@ -1149,6 +1633,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui00b01c4f => 'Failed to load favorite status. Tap to retry';
 
   @override
+  String get ui453d0751 => 'close';
+
+  @override
+  String get ui0b53ee0f => 'Hide reply';
+
+  @override
+  String get ui7d902f31 =>
+      'Relax the matching rules, possibly returning results with only partial matching titles.';
+
+  @override
   String get ui053602da => 'Database structure';
 
   @override
@@ -1158,6 +1652,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String ui37efec5c(String p0) {
     return 'The file contains $p0 API translations,';
   }
+
+  @override
+  String get ui27d4d033 => 'new password';
+
+  @override
+  String get ui59623fdc =>
+      'The new password needs to be at least 8 characters.';
 
   @override
   String get ui17e77337 => 'New';
@@ -1194,8 +1695,15 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get ui2dfcd562 =>
+      'Unable to read the web page content, please click to try again.';
+
+  @override
   String get ui0b6ddbbb =>
       'Unable to connect to GitHub. Check your network and try again.';
+
+  @override
+  String get ui22636da6 => 'Japanese IPs may fail verification';
 
   @override
   String get ui005f5ce7 => 'Japanese';
@@ -1210,7 +1718,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui194644ca => 'Longest duration';
 
   @override
+  String ui7b627dbe(String p0) {
+    return 'Duration: $p0';
+  }
+
+  @override
+  String get ui3ba0d1c3 => 'yesterday';
+
+  @override
   String get ui16b646f4 => 'Yes';
+
+  @override
+  String get ui5a80d5b4 => 'display name';
 
   @override
   String get ui6a379702 => 'Show password';
@@ -1232,7 +1751,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui2effb403 => 'There are currently no popular tags to display.';
 
   @override
+  String get ui64683360 => 'Violent or offensive content';
+
+  @override
+  String get ui6b06a5db => 'Violent or offensive content';
+
+  @override
+  String get ui1902e077 => 'More';
+
+  @override
   String get ui38e45090 => 'More options';
+
+  @override
+  String get ui2d102f6b => 'Change avatar';
+
+  @override
+  String ui2bef8164(String p0) {
+    return 'Update failed: $p0';
+  }
 
   @override
   String get ui2ec2c481 => 'Update check completed.';
@@ -1268,10 +1804,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui347c998f => 'Latest';
 
   @override
+  String get ui6c3fd091 => 'latest upload';
+
+  @override
+  String get ui7a46e769 => 'latest upload';
+
+  @override
+  String get ui21368744 => 'Latest listing';
+
+  @override
   String get ui222ba90b => 'Newest created';
 
   @override
   String get ui368db057 => 'Most recently subscribed';
+
+  @override
+  String get ui4778e5e1 => 'earliest';
+
+  @override
+  String get ui4124f57e => 'hottest';
 
   @override
   String get ui23dfffd1 => 'Recently modified';
@@ -1283,6 +1834,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui5891390e => 'Recently added';
 
   @override
+  String get ui73804ab0 => 'Recently viewed';
+
+  @override
   String get ui3f66748c => 'Longest';
 
   @override
@@ -1292,7 +1846,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui646cc4af => 'Highest rated';
 
   @override
+  String get ui7dbfe375 => 'month';
+
+  @override
+  String get ui625d464f => 'month';
+
+  @override
   String get ui7ee4b38a => 'Service name';
+
+  @override
+  String get ui0b0f8079 => 'Not mounted';
 
   @override
   String ui5801f5b9(String p0, String p1) {
@@ -1305,20 +1868,22 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get ui6c16defb => 'Not logged in Hanime';
+
+  @override
   String get ui73b71caa => 'Not configured';
 
   @override
   String get ui593a76ae => 'Local libraries';
 
   @override
-  String get ui7afe5844 =>
-      'Local libraries do not require an account. Sign in to also access website favorites, history, and subscriptions.';
-
-  @override
   String get ui0760582c => 'Local library';
 
   @override
   String get ui5af2b9c7 => 'Local diagnostic log';
+
+  @override
+  String get ui42457eeb => 'local machine';
 
   @override
   String get ui609a0e8a => 'Downloads on this device';
@@ -1339,11 +1904,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui3a3a5f44 => 'Find artist page';
 
   @override
-  String get ui32e834c8 =>
-      'View licenses for Flule34 and third-party Flutter dependencies';
+  String get ui29d7c1b1 =>
+      'View licenses for HaRu and third-party Flutter dependencies';
+
+  @override
+  String ui2489fa87(String p0) {
+    return 'View $p0 replies';
+  }
 
   @override
   String get ui3c5ed424 => 'View public profile, uploads, and public favorites';
+
+  @override
+  String get ui39fa84e7 => 'View public profiles, subscriptions and uploads';
 
   @override
   String get ui682b70e0 =>
@@ -1351,6 +1924,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ui37042e79 => 'View diagnostic information';
+
+  @override
+  String get ui7f5af178 => 'Standard video list layout';
 
   @override
   String get ui3d8dc836 => 'Tag';
@@ -1402,9 +1978,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui1e85b6dc => 'Playing media';
 
   @override
-  String ui01c66e0e(String p0, String p1) {
-    return 'Organizing followed content $p0/$p1';
+  String ui0e786c06(String p0, String p1) {
+    return 'Organizing subscription content $p0/$p1';
   }
+
+  @override
+  String get ui3dcae6c0 =>
+      'Waiting for verification results... If there is no response for a long time, please click Retry.';
 
   @override
   String get ui37674019 => 'Loading all videos…';
@@ -1427,10 +2007,19 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get ui23a76939 => 'Reading like status';
+
+  @override
   String get ui3016a852 => 'Loading version…';
 
   @override
+  String get ui0c4e429a => 'Reading watch later status';
+
+  @override
   String get ui3de0c840 => 'Connecting';
+
+  @override
+  String get ui7629ef8e => 'Connecting to Hanime via browser…';
 
   @override
   String get ui108cc700 =>
@@ -1457,10 +2046,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui68fbffba => 'No location is available for the completed file.';
 
   @override
+  String get ui129bcb21 => 'No matching brand.';
+
+  @override
   String get ui13ed4ac5 => 'No matching loaded content.';
 
   @override
+  String get ui26ec4dbb => 'No matching tags.';
+
+  @override
   String get ui5198af87 => 'There are no logs to export.\n';
+
+  @override
+  String get ui29c894b2 =>
+      'No backup definitions available, please try again later.';
 
   @override
   String ui61fe8d4a(String p0, String p1) {
@@ -1509,6 +2108,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui1408d9d3 => 'There are no matching translations.';
 
   @override
+  String get ui522cef73 => 'instant noodles';
+
+  @override
+  String get ui0edc6509 => 'instant noodles';
+
+  @override
   String get ui0e0207cc => 'Register an account';
 
   @override
@@ -1519,6 +2124,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ui06cf3f13 => 'Test connection';
+
+  @override
+  String ui1d96670f(String p0) {
+    return 'The browser\'s main page failed to load; error code = $p0;';
+  }
+
+  @override
+  String get ui33fbe6ce =>
+      'Browser challenge screen cleared; waiting for cf_clearance;';
+
+  @override
+  String ui129ae59c(String p0) {
+    return 'Browser detected a Cloudflare challenge; path=$p0;';
+  }
+
+  @override
+  String ui67cd734f(String p0, String p1) {
+    return 'Browser-assisted verification completed; trigger=$p0; path=$p1;';
+  }
+
+  @override
+  String ui2c065af1(String p0) {
+    return 'The browser-assisted verification pop-up window has been displayed; path=$p0';
+  }
+
+  @override
+  String ui521398c6(String p0) {
+    return 'Browser page started loading; path=$p0';
+  }
 
   @override
   String get ui2bce8045 => 'Browse site content categories';
@@ -1534,6 +2168,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ui28b4fe80 => 'Quality';
+
+  @override
+  String ui57e9c7ab(String p0) {
+    return 'Quality=$p0';
+  }
 
   @override
   String get ui1226aec8 => 'Clear';
@@ -1587,6 +2226,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui21697b99 => 'Tap to return to the app';
 
   @override
+  String get ui3273204a => 'Like';
+
+  @override
+  String get ui6356f887 => 'The like list is temporarily empty.';
+
+  @override
+  String get ui6dfa7544 => 'Failed to read like status, click to try again';
+
+  @override
   String ui26b5101f(String p0) {
     return 'Like rate ≥ $p0%';
   }
@@ -1612,6 +2260,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Popular videos, top-rated videos, and artist rankings';
 
   @override
+  String get ui0ac00f7c => 'Incite hatred or malicious content';
+
+  @override
+  String get ui173de99c => 'Incite hatred or malicious content';
+
+  @override
   String ui326c0193(String p0, String p1) {
     return 'Version $p0+$p1';
   }
@@ -1631,6 +2285,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String ui2ff2035d(String p0) {
     return 'User ID: $p0';
+  }
+
+  @override
+  String ui19930fad(String p0) {
+    return 'The user manually retries to refresh the verification page; path=$p0;';
   }
 
   @override
@@ -1656,11 +2315,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui3ad2af27 => 'Login';
 
   @override
+  String get ui720f5c51 => 'Login Hanime';
+
+  @override
+  String get ui5d9071a1 => 'Log in to Hanime to comment';
+
+  @override
+  String get ui1cb8175c => 'Log in to R34V to comment';
+
+  @override
+  String get ui633ad687 => 'Login Rule34Video';
+
+  @override
+  String ui7b669835(String p0) {
+    return 'Login $p0';
+  }
+
+  @override
+  String get ui50edd253 =>
+      'Sign in to view collections, history, playlists and subscriptions.';
+
+  @override
+  String get ui0b18f11a =>
+      'Sign in to view likes, watch later, history, playlists and subscriptions.';
+
+  @override
   String get ui6ddcc3eb =>
       'Sign in to sync website favorites, history, and subscriptions.';
 
   @override
-  String get ui03ac75d2 => 'Log in to view content you follow';
+  String get ui47765d07 =>
+      'Sign in to sync site likes, watch later, playlists and comments.';
+
+  @override
+  String get ui18ff18c2 => 'Log in to view subscription content';
 
   @override
   String get ui4bd42f4c =>
@@ -1690,10 +2378,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui23a1a099 => 'Confirm batch deletion?';
 
   @override
+  String get ui79c740c7 => 'Confirm new password';
+
+  @override
   String get ui22d867a3 => 'votes';
 
   @override
   String get ui3e2a2939 => 'Most votes';
+
+  @override
+  String get ui2cd19db3 => 'seconds';
 
   @override
   String get ui07f3e573 => 'Remove from this library';
@@ -1702,10 +2396,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui332d29c7 => 'Remove from this playlist';
 
   @override
+  String get ui3898a44a => 'Move out to watch later';
+
+  @override
   String get ui3890123e => 'Remove invalid records';
 
   @override
   String get ui43f4c9b6 => 'Remove invalid records?';
+
+  @override
+  String get ui73f2e211 => 'watch later';
+
+  @override
+  String get ui5d12e72e => 'The Watch Later list is temporarily empty.';
+
+  @override
+  String get ui6e62f819 =>
+      'Watch later status reading failed, click to try again';
 
   @override
   String get ui3250d80e => 'Stable version';
@@ -1714,10 +2421,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui68bc4e82 => 'Site messages';
 
   @override
+  String get ui6fe1719c =>
+      'Can\'t wait for cookies → Refresh → Challenge again';
+
+  @override
   String get ui2ced8087 => 'Waiting for download';
 
   @override
   String get ui106c1db7 => 'Waiting for retry';
+
+  @override
+  String get ui50c5f340 =>
+      'After waiting for the verification result for more than 10 seconds, the user is prompted to try again manually;';
 
   @override
   String get ui373ece32 => 'Filter';
@@ -1750,7 +2465,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui36e4a35c => 'Simplified Chinese';
 
   @override
+  String get ui2f406a3c => 'Manage playlists';
+
+  @override
   String get ui7aa38d36 => 'Type';
+
+  @override
+  String ui6107c243(String p0, String p1) {
+    return 'Type=$p0; time consumption=${p1}ms';
+  }
 
   @override
   String ui0dbe3ac7(String p0) {
@@ -1828,6 +2551,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui0faaeb98 => 'Edit translation';
 
   @override
+  String get ui4232bd82 => 'Edit account information';
+
+  @override
   String get ui7d44f8fd => 'Edit profile';
 
   @override
@@ -1876,6 +2602,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui7312260a => 'Translation settings';
 
   @override
+  String ui56a4f7ec(String p0) {
+    return 'Elapsed=${p0}ms';
+  }
+
+  @override
+  String ui0cfe710c(String p0) {
+    return 'Time consumption=${p0}ms;';
+  }
+
+  @override
   String get ui42682f0b => 'Automatic';
 
   @override
@@ -1895,21 +2631,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui296bcd5e => 'Save data';
 
   @override
+  String get ui5c249ba5 => 'Rifan';
+
+  @override
   String get ui7f179fc8 => 'Video';
 
   @override
   String get ui4fbae4c2 => 'Video save location: Download/Flule34';
 
   @override
-  String get ui276089b3 =>
-      'The video URL is still unavailable after refreshing. Try again later.';
-
-  @override
   String get ui538cdd02 =>
       'The video URL was refreshed several times, but playback still failed. Try again manually later.';
-
-  @override
-  String get ui6ad9c53c => 'Video layout';
 
   @override
   String get ui37bdf9f3 => 'Video actions';
@@ -1934,13 +2666,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui6fbc2348 => 'Video preview';
 
   @override
+  String ui2d82e410(String p0, String p1) {
+    return 'Video preview failed; site=$p0; video=$p1';
+  }
+
+  @override
   String get ui7b8f2379 => 'Unlock controls';
 
   @override
   String get ui6e7502fd => 'Subscribe';
 
   @override
+  String get ui7d39567a =>
+      'The subscribed category, artist or user currently has no videos to display.';
+
+  @override
+  String get ui42e78a20 =>
+      'There are currently no new videos from subscribed artists.';
+
+  @override
   String get ui4c54789e => 'Subscriptions page layout';
+
+  @override
+  String get ui40acc969 =>
+      'Subscription channels summarize the categories, artists, users, and playlists you subscribe to on the website.';
 
   @override
   String get ui3c79fc19 => 'Remember playback position';
@@ -1953,6 +2702,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ui11313487 => 'Top rated';
+
+  @override
+  String get ui491e642c => 'Comment';
+
+  @override
+  String get ui7d9b7107 => 'Comment loading failed, click to try again';
+
+  @override
+  String get ui005f2e8d => 'Comment has been published.';
+
+  @override
+  String get ui761f4205 =>
+      'The comment has been submitted and will be displayed after review.';
 
   @override
   String get ui3ce65beb => 'Diagnostic information';
@@ -1970,7 +2732,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui52575ad3 => 'Language display mode';
 
   @override
+  String get ui16d86fec => 'Description';
+
+  @override
   String get ui7894fed1 => 'Enter a valid base URL first.';
+
+  @override
+  String get ui19e258a9 => 'Please log in to Hanime first';
+
+  @override
+  String get ui7ce74a5f =>
+      'Complete the verification in the page. The app will return automatically when it succeeds.';
 
   @override
   String get ui190ff633 => 'Enter the name, base URL, model, and API key.';
@@ -1985,17 +2757,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui196453a1 => 'Please enter your registered email address.';
 
   @override
+  String get ui742d2222 =>
+      'Please return to the \"My\" page to log in to your Hanime account.';
+
+  @override
   String get ui77044f29 =>
       'Return to Profile and sign in to view account information.';
+
+  @override
+  String get ui4af5a957 =>
+      'Adjust the display order of this unit, R34V and Hanime.';
 
   @override
   String get ui6447b2e3 => 'Account and library';
 
   @override
-  String get ui730cbb68 => 'Account and security';
+  String get ui6527aff1 => 'There are no playlists in the account yet.';
 
   @override
-  String get ui6527aff1 => 'There are no playlists in the account yet.';
+  String get ui04e867ba => 'Account information has been updated.';
 
   @override
   String get ui4f0bb3b1 => 'Quality conditions';
@@ -2010,9 +2790,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui1c47ee05 => 'Use system setting';
 
   @override
+  String ui58ccc0dc(String p0, String p1) {
+    return 'Path=$p0; progress=$p1;';
+  }
+
+  @override
   String ui76da0fc0(String p0) {
     return 'Skipped $p0,';
   }
+
+  @override
+  String get ui6c5a7de5 => 'Polling';
 
   @override
   String get ui739c6fd6 => 'Past week';
@@ -2033,6 +2821,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui0a322b08 => 'Past 3 months';
 
   @override
+  String get ui1c3504bd => 'Filter brands…';
+
+  @override
+  String get ui1863f57b => 'Filter tags…';
+
+  @override
   String get ui58a37252 => 'Back';
 
   @override
@@ -2042,13 +2836,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui6e7397b9 => 'No search history yet.';
 
   @override
+  String get ui5c800f01 => 'There are no playlists yet.';
+
+  @override
+  String get ui58052679 =>
+      'There is no playlist yet, you can create a new one first.';
+
+  @override
   String get ui71607183 => 'No local libraries yet';
 
   @override
   String get ui7a38235f => 'No subscriptions yet.';
 
   @override
+  String get ui460dc5ac => 'There are no comments yet.';
+
+  @override
   String get ui2f767daa => 'This uploader has not published any videos yet.';
+
+  @override
+  String get ui4d146290 => 'There are currently no videos in this playlist.';
 
   @override
   String get ui3d2b959e => 'There are no videos in this playlist yet.';
@@ -2063,7 +2870,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui0432dab5 => 'There are currently no videos in this collection.';
 
   @override
+  String get ui6ad274d1 => 'There are currently no videos in this channel.';
+
+  @override
   String get ui6c1512dd => 'Use landscape in full screen';
+
+  @override
+  String get ui231a13c4 => 'Progress';
 
   @override
   String ui340178b5(String p0) {
@@ -2072,6 +2885,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ui15cf6bb2 => 'Exit';
+
+  @override
+  String get ui0fc3c7d8 => 'Log out of Hanime?';
 
   @override
   String get ui61f69587 => 'Exit full screen';
@@ -2084,6 +2900,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ui0c4a5e14 => 'Log out?';
+
+  @override
+  String get ui2b4f5fd9 =>
+      'Applies to R34V, Hanime homepage and normal video lists, as well as search results and local category libraries.';
+
+  @override
+  String get ui736d6f73 =>
+      'Select a category to start browsing, or you can enter keyword search directly above.';
 
   @override
   String get ui1d37ed9d => 'Select download quality';
@@ -2105,11 +2929,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ui5b975d06 => 'Check using the configured GitHub Releases source';
 
   @override
+  String get ui650c8807 => 'week';
+
+  @override
+  String get ui441fd1bc => 'Email';
+
+  @override
   String get ui359a4400 => 'Email address (optional)';
 
   @override
   String get ui273538ab =>
       'Some autocomplete suggestions are temporarily unavailable.';
+
+  @override
+  String get ui40cbba27 => 'Rifan';
 
   @override
   String get ui37f64133 => 'Rename';
@@ -2173,6 +3006,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get ui7746148e => 'The page failed to load, please click Retry.';
+
+  @override
+  String get ui17a3b28f => 'Page complete';
+
+  @override
   String get ui7f532d14 => 'Play in order';
 
   @override
@@ -2180,9 +3019,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ui17cde1d0 => 'Channel';
-
-  @override
-  String get ui4bb87ce1 => 'Home';
 
   @override
   String get ui75c36c5d =>
@@ -2196,6 +3032,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ui1773f316 => 'Highly rated videos';
+
+  @override
+  String get ui669c4c11 => 'Default sort';
 
   @override
   String get ui349affc5 => 'Default playback quality';

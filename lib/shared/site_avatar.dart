@@ -1,22 +1,33 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+import '../core/models/content_source.dart';
+
 class SiteAvatar extends StatelessWidget {
   const SiteAvatar({
     super.key,
     required this.imageUrl,
     this.radius = 24,
     this.fallbackIcon = Icons.person_outline,
+    this.site = ContentSite.rule34video,
   });
 
-  static const _headers = <String, String>{
+  static const _rule34Headers = <String, String>{
     'Referer': 'https://rule34video.com/',
-    'User-Agent': 'Flule34 Android/1.4.5',
+    'User-Agent': 'HaRu Android/2.0.0',
+  };
+
+  // hanime 的头像/封面托管在 vdownload.hembed.com，需要 hanime1 的
+  // Referer 才会返回（与媒体请求同源策略）。
+  static const _hanimeHeaders = <String, String>{
+    'Referer': 'https://hanime1.me/',
+    'User-Agent': 'HaRu Android/2.0.0',
   };
 
   final String? imageUrl;
   final double radius;
   final IconData fallbackIcon;
+  final ContentSite site;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +44,9 @@ class SiteAvatar extends StatelessWidget {
             ? fallback
             : CachedNetworkImage(
                 imageUrl: url,
-                httpHeaders: _headers,
+                httpHeaders: site == ContentSite.hanime1
+                    ? _hanimeHeaders
+                    : _rule34Headers,
                 fit: BoxFit.cover,
                 fadeInDuration: const Duration(milliseconds: 120),
                 placeholder: (context, _) => fallback,

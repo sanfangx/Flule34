@@ -11,11 +11,16 @@ final class PlaybackRepository {
   final AppDatabase _database;
   final AppSettingsRepository _settingsRepository;
 
-  Future<Duration?> loadPosition(String videoId) async {
+  Future<Duration?> loadPosition(
+    String videoId, {
+    String siteId = 'rule34video',
+  }) async {
     if (!_settingsRepository.settings.rememberPlaybackProgress) {
       return null;
     }
-    final record = await _database.findPlaybackPosition(videoId: videoId);
+    final record = await _database.findPlaybackPosition(
+      videoId: _storageId(siteId, videoId),
+    );
     if (record == null) {
       return null;
     }
@@ -44,7 +49,7 @@ final class PlaybackRepository {
         ? Duration.zero
         : position;
     await _database.savePlaybackPosition(
-      videoId: video.id,
+      videoId: _storageId(video.siteId, video.id),
       title: video.title,
       slug: video.slug,
       thumbnailUrl: video.thumbnailUrl,
@@ -64,4 +69,7 @@ final class PlaybackRepository {
   Future<void> clearAll() {
     return _database.deleteAllPlaybackPositions();
   }
+
+  String _storageId(String siteId, String videoId) =>
+      siteId == 'rule34video' ? videoId : '$siteId:$videoId';
 }

@@ -6,11 +6,17 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
 import '../models/account_models.dart';
+import '../models/hanime_search_models.dart';
+import '../logging/app_log_service.dart';
+import '../models/rule34_comment_models.dart';
 import '../models/video_models.dart';
 import '../security/error_redaction.dart';
 import '../session/session_store.dart';
 import '../services/subscription_activity_index.dart';
 import 'site_parser.dart';
+import 'hanime1_api.dart';
+import 'hanime1_parser.dart';
+import '../models/content_source.dart';
 
 class ApiException implements Exception {
   const ApiException(this.message);
@@ -49,7 +55,16 @@ class Rule34VideoApi {
     required this.sessionStore,
     HttpClientAdapter? httpClientAdapter,
     SubscriptionActivityStore? subscriptionActivityStore,
+    Future<String?> Function(Uri targetUri, bool allowForegroundVerification)?
+    hanimeBrowserPageHandler,
+    Hanime1Api? hanimeApi,
   }) {
+    hanime1Api =
+        hanimeApi ??
+        Hanime1Api(
+          sessionStore: sessionStore,
+          browserPageHandler: hanimeBrowserPageHandler,
+        );
     _dio = Dio(_baseOptions());
     _publicDio = Dio(_baseOptions());
     if (httpClientAdapter != null) {
@@ -69,6 +84,7 @@ class Rule34VideoApi {
   }
 
   final SessionStore sessionStore;
+  late final Hanime1Api hanime1Api;
   late final SubscriptionActivityIndex subscriptionActivity;
   late final Dio _dio;
   late final Dio _publicDio;
@@ -82,6 +98,8 @@ class Rule34VideoApi {
   String? _playlistCacheUserId;
   final Map<String, _VideoDetailsCacheEntry> _videoDetailsCache = {};
   final Map<String, Future<VideoDetails>> _videoDetailsRequests = {};
+  final Map<String, Future<void>> _hanimeMutationTails = {};
+  final Map<String, int> _hanimeMutationRevisions = {};
   final Map<String, _VideoPageCacheEntry> _videoPageCache = {};
   final Map<String, Future<List<VideoItem>>> _videoPageRequests = {};
   final Map<String, bool> _favoriteStatusByVideoId = {};
@@ -100,6 +118,7 @@ class Rule34VideoApi {
     subscriptionActivity.dispose();
     _dio.close(force: true);
     _publicDio.close(force: true);
+    hanime1Api.close();
   }
 
   Future<void> restoreSession() async {
@@ -124,16 +143,119 @@ class Rule34VideoApi {
     return sessionStore.cookieHeaderFor(Uri.parse('https://rule34video.com/'));
   }
 
+  Future<String?> sessionCookieHeaderFor(ContentSite site) {
+    return site == ContentSite.hanime1
+        ? hanime1Api.sessionCookieHeader()
+        : sessionCookieHeader();
+  }
+
+  Future<Map<String, String>> mediaHeadersFor(VideoItem video) async {
+    if (video.site == ContentSite.hanime1) {
+      return hanime1Api.mediaHeaders();
+    }
+    return ContentSite.rule34video.mediaHeaders(
+      cookie: await sessionCookieHeader(),
+    );
+  }
+
+  static const _feedCacheTtl = Duration(minutes: 30);
+  final Map<String, _FeedCacheEntry> _feedPageCache = {};
+  final Map<String, Future<List<VideoItem>>> _feedPageRequests = {};
+
   Future<List<VideoItem>> loadFeed(
     FeedKind kind,
     int page, {
     SearchFilters filters = const SearchFilters(),
+    bool force = false,
   }) async {
-    return _paginatedVideoList(
-      kind.pagePath(page),
-      page: page,
-      query: _searchQuery(filters),
-    );
+    // 首页 feed 第一页内存缓存：在站点/频道间切换时命中缓存立即返回，
+    // 避免每次重建 VideoFeed 都重新请求导致转圈；下拉刷新走 force 绕过。
+    final cacheKey = '${kind.name}:$page:${_searchQuery(filters)}';
+    if (!force) {
+      final cached = _feedPageCache[cacheKey];
+      if (cached != null &&
+          DateTime.now().difference(cached.createdAt) < _feedCacheTtl) {
+        unawaited(
+          AppLogService.instance.info(
+            '首页 feed 命中缓存；key=$cacheKey；条数=${cached.items.length}',
+            component: 'feed_cache',
+          ),
+        );
+        return cached.items;
+      }
+    }
+    final pending = _feedPageRequests[cacheKey];
+    if (pending != null) {
+      unawaited(
+        AppLogService.instance.info(
+          '首页 feed 合并请求；key=$cacheKey',
+          component: 'feed_cache',
+        ),
+      );
+      return pending;
+    }
+    final request =
+        _paginatedVideoList(
+          kind.pagePath(page),
+          page: page,
+          query: _searchQuery(filters),
+        ).then((items) {
+          if (page == 1) {
+            _feedPageCache[cacheKey] = _FeedCacheEntry(
+              items: items,
+              createdAt: DateTime.now(),
+            );
+            unawaited(
+              AppLogService.instance.info(
+                '首页 feed 已缓存；key=$cacheKey；条数=${items.length}；强制=$force',
+                component: 'feed_cache',
+              ),
+            );
+          }
+          return items;
+        });
+    _feedPageRequests[cacheKey] = request;
+    try {
+      return await request;
+    } finally {
+      if (identical(_feedPageRequests[cacheKey], request)) {
+        _feedPageRequests.remove(cacheKey);
+      }
+    }
+  }
+
+  Future<List<VideoItem>> loadFeedForSite(
+    FeedKind kind,
+    int page, {
+    SearchFilters filters = const SearchFilters(),
+    ContentSite site = ContentSite.rule34video,
+    bool force = false,
+  }) async {
+    if (site == ContentSite.hanime1) {
+      return hanime1Api.loadFeed(kind, page);
+    }
+    return loadFeed(kind, page, filters: filters, force: force);
+  }
+
+  Future<List<HanimeHomeSection>> loadHanimeHomeSections({bool force = false}) {
+    return hanime1Api.loadHomeSections(force: force);
+  }
+
+  Future<void> prewarmHanimeHome() async {
+    try {
+      // app 启动即预热 hanime 首页：被 Cloudflare 拦截时直接走浏览器
+      // 验证弹窗（前台），验证完成即缓存首页，用户切到 hanime 时秒现。
+      await hanime1Api.loadHomeSections();
+      await AppLogService.instance.info(
+        'Hanime 首页启动预热完成。',
+        component: 'hanime_prefetch',
+      );
+    } on HanimeCloudflareException {
+      await AppLogService.instance.info(
+        'Hanime 首页启动预热被取消（用户关闭验证弹窗），已推迟到进入 Hanime 时重试。',
+        component: 'hanime_prefetch',
+      );
+    }
   }
 
   Future<List<VideoItem>> loadFollowingFeed(
@@ -274,6 +396,19 @@ class Rule34VideoApi {
     );
   }
 
+  Future<List<VideoItem>> searchVideosForSite(
+    String query,
+    int page, {
+    SearchFilters filters = const SearchFilters(),
+    HanimeSearchFilters hanimeFilters = const HanimeSearchFilters(),
+    ContentSite site = ContentSite.rule34video,
+  }) {
+    if (site == ContentSite.hanime1) {
+      return hanime1Api.searchVideos(query, page, filters: hanimeFilters);
+    }
+    return searchVideos(query, page, filters: filters);
+  }
+
   Future<List<VideoItem>> searchVideosForPreview(String query) {
     final normalizedQuery = query.trim();
     if (normalizedQuery.isEmpty) {
@@ -342,16 +477,34 @@ class Rule34VideoApi {
     CancelToken? cancelToken,
   }) {
     _pruneVideoDetailsCache();
-    final key = _videoDetailsCacheKey(video.id);
+    final key = _videoDetailsCacheKey(video);
     final cached = _videoDetailsCache[key];
     if (cached != null &&
         DateTime.now().difference(cached.createdAt) < _videoDetailsCacheTtl) {
+      unawaited(
+        AppLogService.instance.info(
+          '视频详情缓存命中；站点=${video.siteId}；视频=${video.id}',
+          component: 'video_cache',
+        ),
+      );
       return Future.value(_applyKnownFavorite(cached.details));
     }
     final pending = _videoDetailsRequests[key];
     if (pending != null) {
+      unawaited(
+        AppLogService.instance.info(
+          '视频详情复用在途请求；站点=${video.siteId}；视频=${video.id}',
+          component: 'video_cache',
+        ),
+      );
       return pending;
     }
+    unawaited(
+      AppLogService.instance.info(
+        '视频详情开始请求；站点=${video.siteId}；视频=${video.id}',
+        component: 'video_cache',
+      ),
+    );
     late final Future<VideoDetails> request;
     request = _fetchVideoDetails(video, cancelToken: cancelToken)
         .then((details) {
@@ -374,9 +527,15 @@ class Rule34VideoApi {
   }
 
   Future<VideoDetails> refreshVideoDetails(VideoItem video) {
-    final key = _videoDetailsCacheKey(video.id);
+    final key = _videoDetailsCacheKey(video);
     _videoDetailsCache.remove(key);
     _videoDetailsRequests.remove(key);
+    unawaited(
+      AppLogService.instance.info(
+        '视频详情强制刷新；站点=${video.siteId}；视频=${video.id}',
+        component: 'video_cache',
+      ),
+    );
     return loadVideoDetails(video);
   }
 
@@ -384,6 +543,9 @@ class Rule34VideoApi {
     VideoItem video, {
     CancelToken? cancelToken,
   }) async {
+    if (video.site == ContentSite.hanime1) {
+      return hanime1Api.loadVideoDetails(video, cancelToken: cancelToken);
+    }
     String body;
     var usedPublicRequest = false;
     try {
@@ -447,9 +609,16 @@ class Rule34VideoApi {
   }
 
   VideoDetails _applyKnownFavorite(VideoDetails details) {
+    if (details.video.site == ContentSite.hanime1) {
+      return details;
+    }
+    if (!details.video.site.capabilities.accountFavorites) {
+      return details;
+    }
     _syncFavoriteCache();
-    final known = _favoriteStatusByVideoId[details.video.id];
-    if (known == null || known == details.isFavorite) {
+    final known =
+        _favoriteStatusByVideoId[details.video.id] ?? details.isFavorite;
+    if (known == details.isFavorite) {
       return details;
     }
     return details.copyWith(
@@ -459,13 +628,228 @@ class Rule34VideoApi {
   }
 
   Future<bool> favoriteStatus(VideoItem video) async {
+    if (video.site == ContentSite.hanime1) {
+      return hanimeLikeStatus(video);
+    }
     _requireLogin();
     _syncFavoriteCache();
-    final known = video.isFavorite ?? _favoriteStatusByVideoId[video.id];
-    if (known != null) {
-      return known;
+    final known =
+        video.isFavorite ??
+        _favoriteStatusByVideoId[video.id] ??
+        (await loadVideoDetails(video)).isFavorite;
+    return known;
+  }
+
+  Future<bool> hanimeLikeStatus(VideoItem video) async {
+    final cached = _videoDetailsCache[_videoDetailsCacheKey(video)]?.details;
+    return cached?.hanimeLiked ?? (await loadVideoDetails(video)).hanimeLiked;
+  }
+
+  Future<bool> setHanimeLike(
+    VideoItem video, {
+    required bool liked,
+    bool? current,
+  }) {
+    final previous =
+        current ?? _cachedHanimeDetails(video.id)?.hanimeLiked ?? false;
+    return _runHanimeBooleanMutation(
+      key: 'like:${video.id}',
+      videoId: video.id,
+      label: '点赞',
+      target: liked,
+      previous: previous,
+      apply: _applyHanimeLikeState,
+      send: () => hanime1Api.setLike(video.id, liked: liked),
+    );
+  }
+
+  Future<bool> setHanimeSaved(
+    VideoItem video, {
+    required bool saved,
+    bool? current,
+  }) {
+    final previous =
+        current ?? _cachedHanimeDetails(video.id)?.isSaved ?? false;
+    return _runHanimeBooleanMutation(
+      key: 'saved:${video.id}',
+      videoId: video.id,
+      label: '稍后观看',
+      target: saved,
+      previous: previous,
+      apply: (details, value) => details.copyWith(isSaved: value),
+      send: () => hanime1Api.setSaved(video.id, saved: saved),
+    );
+  }
+
+  Future<bool> setHanimeDislike(
+    VideoItem video, {
+    required bool disliked,
+    bool? current,
+  }) {
+    final previous =
+        current ?? _cachedHanimeDetails(video.id)?.hanimeDisliked ?? false;
+    return _runHanimeBooleanMutation(
+      key: 'dislike:${video.id}',
+      videoId: video.id,
+      label: '点踩',
+      target: disliked,
+      previous: previous,
+      apply: _applyHanimeDislikeState,
+      send: () => hanime1Api.setDislike(video.id, disliked: disliked),
+    );
+  }
+
+  Future<bool> setHanimeArtistSubscribed(
+    String videoId, {
+    required String artistKey,
+    required bool subscribed,
+    required bool current,
+  }) {
+    return _runHanimeBooleanMutation(
+      key: 'artist:$artistKey',
+      videoId: videoId,
+      label: '艺术家订阅',
+      target: subscribed,
+      previous: current,
+      apply: (details, value) => details.copyWith(isUploaderSubscribed: value),
+      send: () =>
+          hanime1Api.setArtistSubscribed(videoId, subscribed: subscribed),
+    );
+  }
+
+  Future<bool> _runHanimeBooleanMutation({
+    required String key,
+    required String videoId,
+    required String label,
+    required bool target,
+    required bool previous,
+    required VideoDetails Function(VideoDetails details, bool value) apply,
+    required Future<bool> Function() send,
+  }) {
+    final revision = (_hanimeMutationRevisions[key] ?? 0) + 1;
+    _hanimeMutationRevisions[key] = revision;
+    _updateCachedHanimeDetails(videoId, (details) => apply(details, target));
+    unawaited(
+      AppLogService.instance.info(
+        'Hanime $label 状态已预提交到详情缓存；video=$videoId；'
+        'target=$target；revision=$revision',
+        component: 'video_cache',
+      ),
+    );
+
+    final completer = Completer<bool>();
+    final previousTail = _hanimeMutationTails[key] ?? Future<void>.value();
+    late final Future<void> tail;
+    tail = previousTail
+        .catchError((Object _) {})
+        .then<void>((_) async {
+          try {
+            final result = await send();
+            if (_hanimeMutationRevisions[key] == revision) {
+              _updateCachedHanimeDetails(
+                videoId,
+                (details) => apply(details, result),
+              );
+            }
+            unawaited(
+              AppLogService.instance.info(
+                'Hanime $label 状态已由服务端确认；video=$videoId；'
+                'result=$result；revision=$revision',
+                component: 'video_cache',
+              ),
+            );
+            completer.complete(result);
+          } catch (error, stackTrace) {
+            final isLatest = _hanimeMutationRevisions[key] == revision;
+            if (isLatest) {
+              _updateCachedHanimeDetails(
+                videoId,
+                (details) => apply(details, previous),
+              );
+            }
+            unawaited(
+              AppLogService.instance.warning(
+                'Hanime $label 同步失败${isLatest ? '，详情缓存已回滚' : ''}；'
+                'video=$videoId；revision=$revision；'
+                'error=${redactSensitiveText(error)}',
+                component: 'video_cache',
+              ),
+            );
+            completer.completeError(error, stackTrace);
+          }
+        })
+        .whenComplete(() {
+          if (identical(_hanimeMutationTails[key], tail)) {
+            _hanimeMutationTails.remove(key);
+          }
+        });
+    _hanimeMutationTails[key] = tail;
+    unawaited(tail.catchError((Object _) {}));
+    return completer.future;
+  }
+
+  VideoDetails _applyHanimeLikeState(VideoDetails details, bool value) {
+    final likeDelta = details.hanimeLiked == value ? 0 : (value ? 1 : -1);
+    final clearDislike = value && details.hanimeDisliked;
+    return details.copyWith(
+      hanimeLiked: value,
+      hanimeDisliked: clearDislike ? false : details.hanimeDisliked,
+      hanimeLikes: (details.hanimeLikes + likeDelta).clamp(0, 1 << 31),
+      hanimeDislikes: clearDislike
+          ? (details.hanimeDislikes - 1).clamp(0, 1 << 31)
+          : details.hanimeDislikes,
+    );
+  }
+
+  VideoDetails _applyHanimeDislikeState(VideoDetails details, bool value) {
+    final dislikeDelta = details.hanimeDisliked == value ? 0 : (value ? 1 : -1);
+    final clearLike = value && details.hanimeLiked;
+    return details.copyWith(
+      hanimeLiked: clearLike ? false : details.hanimeLiked,
+      hanimeDisliked: value,
+      hanimeLikes: clearLike
+          ? (details.hanimeLikes - 1).clamp(0, 1 << 31)
+          : details.hanimeLikes,
+      hanimeDislikes: (details.hanimeDislikes + dislikeDelta).clamp(0, 1 << 31),
+    );
+  }
+
+  VideoDetails? _cachedHanimeDetails(String videoId) {
+    for (final entry in _videoDetailsCache.values) {
+      final details = entry.details;
+      if (details.video.site == ContentSite.hanime1 &&
+          details.video.id == videoId) {
+        return details;
+      }
     }
-    return (await loadVideoDetails(video)).isFavorite;
+    return null;
+  }
+
+  void _updateCachedHanimeDetails(
+    String videoId,
+    VideoDetails Function(VideoDetails details) update,
+  ) {
+    final matchingKeys = _videoDetailsCache.entries
+        .where(
+          (entry) =>
+              entry.value.details.video.site == ContentSite.hanime1 &&
+              entry.value.details.video.id == videoId,
+        )
+        .map((entry) => entry.key)
+        .toList(growable: false);
+    for (final key in matchingKeys) {
+      final entry = _videoDetailsCache[key]!;
+      _videoDetailsCache[key] = _VideoDetailsCacheEntry(
+        details: update(entry.details),
+        createdAt: entry.createdAt,
+      );
+      final staleRequest = _videoDetailsRequests.remove(key);
+      if (staleRequest != null) {
+        unawaited(
+          staleRequest.then<void>((_) {}, onError: (Object _, StackTrace _) {}),
+        );
+      }
+    }
   }
 
   bool? cachedFavoriteStatus(String videoId) {
@@ -587,9 +971,9 @@ class Rule34VideoApi {
     required bool preserveExistingIdentityOnFailure,
   }) async {
     if (preserveExistingIdentityOnFailure) {
-      await sessionStore.clearCookies();
+      await sessionStore.clearCookiesFor(ContentSite.rule34video.origin);
     } else {
-      await sessionStore.clear();
+      await sessionStore.clear(cookieScope: ContentSite.rule34video.origin);
     }
     try {
       final body = await _post(
@@ -615,9 +999,9 @@ class Rule34VideoApi {
       }
     } catch (_) {
       if (preserveExistingIdentityOnFailure) {
-        await sessionStore.clearCookies();
+        await sessionStore.clearCookiesFor(ContentSite.rule34video.origin);
       } else {
-        await sessionStore.clear();
+        await sessionStore.clear(cookieScope: ContentSite.rule34video.origin);
       }
       rethrow;
     }
@@ -633,7 +1017,10 @@ class Rule34VideoApi {
       _videoPageRequests.clear();
       _videoDetailsCache.clear();
       _videoDetailsRequests.clear();
-      await sessionStore.clear(forgetCredentials: true);
+      await sessionStore.clear(
+        forgetCredentials: true,
+        cookieScope: ContentSite.rule34video.origin,
+      );
     }
   }
 
@@ -1096,6 +1483,9 @@ class Rule34VideoApi {
     required VideoItem video,
     required bool add,
   }) async {
+    if (video.site == ContentSite.hanime1) {
+      throw const ApiException('Hanime 暂不支持在应用内管理收藏。');
+    }
     _requireLogin();
     await _post(
       video.detailPath,
@@ -1112,6 +1502,69 @@ class Rule34VideoApi {
     _favoriteStatusByVideoId[video.id] = add;
     _clearVideoPageCache('favorites');
     _videoDetailsCache.removeWhere((key, _) => key.endsWith(':${video.id}'));
+  }
+
+  /// 加载 Rule34Video 详情页的评论列表（服务端渲染，含未登录可见）。
+  ///
+  /// 该站评论无分页接口，直接复用视频详情页 HTML 解析。
+  Future<List<Rule34VideoComment>> loadComments(
+    VideoItem video, {
+    CancelToken? cancelToken,
+  }) async {
+    try {
+      final body = await _get(video.detailPath, cancelToken: cancelToken);
+      final comments = SiteParser.videoComments(body);
+      unawaited(
+        AppLogService.instance.info(
+          'Rule34Video 评论已加载；video=${video.id}；条数=${comments.length}',
+          component: 'rule34_comment',
+        ),
+      );
+      return comments;
+    } on DioException catch (error) {
+      if (CancelToken.isCancel(error)) {
+        throw const RequestCancelledException();
+      }
+      throw ApiException(_networkMessage(error));
+    }
+  }
+
+  /// 发表 Rule34Video 评论（需登录；该站无 CSRF token）。
+  ///
+  /// 站点会返回 "Thank you! Your comment has been submitted for review."，
+  /// 即评论需审核后才会展示。
+  Future<void> postComment({
+    required VideoItem video,
+    required String text,
+  }) async {
+    _requireLogin();
+    try {
+      await _post(
+        video.detailPath,
+        query: const <String, String>{'mode': 'async'},
+        data: <String, String>{
+          'action': 'add_comment',
+          'video_id': video.id,
+          'comment': text,
+        },
+        ajax: true,
+      );
+      unawaited(
+        AppLogService.instance.info(
+          'Rule34Video 评论已提交待审核；video=${video.id}',
+          component: 'rule34_comment',
+        ),
+      );
+    } on ApiException catch (error) {
+      unawaited(
+        AppLogService.instance.info(
+          'Rule34Video 评论提交失败；video=${video.id}；'
+          '原因=${error.runtimeType}',
+          component: 'rule34_comment',
+        ),
+      );
+      rethrow;
+    }
   }
 
   Future<void> addVideoToPlaylist({
@@ -1202,6 +1655,17 @@ class Rule34VideoApi {
   }
 
   Future<void> unsubscribeSubscription(SubscriptionItem subscription) async {
+    await setSubscriptionState(subscription, subscribe: false);
+  }
+
+  Future<void> subscribeSubscription(SubscriptionItem subscription) async {
+    await setSubscriptionState(subscription, subscribe: true);
+  }
+
+  Future<void> setSubscriptionState(
+    SubscriptionItem subscription, {
+    required bool subscribe,
+  }) async {
     _requireLogin();
     switch (subscription.kind) {
       case SubscriptionKind.member:
@@ -1212,7 +1676,7 @@ class Rule34VideoApi {
         }
         await toggleUploaderSubscription(
           uploader: UploaderSummary(id: id, name: subscription.title),
-          subscribe: false,
+          subscribe: subscribe,
         );
         return;
       case SubscriptionKind.category:
@@ -1234,11 +1698,11 @@ class Rule34VideoApi {
           await toggleSubscription(
             video: video,
             item: metadata,
-            subscribe: false,
+            subscribe: subscribe,
           );
           return;
         }
-        throw const ApiException('无法识别这个订阅，请从相关视频详情页取消。');
+        throw ApiException('无法识别这个订阅，请从相关视频详情页${subscribe ? '订阅' : '取消'}。');
       case SubscriptionKind.playlist:
       case SubscriptionKind.channel:
         throw const ApiException('此类型暂不支持在 App 内取消订阅。');
@@ -1300,33 +1764,76 @@ class Rule34VideoApi {
     bool retryExpiredSession = true,
     CancelToken? cancelToken,
   }) async {
-    try {
-      _throwIfCancelled(cancelToken);
-      final response = await _dio.get<String>(
-        path,
-        queryParameters: query,
-        cancelToken: cancelToken,
-      );
-      return _readResponse(
-        await _followRedirects(response, cancelToken: cancelToken),
-      );
-    } on SessionExpiredException {
-      if (retryExpiredSession && await _tryRestoreWithCredentials()) {
-        return _get(
+    for (var attempt = 0; ; attempt += 1) {
+      try {
+        _throwIfCancelled(cancelToken);
+        final response = await _dio.get<String>(
           path,
-          query: query,
-          retryExpiredSession: false,
+          queryParameters: query,
           cancelToken: cancelToken,
         );
+        final result = _readResponse(
+          await _followRedirects(response, cancelToken: cancelToken),
+        );
+        return result;
+      } on SessionExpiredException {
+        if (retryExpiredSession && await _tryRestoreWithCredentials()) {
+          return _get(
+            path,
+            query: query,
+            retryExpiredSession: false,
+            cancelToken: cancelToken,
+          );
+        }
+        await _clearExpiredSession();
+        rethrow;
+      } on HttpStatusException catch (error) {
+        if (!_isTransientStatus(error.statusCode) || attempt >= 2) rethrow;
+        await _delayNetworkRetry(path, attempt, cancelToken);
+      } on DioException catch (error) {
+        if (CancelToken.isCancel(error)) {
+          throw const RequestCancelledException();
+        }
+        final status = error.response?.statusCode;
+        if (status != null && _isTransientStatus(status) && attempt < 2) {
+          await _delayNetworkRetry(path, attempt, cancelToken);
+          continue;
+        }
+        if (status != null) {
+          throw HttpStatusException(status);
+        }
+        if (attempt < 2) {
+          await _delayNetworkRetry(path, attempt, cancelToken);
+          continue;
+        }
+        throw ApiException(_networkMessage(error));
       }
-      await _clearExpiredSession();
-      rethrow;
-    } on DioException catch (error) {
-      if (CancelToken.isCancel(error)) {
-        throw const RequestCancelledException();
-      }
-      throw ApiException(_networkMessage(error));
     }
+  }
+
+  static bool _isTransientStatus(int status) =>
+      status == 408 ||
+      status == 429 ||
+      status == 500 ||
+      status == 502 ||
+      status == 503 ||
+      status == 504;
+
+  Future<void> _delayNetworkRetry(
+    String path,
+    int attempt,
+    CancelToken? cancelToken,
+  ) async {
+    final delay = Duration(milliseconds: 300 * (attempt + 1));
+    unawaited(
+      AppLogService.instance.info(
+        'Rule34Video 请求短暂失败，准备重试；path=$path；attempt=${attempt + 1};'
+        'delayMs=${delay.inMilliseconds}',
+        component: 'network_retry',
+      ),
+    );
+    await Future<void>.delayed(delay);
+    _throwIfCancelled(cancelToken);
   }
 
   Future<String> _getPublic(
@@ -1630,7 +2137,7 @@ class Rule34VideoApi {
     _resetSubscriptionCache();
     _clearPlaylistCache();
     try {
-      await sessionStore.clear();
+      await sessionStore.clear(cookieScope: ContentSite.rule34video.origin);
     } on Object {
       // 清理失败不能覆盖原本的会话过期异常。
     }
@@ -1655,7 +2162,7 @@ class Rule34VideoApi {
     try {
       final credentials = await sessionStore.loadCredentials();
       if (credentials == null) {
-        await sessionStore.clearCookies();
+        await sessionStore.clearCookiesFor(ContentSite.rule34video.origin);
         return false;
       }
       await _login(
@@ -1715,8 +2222,11 @@ class Rule34VideoApi {
     return match == null ? path : '/members/${match.group(1)}/videos/';
   }
 
-  String _videoDetailsCacheKey(String videoId) {
-    return '${sessionStore.currentUserId ?? 'public'}:$videoId';
+  String _videoDetailsCacheKey(VideoItem video) {
+    final accountId = video.site == ContentSite.hanime1
+        ? sessionStore.hanimeUserId
+        : sessionStore.currentUserId;
+    return '${accountId ?? 'public'}:${video.siteId}:${video.id}';
   }
 
   static BaseOptions _baseOptions() {
@@ -1727,7 +2237,7 @@ class Rule34VideoApi {
       responseType: ResponseType.plain,
       followRedirects: false,
       headers: const {
-        'User-Agent': 'Flule34 Android/1.4.5',
+        'User-Agent': 'HaRu Android/2.0.0',
         'Accept':
             'text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8',
       },
@@ -1748,6 +2258,13 @@ final class _VideoDetailsCacheEntry {
 
 final class _VideoPageCacheEntry {
   const _VideoPageCacheEntry({required this.items, required this.createdAt});
+
+  final List<VideoItem> items;
+  final DateTime createdAt;
+}
+
+final class _FeedCacheEntry {
+  const _FeedCacheEntry({required this.items, required this.createdAt});
 
   final List<VideoItem> items;
   final DateTime createdAt;

@@ -5,10 +5,14 @@ import 'package:flule34/l10n/ui_localization.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/router/route_names.dart';
+import '../../core/api/hanime1_search_options.g.dart';
 import '../../core/api/rule34video_api.dart';
 import '../../core/database/app_database.dart';
+import '../../core/logging/app_log_service.dart';
+import '../../core/models/hanime_search_models.dart';
 import '../../core/models/translation_models.dart';
 import '../../core/models/video_models.dart';
+import '../../core/models/content_source.dart';
 import '../../core/services/predictive_prefetch_service.dart';
 import '../../core/services/translation_service.dart';
 import '../../shared/editable_translation.dart';
@@ -16,7 +20,9 @@ import '../../shared/localized_translation_text.dart';
 import '../../shared/video_card.dart' show formatCount;
 import '../../shared/video_feed.dart';
 import 'data/search_history_repository.dart';
+import 'hanime_filter_sheet.dart';
 import 'video_filter_sheet.dart';
+import '../settings/data/app_settings_repository.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({
@@ -25,12 +31,20 @@ class SearchPage extends StatefulWidget {
     required this.historyRepository,
     required this.prefetchService,
     required this.translationService,
+    this.settingsRepository,
+    this.hanimeLaunch,
+    this.initialSite,
   });
 
   final Rule34VideoApi api;
   final SearchHistoryRepository historyRepository;
   final PredictivePrefetchService prefetchService;
   final TranslationService translationService;
+  final AppSettingsRepository? settingsRepository;
+
+  /// 从详情页等入口跳转时的 hanime 搜索启动参数；为空时按普通入口处理。
+  final HanimeSearchLaunch? hanimeLaunch;
+  final ContentSite? initialSite;
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -48,6 +62,7 @@ class _SearchPageState extends State<SearchPage> {
   List<TranslatedTagSuggestion> _localTagSuggestions = const [];
   List<TranslatedTitleSuggestion> _localTitleSuggestions = const [];
   SearchFilters _filters = const SearchFilters();
+  HanimeSearchFilters _hanimeFilters = const HanimeSearchFilters();
   SearchResultScope _scope = SearchResultScope.overview;
   String _activeQuery = '';
   String? _suggestionError;
@@ -56,14 +71,30 @@ class _SearchPageState extends State<SearchPage> {
   var _searchRevision = 0;
   var _suggestionGeneration = 0;
   var _showResults = false;
+  late ContentSite _site;
 
   @override
   void initState() {
     super.initState();
     _syncHistoryStream();
+    _site =
+        widget.initialSite ??
+        widget.settingsRepository?.settings.activeSite ??
+        ContentSite.rule34video;
+    final launch = widget.hanimeLaunch;
+    if (launch != null) {
+      _site = ContentSite.hanime1;
+      if (launch.hasContent) {
+        _activeQuery = launch.query.trim();
+        _hanimeFilters = launch.filters;
+        _showResults = true;
+        _controller.text = _activeQuery;
+      }
+    }
     _popularTags = _loadPopularTags();
     widget.api.sessionStore.addListener(_onSessionChanged);
     widget.translationService.addListener(_onTranslationChanged);
+    widget.settingsRepository?.addListener(_onSettingsChanged);
     _focusNode.addListener(_onFocusChanged);
   }
 
@@ -109,11 +140,19 @@ class _SearchPageState extends State<SearchPage> {
     _debounce?.cancel();
     widget.api.sessionStore.removeListener(_onSessionChanged);
     widget.translationService.removeListener(_onTranslationChanged);
+    widget.settingsRepository?.removeListener(_onSettingsChanged);
     _focusNode
       ..removeListener(_onFocusChanged)
       ..dispose();
     _controller.dispose();
     super.dispose();
+  }
+
+  void _onSettingsChanged() {
+    final next = widget.settingsRepository?.settings.activeSite;
+    if (next != null && mounted && next != _site) {
+      setState(() => _site = next);
+    }
   }
 
   void _onTranslationChanged() {
@@ -184,6 +223,15 @@ class _SearchPageState extends State<SearchPage> {
         _suggestionError = null;
       });
     }
+    if (_site == ContentSite.hanime1) {
+      if (mounted && generation == _suggestionGeneration) {
+        setState(() {
+          _suggestions = const {};
+          _suggestionLoading = false;
+        });
+      }
+      return;
+    }
     var failed = false;
     final values = await widget.prefetchService.runForeground(
       'search:suggestions:$query',
@@ -213,7 +261,10 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<void> _search([String? query]) async {
     final text = (query ?? _controller.text).trim();
-    if (text.isEmpty && _filters.isEmpty) {
+    final hasFilters = _site == ContentSite.hanime1
+        ? !_hanimeFilters.isEmpty
+        : !_filters.isEmpty;
+    if (text.isEmpty && !hasFilters) {
       return;
     }
     setState(() {
@@ -264,30 +315,103 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
+  void _applyHanimeFilters(HanimeSearchFilters filters) {
+    final changed = _hanimeFilters != filters;
+    setState(() {
+      _hanimeFilters = filters;
+      _showResults = _activeQuery.isNotEmpty || !filters.isEmpty;
+      _searchRevision += 1;
+    });
+    if (changed) {
+      unawaited(
+        AppLogService.instance.info(
+          'Hanime 筛选已应用；摘要=${hanimeFiltersSummary(filters)}',
+          component: 'hanime_filter',
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const AppText('搜索'),
         actions: [
-          IconButton(
-            tooltip: context.uiText('筛选与排序'),
-            onPressed: _openFilterSheet,
-            icon: Badge(
-              isLabelVisible: !_filters.isEmpty,
-              child: const Icon(Icons.tune),
+          if (_site.capabilities.advancedFilters)
+            IconButton(
+              tooltip: context.uiText('筛选与排序'),
+              onPressed: _openFilterSheet,
+              icon: Badge(
+                isLabelVisible: !_filters.isEmpty,
+                child: const Icon(Icons.tune),
+              ),
+            )
+          else if (_site == ContentSite.hanime1)
+            IconButton(
+              tooltip: context.uiText('筛选与排序'),
+              onPressed: _openHanimeFilterSheet,
+              icon: Badge(
+                isLabelVisible: !_hanimeFilters.isEmpty,
+                child: const Icon(Icons.tune),
+              ),
             ),
-          ),
         ],
       ),
       body: Column(
         children: [
           _buildSearchField(),
+          _buildSiteSelector(),
           if (_showAutocomplete &&
               _minimumSuggestionLengthMet(_controller.text.trim()))
             _buildAutocomplete(),
-          if (_showResults) ...[_buildFilterChips(), _buildScopeSelector()],
+          if (_showResults) ...[
+            if (_site == ContentSite.hanime1)
+              _buildHanimeFilterChips()
+            else if (_site.capabilities.advancedFilters)
+              _buildFilterChips(),
+            _buildScopeSelector(),
+          ],
           Expanded(child: _showResults ? _buildResults() : _buildLanding()),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSiteSelector() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+      child: Row(
+        children: [
+          ...ContentSite.values.map(
+            (site) => Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: ChoiceChip(
+                label: Text(site.label),
+                selected: _site == site,
+                onSelected: (_) {
+                  if (_site == site) return;
+                  setState(() {
+                    _site = site;
+                    _scope = SearchResultScope.overview;
+                    _suggestions = const {};
+                    if (site == ContentSite.hanime1) {
+                      _hanimeFilters = const HanimeSearchFilters();
+                    } else {
+                      _filters = const SearchFilters();
+                    }
+                    _searchRevision += 1;
+                  });
+                  widget.settingsRepository?.setActiveSite(site);
+                  final query = _controller.text.trim();
+                  if (_minimumSuggestionLengthMet(query)) {
+                    unawaited(_loadSuggestions(query));
+                  }
+                },
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -522,16 +646,155 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildScopeSelector() {
+  Widget _buildHanimeFilterChips() {
+    final chips = <Widget>[];
+    final genre = _hanimeFilters.genre;
+    if (genre != null) {
+      final option = _hanimeOptionBySearchKey(hanimeGenres, genre);
+      chips.add(
+        InputChip(
+          label: AppText(
+            '分类：${option?.displayName(_hanimeDisplayLocale) ?? genre}',
+          ),
+          onDeleted: () =>
+              _applyHanimeFilters(_hanimeFilters.copyWith(genre: null)),
+        ),
+      );
+    }
+    final sort = _hanimeFilters.sort;
+    if (sort != null) {
+      final option = _hanimeOptionBySearchKey(hanimeSorts, sort);
+      chips.add(
+        InputChip(
+          label: AppText(
+            '排序：${option?.displayName(_hanimeDisplayLocale) ?? sort}',
+          ),
+          onDeleted: () =>
+              _applyHanimeFilters(_hanimeFilters.copyWith(sort: null)),
+        ),
+      );
+    }
+    final duration = _hanimeFilters.duration;
+    if (duration != null) {
+      final option = _hanimeOptionBySearchKey(hanimeDurations, duration);
+      chips.add(
+        InputChip(
+          label: AppText(
+            '时长：${option?.displayName(_hanimeDisplayLocale) ?? duration}',
+          ),
+          onDeleted: () =>
+              _applyHanimeFilters(_hanimeFilters.copyWith(duration: null)),
+        ),
+      );
+    }
+    final date = _hanimeFilters.date;
+    if (date != null) {
+      chips.add(
+        InputChip(
+          label: AppText('日期：${date.searchKey ?? '指定月份'}'),
+          onDeleted: () =>
+              _applyHanimeFilters(_hanimeFilters.copyWith(date: null)),
+        ),
+      );
+    }
+    for (final tag in _hanimeFilters.tags.toList()..sort()) {
+      final option = _hanimeTagBySearchKey(tag);
+      chips.add(
+        InputChip(
+          avatar: const Icon(Icons.tag, size: 18),
+          label: Text(option?.displayName(_hanimeDisplayLocale) ?? tag),
+          onDeleted: () => _applyHanimeFilters(
+            _hanimeFilters.copyWith(
+              tags: _hanimeFilters.tags.toSet()..remove(tag),
+            ),
+          ),
+        ),
+      );
+    }
+    for (final brand in _hanimeFilters.brands.toList()..sort()) {
+      final option = _hanimeOptionBySearchKey(hanimeBrands, brand);
+      chips.add(
+        InputChip(
+          avatar: const Icon(Icons.brush_outlined, size: 18),
+          label: Text(option?.displayName(_hanimeDisplayLocale) ?? brand),
+          onDeleted: () => _applyHanimeFilters(
+            _hanimeFilters.copyWith(
+              brands: _hanimeFilters.brands.toSet()..remove(brand),
+            ),
+          ),
+        ),
+      );
+    }
+    if (_hanimeFilters.broad) {
+      chips.add(
+        InputChip(
+          label: const AppText('宽泛搜索'),
+          onDeleted: () =>
+              _applyHanimeFilters(_hanimeFilters.copyWith(broad: false)),
+        ),
+      );
+    }
+    if (chips.isEmpty) {
+      return const SizedBox.shrink();
+    }
     return SizedBox(
       height: 48,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        itemCount: SearchResultScope.values.length,
+        itemCount: chips.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
+        itemBuilder: (context, index) => chips[index],
+      ),
+    );
+  }
+
+  Future<void> _openHanimeFilterSheet() async {
+    final selected = await showHanimeFilterSheet(
+      context: context,
+      initialFilters: _hanimeFilters,
+    );
+    if (selected != null) {
+      _applyHanimeFilters(selected);
+    }
+  }
+
+  HanimeSearchOption? _hanimeOptionBySearchKey(
+    List<HanimeSearchOption> options,
+    String searchKey,
+  ) {
+    for (final option in options) {
+      if (option.searchKey == searchKey) return option;
+    }
+    return null;
+  }
+
+  HanimeSearchOption? _hanimeTagBySearchKey(String searchKey) {
+    for (final group in hanimeTagGroups) {
+      for (final option in group.options) {
+        if (option.searchKey == searchKey) return option;
+      }
+    }
+    return null;
+  }
+
+  /// Hanime 筛选选项显示固定用简体：hanime1 官网无论用户系统语言都返回
+  /// 简体中文（里番/泡面番），app 侧与其保持一致，不跟随系统 locale。
+  String get _hanimeDisplayLocale => 'zh';
+
+  Widget _buildScopeSelector() {
+    final scopes = _site == ContentSite.hanime1
+        ? const [SearchResultScope.overview, SearchResultScope.videos]
+        : SearchResultScope.values;
+    return SizedBox(
+      height: 48,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        itemCount: scopes.length,
         separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
-          final scope = SearchResultScope.values[index];
+          final scope = scopes[index];
           return ChoiceChip(
             label: AppText(scope.label),
             selected: scope == _scope,
@@ -543,6 +806,13 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildLanding() {
+    if (_site == ContentSite.hanime1) {
+      return _buildHanimeLanding();
+    }
+    return _buildRule34Landing();
+  }
+
+  Widget _buildRule34Landing() {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
       children: [
@@ -601,6 +871,51 @@ class _SearchPageState extends State<SearchPage> {
                   .toList(growable: false),
             );
           },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHanimeLanding() {
+    final localeCode = _hanimeDisplayLocale;
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+      children: [
+        _buildHistory(),
+        const SizedBox(height: 24),
+        AppText('分类', style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 4),
+        const AppText(
+          '选择一个分类开始浏览，也可以直接在上方输入关键词搜索。',
+          style: TextStyle(fontSize: 13),
+        ),
+        const SizedBox(height: 10),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (final option in hanimeGenres)
+              if (option.searchKey != null && option.searchKey != '全部')
+                ActionChip(
+                  avatar: const Icon(Icons.category_outlined, size: 18),
+                  label: Text(option.displayName(localeCode)),
+                  onPressed: () {
+                    unawaited(
+                      AppLogService.instance.info(
+                        'Hanime landing 选择分类；genre=${option.searchKey}',
+                        component: 'hanime_search',
+                      ),
+                    );
+                    setState(() {
+                      _hanimeFilters = _hanimeFilters.copyWith(
+                        genre: option.searchKey,
+                      );
+                      _showResults = true;
+                      _searchRevision += 1;
+                    });
+                  },
+                ),
+          ],
         ),
       ],
     );
@@ -707,16 +1022,26 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<List<VideoItem>> _loadVideoSearchPage(int page) async {
+    if (_site == ContentSite.hanime1) {
+      final direct = await widget.api.searchVideosForSite(
+        _activeQuery,
+        page,
+        hanimeFilters: _hanimeFilters,
+        site: _site,
+      );
+      return direct;
+    }
     final titleMatches = widget.translationService.searchTitleTranslations(
       _activeQuery,
       limit: 6,
     );
     List<VideoItem> direct = const [];
     try {
-      direct = await widget.api.searchVideos(
+      direct = await widget.api.searchVideosForSite(
         _activeQuery,
         page,
         filters: _filters,
+        site: _site,
       );
     } on Object {
       if (page > 1 || titleMatches.isEmpty) rethrow;
@@ -726,10 +1051,11 @@ class _SearchPageState extends State<SearchPage> {
     final reverseResults = await Future.wait(
       titleMatches.map((match) async {
         try {
-          final items = await widget.api.searchVideos(
+          final items = await widget.api.searchVideosForSite(
             match.english,
             1,
             filters: _filters,
+            site: _site,
           );
           return MapEntry(match.videoId, items);
         } on Object {
@@ -757,7 +1083,12 @@ class _SearchPageState extends State<SearchPage> {
         merged.add(remote);
       } else if (_filters.isEmpty) {
         merged.add(
-          VideoItem(id: match.videoId, title: match.english, slug: match.slug),
+          VideoItem(
+            id: match.videoId,
+            title: match.english,
+            slug: match.slug,
+            siteId: _site.id,
+          ),
         );
       }
     }
@@ -806,6 +1137,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> _openFilterSheet() async {
+    if (!_site.capabilities.advancedFilters) return;
     final selected = await showVideoFilterSheet(
       context: context,
       api: widget.api,
@@ -929,10 +1261,12 @@ class _SearchPageState extends State<SearchPage> {
     context.pushNamed(
       AppRouteNames.video,
       pathParameters: {'id': suggestion.videoId, 'slug': suggestion.slug},
+      queryParameters: {'site': suggestion.siteId},
       extra: VideoItem(
         id: suggestion.videoId,
         title: suggestion.english,
         slug: suggestion.slug,
+        siteId: suggestion.siteId,
       ),
     );
   }

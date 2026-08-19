@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../core/models/video_models.dart';
+import '../../../core/models/content_source.dart';
 import '../domain/app_settings.dart';
 import '../../../core/models/translation_models.dart';
 import 'app_settings_store.dart';
@@ -47,6 +48,10 @@ final class AppSettingsRepository extends ChangeNotifier {
       'flule34.settings.automatic_translation_targets';
   static const _translationTargetKey =
       'flule34.settings.translation_target_language';
+  static const _activeSiteKey = 'flule34.settings.active_content_site';
+  static const _hasUsedHanimeKey = 'flule34.settings.has_used_hanime';
+  static const _navigationOrderKey = 'flule34.settings.navigation_order';
+  static const _libraryScopeOrderKey = 'flule34.settings.library_scope_order';
 
   final AppSettingsStore _store;
   AppSettings _settings = AppSettings.defaults;
@@ -88,7 +93,12 @@ final class AppSettingsRepository extends ChangeNotifier {
       _readString(_translationDisplayModesKey),
       _readString(_languageKey),
       _readString(_translationTargetKey),
+      _readString(_activeSiteKey),
+      _readBool(_hasUsedHanimeKey),
+      _readString(_navigationOrderKey),
+      _readString(_libraryScopeOrderKey),
     ]);
+    final activeSite = ContentSite.fromId(values[28] as String?);
     _settings = AppSettings(
       language: _enumValue(
         AppLanguagePreference.values,
@@ -176,9 +186,21 @@ final class AppSettingsRepository extends ChangeNotifier {
         values[27] as String?,
         AppSettings.defaults.translationTarget,
       ),
+      activeSite: activeSite,
+      hasUsedHanime: values[29] as bool? ?? activeSite == ContentSite.hanime1,
       automaticTranslationTargets: _automaticTranslationTargets(
         values[24] as String?,
         legacyMode: values[23] as String?,
+      ),
+      navigationOrder: _enumOrder(
+        AppDestination.values,
+        values[30] as String?,
+        AppSettings.defaults.navigationOrder,
+      ),
+      libraryScopeOrder: _enumOrder(
+        LibraryScopePreference.values,
+        values[31] as String?,
+        AppSettings.defaults.libraryScopeOrder,
       ),
     );
     final legacyVideoLayout = values[18] as String?;
@@ -418,6 +440,37 @@ final class AppSettingsRepository extends ChangeNotifier {
     _update(_settings.copyWith(translationTarget: value));
   }
 
+  Future<void> setActiveSite(ContentSite value) async {
+    await _store.writeString(_activeSiteKey, value.id);
+    if (value == ContentSite.hanime1 && !_settings.hasUsedHanime) {
+      await _store.writeBool(_hasUsedHanimeKey, true);
+    }
+    _update(
+      _settings.copyWith(
+        activeSite: value,
+        hasUsedHanime: _settings.hasUsedHanime || value == ContentSite.hanime1,
+      ),
+    );
+  }
+
+  Future<void> setNavigationOrder(List<AppDestination> value) async {
+    final normalized = _normalizeOrder(AppDestination.values, value);
+    await _store.writeString(
+      _navigationOrderKey,
+      normalized.map((item) => item.name).join(','),
+    );
+    _update(_settings.copyWith(navigationOrder: normalized));
+  }
+
+  Future<void> setLibraryScopeOrder(List<LibraryScopePreference> value) async {
+    final normalized = _normalizeOrder(LibraryScopePreference.values, value);
+    await _store.writeString(
+      _libraryScopeOrderKey,
+      normalized.map((item) => item.name).join(','),
+    );
+    _update(_settings.copyWith(libraryScopeOrder: normalized));
+  }
+
   void _update(AppSettings value) {
     if (identical(value, _settings)) {
       return;
@@ -453,6 +506,34 @@ final class AppSettingsRepository extends ChangeNotifier {
       }
     }
     return fallback;
+  }
+
+  static List<T> _enumOrder<T extends Enum>(
+    List<T> values,
+    String? encoded,
+    List<T> fallback,
+  ) {
+    if (encoded == null || encoded.trim().isEmpty) {
+      return List.unmodifiable(fallback);
+    }
+    final names = encoded.split(',').map((item) => item.trim()).toList();
+    final decoded = <T>[];
+    for (final name in names) {
+      final match = values.where((value) => value.name == name).firstOrNull;
+      if (match != null && !decoded.contains(match)) decoded.add(match);
+    }
+    return List.unmodifiable(_normalizeOrder(values, decoded));
+  }
+
+  static List<T> _normalizeOrder<T>(List<T> values, Iterable<T> requested) {
+    final result = <T>[];
+    for (final item in requested) {
+      if (values.contains(item) && !result.contains(item)) result.add(item);
+    }
+    for (final item in values) {
+      if (!result.contains(item)) result.add(item);
+    }
+    return result;
   }
 
   VideoQualityPreference _qualityValue(

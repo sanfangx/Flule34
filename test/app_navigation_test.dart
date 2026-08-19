@@ -1,9 +1,14 @@
+import 'dart:async';
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:flule34/app/providers.dart';
 import 'package:flule34/app/router/app_router.dart';
+import 'package:flule34/core/api/hanime1_api.dart';
 import 'package:flule34/core/api/rule34video_api.dart';
 import 'package:flule34/core/models/video_models.dart';
 import 'package:flule34/core/session/session_store.dart';
@@ -36,29 +41,36 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(NavigationDestination), findsNWidgets(4));
-    expect(find.text('首页'), findsOneWidget);
-    expect(find.text('发现'), findsOneWidget);
+    expect(find.text('R34V'), findsOneWidget);
+    expect(find.text('Hanime'), findsOneWidget);
     expect(find.text('媒体库'), findsOneWidget);
     expect(find.text('我的'), findsOneWidget);
     expect(find.widgetWithText(NavigationDestination, '搜索'), findsNothing);
-    expect(find.text('关注'), findsOneWidget);
+    expect(find.text('订阅'), findsOneWidget);
     expect(find.text('内容取向'), findsOneWidget);
     expect(find.text('时长'), findsOneWidget);
     expect(find.text('发布时间'), findsOneWidget);
-    expect(find.text('Flule34'), findsNothing);
+    expect(find.text('HaRu'), findsNothing);
     expect(find.byIcon(Icons.verified_user_outlined), findsNothing);
 
-    await tester.tap(find.text('发现'));
+    // Hanime 底部 tab 显示 hanime 首页（频道切换 + 竖向视频流）。
+    await tester.tap(find.text('Hanime'));
     await tester.pumpAndSettle();
-    expect(find.text('探索内容'), findsOneWidget);
-    expect(find.text('艺术家'), findsOneWidget);
-    expect(find.text('频道'), findsNothing);
-    await tester.tap(find.text('标签'));
+    expect(find.text('最新上市'), findsOneWidget);
+    expect(find.text('里番'), findsOneWidget);
+    expect(find.text('泡面番'), findsOneWidget);
+    expect(find.text('他们在看'), findsOneWidget);
+    final latestRelease = find.widgetWithText(ChoiceChip, '最新上市');
+    final ecchi = find.widgetWithText(ChoiceChip, '里番');
+    expect(
+      tester.getSize(latestRelease).width,
+      greaterThan(tester.getSize(ecchi).width),
+    );
+
+    // 切回 R34V 首页。
+    await tester.tap(find.text('R34V'));
     await tester.pumpAndSettle();
-    expect(find.text('搜索全部标签'), findsOneWidget);
-    expect(find.text('没有匹配的已加载内容。'), findsOneWidget);
-    await tester.pageBack();
-    await tester.pumpAndSettle();
+    expect(find.text('订阅'), findsOneWidget);
 
     await tester.tap(find.text('我的'));
     await tester.pumpAndSettle();
@@ -69,26 +81,40 @@ void main() {
     expect(find.text('网络播放策略'), findsOneWidget);
     await tester.pageBack();
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('内容设置'), 300);
+    // 双账号卡片让列表更长，滚动后内容设置中心仍可能被底部导航遮挡，
+    // 再多滚一段确保可点击。
+    await tester.drag(find.byType(ListView), const Offset(0, -140));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('内容设置'));
     await tester.pumpAndSettle();
     expect(find.text('隐藏标题关键词'), findsNothing);
     await tester.pageBack();
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(find.text('关于 Flule34'), 300);
-    expect(find.text('关于 Flule34'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('关于 HaRu'), 300);
+    expect(find.text('关于 HaRu'), findsOneWidget);
     expect(find.text('调试日志'), findsNothing);
   });
 }
 
 class _FakeRule34VideoApi extends Rule34VideoApi {
   _FakeRule34VideoApi(SessionStore sessionStore)
-    : super(sessionStore: sessionStore);
+    : super(
+        sessionStore: sessionStore,
+        // hanime 首页频道现在会真实发起 search 请求（空 query + 筛选），
+        // 测试环境没有网络，注入空 adapter 让其立即返回空列表。
+        hanimeApi: Hanime1Api(
+          sessionStore: sessionStore,
+          httpClientAdapter: _EmptyAdapter(),
+        ),
+      );
 
   @override
   Future<List<VideoItem>> loadFeed(
     FeedKind kind,
     int page, {
     SearchFilters filters = const SearchFilters(),
+    bool force = false,
   }) async {
     return const [];
   }
@@ -103,6 +129,26 @@ class _FakeRule34VideoApi extends Rule34VideoApi {
 
   @override
   void close() {}
+}
+
+final class _EmptyAdapter implements HttpClientAdapter {
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    return ResponseBody.fromString(
+      '<html><body></body></html>',
+      200,
+      headers: {
+        Headers.contentTypeHeader: ['text/html; charset=utf-8'],
+      },
+    );
+  }
+
+  @override
+  void close({bool force = false}) {}
 }
 
 final class _MemorySettingsStore implements AppSettingsStore {

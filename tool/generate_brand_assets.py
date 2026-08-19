@@ -1,3 +1,4 @@
+from math import cos, pi, sin
 from pathlib import Path
 
 from PIL import Image, ImageDraw
@@ -22,54 +23,55 @@ def scaled(points: list[tuple[float, float]]) -> list[tuple[int, int]]:
 
 
 def build_master() -> Image.Image:
-    image = Image.new("RGB", (MASTER_SIZE, MASTER_SIZE), "#10131A")
-    pixels = image.load()
-    for y in range(MASTER_SIZE):
-        progress = y / (MASTER_SIZE - 1)
-        red = round(16 + 10 * progress)
-        green = round(19 + 8 * progress)
-        blue = round(26 + 20 * progress)
-        for x in range(MASTER_SIZE):
-            pixels[x, y] = (red, green, blue)
-
-    mask = Image.new("L", image.size, 0)
-    ImageDraw.Draw(mask).rounded_rectangle(
+    image = Image.new("RGBA", (MASTER_SIZE, MASTER_SIZE), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+    draw.rounded_rectangle(
         (0, 0, MASTER_SIZE - 1, MASTER_SIZE - 1),
         radius=round(MASTER_SIZE * 24 / 108),
-        fill=255,
+        fill="#F7F2E8",
     )
-    transparent = Image.new("RGBA", image.size, (0, 0, 0, 0))
-    transparent.paste(image.convert("RGBA"), mask=mask)
-    draw = ImageDraw.Draw(transparent)
+    draw.rectangle(scaled([(50, 0), (58, 108)]), fill="#A92DAF")
     draw.polygon(
         scaled(
             [
-                (27, 23),
-                (73, 23),
-                (64, 34),
-                (42, 34),
-                (42, 47),
-                (55, 47),
-                (55, 59),
-                (42, 59),
-                (42, 85),
-                (27, 85),
+                (19, 24),
+                (33, 24),
+                (33, 48),
+                (50, 48),
+                (50, 60),
+                (33, 60),
+                (33, 84),
+                (19, 84),
             ]
         ),
-        fill="#42D9E8",
+        fill="#E53935",
     )
-    draw.polygon(
-        scaled([(61, 48), (85, 65), (61, 82)]),
-        fill="#9B7BFF",
+
+    bowl = [(58, 30), (76, 30)]
+    bowl.extend(
+        (76 + 12 * sin(pi * step / 24), 42 - 12 * cos(pi * step / 24))
+        for step in range(1, 25)
     )
-    return transparent
+    bowl.append((58, 54))
+    draw.line(
+        scaled(bowl),
+        fill="#E53935",
+        width=round(MASTER_SIZE * 12 / 108),
+        joint="curve",
+    )
+    draw.line(
+        scaled([(71, 54), (89, 84)]),
+        fill="#E53935",
+        width=round(MASTER_SIZE * 14 / 108),
+    )
+    return image
 
 
 def main() -> None:
     master = build_master()
     branding = ROOT / "assets" / "branding"
     branding.mkdir(parents=True, exist_ok=True)
-    master.save(branding / "flule34_icon_master.png", optimize=True)
+    master.save(branding / "haru_icon_master.png", optimize=True)
 
     resources = ROOT / "android" / "app" / "src" / "main" / "res"
     for directory, size in OUTPUT_SIZES.items():

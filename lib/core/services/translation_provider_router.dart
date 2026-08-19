@@ -473,7 +473,7 @@ final class TranslationProviderRouter {
 - 标题应自然通顺，但不能添加原文没有的信息；
 - 标题末尾可能通过“by”、破折号、括号、方括号或其他形式附带创作者署名；只翻译标题正文，署名及其中的名称保持原文。''',
     };
-    return '''你是成人视频软件 Flule34 的内容翻译器。
+    return '''你是成人视频软件 HaRu 的内容翻译器。
 
 你将处理三类内容：
 - 标题：视频标题；
@@ -500,7 +500,7 @@ $typeRequirements''';
       TranslationContentKind.category => '分类、作品、系列、角色或主题名称',
       TranslationContentKind.title => '视频标题',
     };
-    return '这段文本来自成人视频软件 Flule34，内容类型是$label，目标语言是${request.targetLanguage.label}。原文可能包含多种语言。';
+    return '这段文本来自成人视频软件 HaRu，内容类型是$label，目标语言是${request.targetLanguage.label}。原文可能包含多种语言。';
   }
 
   static List<String> _deepLInstructions(TranslationRequest request) => [

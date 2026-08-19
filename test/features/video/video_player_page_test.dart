@@ -20,6 +20,61 @@ import 'package:flule34/features/video/video_player_page.dart';
 import '../../helpers/test_session_harness.dart';
 
 void main() {
+  test('播放器诊断只保留视频源域名并隐藏完整地址', () {
+    const source = VideoSource(
+      label: '1080p',
+      url: 'https://media.example/path/video.mp4?token=secret',
+      isHd: true,
+    );
+
+    expect(
+      mediaSourceDiagnostic(source),
+      'label=1080p, scheme=https, host=media.example',
+    );
+    final error = playerErrorDiagnostic(
+      'Failed https://media.example/path/video.mp4?token=secret',
+    );
+    expect(error, contains('https://media.example/<redacted>'));
+    expect(error, isNot(contains('/path/video.mp4')));
+    expect(error, isNot(contains('secret')));
+  });
+
+  test('源恢复优先使用刷新的同清晰度，再降级到最近的较低清晰度', () {
+    const failed = VideoSource(
+      label: '1080p',
+      url: 'https://a/old',
+      isHd: true,
+    );
+    const refreshed = VideoSource(
+      label: '1080p',
+      url: 'https://a/new',
+      isHd: true,
+    );
+    const lower = VideoSource(label: '720p', url: 'https://b/720', isHd: true);
+    const lowest = VideoSource(
+      label: '360p',
+      url: 'https://b/360',
+      isHd: false,
+    );
+
+    expect(
+      selectRecoveryVideoSource(
+        const [refreshed, lower, lowest],
+        failedSource: failed,
+        failedUrls: const {'https://a/old'},
+      ),
+      refreshed,
+    );
+    expect(
+      selectRecoveryVideoSource(
+        const [refreshed, lower, lowest],
+        failedSource: failed,
+        failedUrls: const {'https://a/old', 'https://a/new'},
+      ),
+      lower,
+    );
+  });
+
   test('跳转第一次被忽略时会重试并以真实位置为准', () async {
     var attempts = 0;
     var actual = Duration.zero;
@@ -77,6 +132,10 @@ void main() {
     expect(videoPreCacheSizeForNetwork(NetworkClass.mobile), 6 * 1024 * 1024);
     expect(videoPreCacheSizeForNetwork(NetworkClass.offline), 0);
     expect(videoCacheKey('456', _source), 'flule34_456_720p');
+    expect(
+      videoCacheKey('456', _source, siteId: 'hanime1'),
+      'flule34_hanime1_456_720p',
+    );
     expect(
       playlistVideoPreCacheSizeForNetwork(NetworkClass.wifi),
       96 * 1024 * 1024,
@@ -326,6 +385,7 @@ void main() {
             sources: [_source],
             handle: handle,
             autoplay: true,
+            resumePlayback: false,
           ),
         ),
       ),
@@ -341,9 +401,8 @@ void main() {
     expect(find.byTooltip('后退 10 秒'), findsNothing);
     expect(find.byTooltip('静音'), findsNothing);
 
-    for (var attempt = 0; attempt < 10 && platform.playCount == 0; attempt++) {
-      await tester.pump(const Duration(milliseconds: 100));
-    }
+    handle.debugSetPlaybackState(playing: true, buffering: false);
+    expect(handle.canCollapseDetails, isFalse);
     final panArea = find.byKey(const ValueKey('video-controls-pan-area'));
     final panDetector = tester.widget<GestureDetector>(panArea);
     expect(panDetector.onPanStart, isNotNull);
@@ -354,8 +413,11 @@ void main() {
     final tapDetector = tester.widget<GestureDetector>(tapArea);
     expect(tapDetector.onDoubleTap, isNotNull);
 
-    await handle.pause();
-    await tester.pump();
+    handle.debugSetPlaybackState(playing: false, buffering: false);
+    expect(handle.canCollapseDetails, isTrue);
+    handle.debugSetPlaybackState(playing: false, buffering: true);
+    expect(handle.isBuffering, isTrue);
+    expect(handle.canCollapseDetails, isFalse);
     await tester.pump(const Duration(seconds: 3, milliseconds: 100));
     final controlsOpacity = tester.widget<AnimatedOpacity>(
       find.byKey(const ValueKey('video-controls-opacity')),
@@ -386,6 +448,9 @@ void main() {
     );
     expect(find.text('下一条播放器测试'), findsOneWidget);
     await handle.pause();
+    platform.startBuffering();
+    await tester.pump();
+    expect(handle.canCollapseDetails, isTrue);
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump();
@@ -487,6 +552,10 @@ class _FakeVideoPlayerPlatform extends VideoPlayerPlatform {
         isPlaying: false,
       ),
     );
+  }
+
+  void startBuffering() {
+    _events.add(VideoEvent(eventType: VideoEventType.bufferingStart));
   }
 
   @override

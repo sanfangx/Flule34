@@ -15,19 +15,29 @@ class EditableTranslationRegion extends StatelessWidget {
     required this.kind,
     required this.english,
     required this.child,
+    this.siteId,
   });
 
   final TranslationService translationService;
   final DiscoveryKind kind;
   final String english;
   final Widget child;
+  final String? siteId;
 
   @override
   Widget build(BuildContext context) {
-    if (translationService.shouldAutoTranslateMetadata(kind, english)) {
+    if (translationService.shouldAutoTranslateMetadata(
+      kind,
+      english,
+      siteId: siteId,
+    )) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         unawaited(
-          translationService.requestAutomaticMetadataTranslation(kind, english),
+          translationService.requestAutomaticMetadataTranslation(
+            kind,
+            english,
+            siteId: siteId,
+          ),
         );
       });
     }
@@ -43,6 +53,7 @@ class EditableTranslationRegion extends StatelessWidget {
               translationService: translationService,
               kind: kind,
               english: english,
+              siteId: siteId,
             )
           : null,
       child: child,
@@ -56,12 +67,14 @@ Future<void> showTranslationEditDialog(
   required DiscoveryKind kind,
   required String english,
   TranslationLanguage? targetLanguage,
+  String? siteId,
 }) async {
   final language = targetLanguage ?? translationService.targetLanguage;
   final current = translationService.lookupChinese(
     english,
     kind: kind,
     language: language,
+    siteId: siteId,
   );
   final builtIn = translationService.lookupBuiltInChinese(
     english,
@@ -78,18 +91,21 @@ Future<void> showTranslationEditDialog(
         kind,
         english,
         language: language,
+        siteId: siteId,
       ),
       hasBuiltIn: builtIn != null,
       hasLearned: translationService.hasLearnedTranslation(
         kind,
         english,
         language: language,
+        siteId: siteId,
       ),
       translate: translationService.hasEnabledProvider
           ? () => translationService.translateWithProvider(
               kind,
               english,
               language: language,
+              siteId: siteId,
             )
           : null,
     ),
@@ -104,6 +120,7 @@ Future<void> showTranslationEditDialog(
         kind,
         english,
         language: language,
+        siteId: siteId,
       );
     } else {
       await translationService.setOverride(
@@ -111,6 +128,7 @@ Future<void> showTranslationEditDialog(
         english,
         result.translation!,
         language: language,
+        siteId: siteId,
       );
     }
   } catch (error) {
@@ -272,6 +290,7 @@ Future<void> showTitleTranslationEditDialog(
   required String english,
   String? videoSlug,
   TranslationLanguage? targetLanguage,
+  String? siteId,
 }) async {
   final language = targetLanguage ?? translationService.targetLanguage;
   final current =
@@ -279,6 +298,7 @@ Future<void> showTitleTranslationEditDialog(
         videoId,
         raw: english,
         language: language,
+        siteId: siteId,
       ) ??
       '';
   final result = await showDialog<_TranslationEditResult>(
@@ -291,12 +311,14 @@ Future<void> showTitleTranslationEditDialog(
         videoId,
         raw: english,
         language: language,
+        siteId: siteId,
       ),
       hasBuiltIn: false,
       hasLearned: translationService.hasLearnedTitle(
         videoId,
         raw: english,
         language: language,
+        siteId: siteId,
       ),
       translate: translationService.hasEnabledProvider
           ? () => translationService.translateTitleWithProvider(
@@ -304,6 +326,7 @@ Future<void> showTitleTranslationEditDialog(
               videoId: videoId,
               videoSlug: videoSlug,
               language: language,
+              siteId: siteId,
             )
           : null,
     ),
@@ -311,7 +334,11 @@ Future<void> showTitleTranslationEditDialog(
   if (result == null || !context.mounted) return;
   try {
     if (result.restoreBuiltIn) {
-      await translationService.removeTitleOverride(videoId, language: language);
+      await translationService.removeTitleOverride(
+        videoId,
+        language: language,
+        siteId: siteId,
+      );
     } else {
       await translationService.setTitleOverride(
         videoId,
@@ -319,6 +346,7 @@ Future<void> showTitleTranslationEditDialog(
         sourceText: english,
         videoSlug: videoSlug,
         language: language,
+        siteId: siteId,
       );
     }
   } catch (error) {

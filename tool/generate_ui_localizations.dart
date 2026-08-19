@@ -273,7 +273,7 @@ Future<String> _googleRequestOnce(String source, String target) async {
   final client = HttpClient()..connectionTimeout = const Duration(seconds: 20);
   try {
     final request = await client.getUrl(uri);
-    request.headers.set(HttpHeaders.userAgentHeader, 'Flule34 l10n generator');
+    request.headers.set(HttpHeaders.userAgentHeader, 'HaRu l10n generator');
     final response = await request.close();
     final body = await utf8.decoder.bind(response).join();
     if (response.statusCode != HttpStatus.ok) {
@@ -307,7 +307,7 @@ Future<void> _writeArbFiles(List<Map<String, Object?>> catalog) async {
         r'\{(p\d+)\}',
       ).allMatches(source).map((match) => match.group(1)!).toSet();
       arb['@$key'] = <String, Object?>{
-        'description': 'Flule34 UI: $source',
+        'description': 'HaRu UI: $source',
         if (placeholders.isNotEmpty)
           'placeholders': <String, Object?>{
             for (final placeholder in placeholders)

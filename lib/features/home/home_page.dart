@@ -7,6 +7,7 @@ import '../../app/providers.dart';
 import '../../app/router/route_names.dart';
 import '../../core/api/rule34video_api.dart';
 import '../../core/models/video_models.dart';
+import '../../core/models/content_source.dart';
 import '../../core/services/predictive_prefetch_service.dart';
 import '../../shared/video_feed.dart';
 import '../../shared/transient_focus.dart';
@@ -14,10 +15,10 @@ import '../auth/login_sheet.dart';
 import '../settings/data/app_settings_repository.dart';
 
 enum _HomeChannel {
+  following('订阅', null),
   newest('最新', FeedKind.newest),
   popular('热门', FeedKind.popular),
-  topRated('高评分', FeedKind.topRated),
-  following('关注', null);
+  topRated('高评分', FeedKind.topRated);
 
   const _HomeChannel(this.label, this.feedKind);
 
@@ -84,7 +85,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                 ref
                     .read(predictivePrefetchServiceProvider)
                     .prioritizeForeground();
-                context.pushNamed(AppRouteNames.search);
+                context.pushNamed(
+                  AppRouteNames.search,
+                  queryParameters: {'site': ContentSite.rule34video.id},
+                );
               },
             ),
           ),
@@ -99,6 +103,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       child: ChoiceChip(
                         label: AppText(channel.label),
                         selected: _channel == channel,
+                        showCheckmark: false,
                         onSelected: (_) => setState(() => _channel = channel),
                       ),
                     ),
@@ -106,7 +111,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                   .toList(growable: false),
             ),
           ),
-          if (_channel != _HomeChannel.following)
+          if (_channel != _HomeChannel.following &&
+              ContentSite.rule34video.capabilities.advancedFilters)
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.fromLTRB(12, 4, 12, 8),
@@ -177,7 +183,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 PredictivePrefetchKey.following,
                 () => widget.api.loadFollowingFeed(page, force: true),
               ),
-              emptyMessage: '关注的分类、艺术家或用户暂时没有可展示的视频。',
+              emptyMessage: '订阅的分类、艺术家或用户暂时没有可展示的视频。',
               sortNewest: true,
               onItemsLoaded: prefetch.offerLikelyVideos,
               prefetchService: prefetch,
@@ -199,14 +205,26 @@ class _HomePageState extends ConsumerState<HomePage> {
     final kind = _channel.feedKind!;
     return VideoFeed(
       key: ValueKey(
-        '${kind.name}:${_orientation.name}:${_duration.name}:${_uploadPeriod.name}',
+        'rule34video:${kind.name}:${_orientation.name}:${_duration.name}:${_uploadPeriod.name}',
       ),
       loadPage: (page) => prefetch.runForeground(
         PredictivePrefetchKey.feed(
-          '${kind.name}:${_orientation.name}:${_duration.name}:${_uploadPeriod.name}',
+          'rule34video:${kind.name}:${_orientation.name}:${_duration.name}:${_uploadPeriod.name}',
           page,
         ),
-        () => widget.api.loadFeed(kind, page, filters: _filters),
+        () => widget.api.loadFeedForSite(kind, page, filters: _filters),
+      ),
+      refreshPage: (page) => prefetch.runForeground(
+        PredictivePrefetchKey.feed(
+          'rule34video:${kind.name}:${_orientation.name}:${_duration.name}:${_uploadPeriod.name}',
+          page,
+        ),
+        () => widget.api.loadFeedForSite(
+          kind,
+          page,
+          filters: _filters,
+          force: true,
+        ),
       ),
       onItemsLoaded: prefetch.offerLikelyVideos,
       prefetchService: prefetch,
@@ -233,7 +251,7 @@ class _FollowingProgress extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AppText(
-              '正在整理关注内容 $scanned/$total',
+              '正在整理订阅内容 $scanned/$total',
               style: theme.textTheme.labelMedium,
             ),
             const SizedBox(height: 6),
@@ -306,10 +324,10 @@ class _FollowingSignedOut extends StatelessWidget {
           children: [
             const Icon(Icons.notifications_none, size: 52),
             const SizedBox(height: 16),
-            AppText('登录后查看关注内容', style: Theme.of(context).textTheme.titleLarge),
+            AppText('登录后查看订阅内容', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 8),
             const AppText(
-              '关注频道会汇总你在网站订阅的分类、艺术家、用户和播放列表。',
+              '订阅频道会汇总你在网站订阅的分类、艺术家、用户和播放列表。',
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),

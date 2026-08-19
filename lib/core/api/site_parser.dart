@@ -4,6 +4,7 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as html_parser;
 
 import '../models/account_models.dart';
+import '../models/rule34_comment_models.dart';
 import '../models/video_models.dart';
 import '../media/video_source_quality.dart';
 
@@ -507,6 +508,54 @@ class SiteParser {
         _clean(document.querySelector('.field-error')?.text);
   }
 
+  /// 解析 Rule34Video 详情页的评论列表。
+  ///
+  /// 该站评论为服务端渲染在 `#video_comments_video_comments_items` 下，
+  /// 每条结构（浏览器实测）：
+  /// `.item.row[data-comment-id] > .comment-inner`
+  ///   `.user-logo` 仅一个成员链接（无真实头像，svg 占位）
+  ///   `.comment-info > .inner > a[href="/members/N/"]` 用户名 + `.date span` 日期
+  ///   `.coment-text` 评论内容
+  /// 无分页、无回复与赞踩结构。
+  static List<Rule34VideoComment> videoComments(String source) {
+    final document = html_parser.parse(source);
+    final container = document.querySelector(
+      '#video_comments_video_comments_items',
+    );
+    if (container == null) {
+      return const [];
+    }
+    final comments = <Rule34VideoComment>[];
+    for (final item in document.querySelectorAll(
+      '#video_comments_video_comments_items .item.row',
+    )) {
+      final id = item.attributes['data-comment-id'];
+      if (id == null || id.isEmpty) {
+        continue;
+      }
+      final inner = item.querySelector('.comment-info');
+      if (inner == null) {
+        continue;
+      }
+      final username = _clean(inner.querySelector('.inner a')?.text) ?? '匿名用户';
+      final dateLabel = _clean(inner.querySelector('.date span')?.text);
+      final content = _clean(inner.querySelector('.coment-text')?.text);
+      if (content == null) {
+        continue;
+      }
+      comments.add(
+        Rule34VideoComment(
+          id: id,
+          username: username,
+          content: content,
+          avatarUrl: _imageUrl(item.querySelector('.user-logo img')),
+          dateLabel: dateLabel,
+        ),
+      );
+    }
+    return comments;
+  }
+
   static dom.Element? _closestItem(dom.Element element) {
     dom.Element? current = element;
     while (current != null) {
@@ -601,7 +650,17 @@ class SiteParser {
         isHd: (height ?? 0) >= 720,
       );
     }
-    return result.values.toList(growable: false);
+    // 统一高清晰度在上：无明确高度的源（如 MP4）兜底排最后。
+    final sorted = result.values.toList(growable: false)
+      ..sort((a, b) {
+        final heightA = parseVideoSourceHeight(a.label, url: a.url);
+        final heightB = parseVideoSourceHeight(b.label, url: b.url);
+        if (heightA == null && heightB == null) return 0;
+        if (heightA == null) return 1;
+        if (heightB == null) return -1;
+        return heightB.compareTo(heightA);
+      });
+    return sorted;
   }
 
   static int _sourceFieldRank(String field) {
@@ -656,23 +715,78 @@ class SiteParser {
   }
 
   static String? _flashValue(String source, String key) {
-    final expression = RegExp(
-      "(?:[\"']?${RegExp.escape(key)}[\"']?)\\s*:\\s*([\"'])(.*?)\\1",
-      dotAll: true,
+    final prefix = RegExp(
+      "(?:[\"']?${RegExp.escape(key)}[\"']?)\\s*:\\s*([\"'])",
+    ).firstMatch(source);
+    if (prefix == null) return null;
+    final decoded = _decodeScriptString(
+      source,
+      start: prefix.end,
+      quote: prefix.group(1)!,
     );
-    final value = expression.firstMatch(source)?.group(2);
-    if (value == null) {
-      return null;
-    }
-    final unicode = RegExp(r'\\u([0-9a-fA-F]{4})');
-    final decoded = value
-        .replaceAll(r'\/', '/')
-        .replaceAll(r'\"', '"')
-        .replaceAll(r"\'", "'")
-        .replaceAllMapped(unicode, (match) {
-          return String.fromCharCode(int.parse(match.group(1)!, radix: 16));
-        });
+    if (decoded == null) return null;
     return _clean(html_parser.parseFragment(decoded).text);
+  }
+
+  static String? _decodeScriptString(
+    String source, {
+    required int start,
+    required String quote,
+  }) {
+    final result = StringBuffer();
+    for (var index = start; index < source.length; index += 1) {
+      final character = source[index];
+      if (character == quote) return result.toString();
+      if (character != r'\') {
+        result.write(character);
+        continue;
+      }
+      if (++index >= source.length) return null;
+      final escaped = source[index];
+      switch (escaped) {
+        case 'b':
+          result.write('\b');
+        case 'f':
+          result.write('\f');
+        case 'n':
+          result.write('\n');
+        case 'r':
+          result.write('\r');
+        case 't':
+          result.write('\t');
+        case 'v':
+          result.write('\v');
+        case 'u':
+          final end = index + 5;
+          if (end > source.length) return null;
+          final value = int.tryParse(
+            source.substring(index + 1, end),
+            radix: 16,
+          );
+          if (value == null) return null;
+          result.writeCharCode(value);
+          index = end - 1;
+        case 'x':
+          final end = index + 3;
+          if (end > source.length) return null;
+          final value = int.tryParse(
+            source.substring(index + 1, end),
+            radix: 16,
+          );
+          if (value == null) return null;
+          result.writeCharCode(value);
+          index = end - 1;
+        case '\n':
+          break;
+        case '\r':
+          if (index + 1 < source.length && source[index + 1] == '\n') {
+            index += 1;
+          }
+        default:
+          result.write(escaped);
+      }
+    }
+    return null;
   }
 
   static int? _viewsFromSchema(Map<String, dynamic>? schema) {

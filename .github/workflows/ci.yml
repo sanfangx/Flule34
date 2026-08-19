@@ -57,7 +57,10 @@ jobs:
 
       - name: Android Lint
         working-directory: android
-        run: ./gradlew :app:lintDebug --no-daemon
+        shell: bash
+        run: |
+          CRONET_DEFINE="$(printf 'cronetHttpNoPlay=true' | base64 -w0)"
+          ./gradlew :app:lintDebug --no-daemon "-Pdart-defines=$CRONET_DEFINE"
 
       - name: 扫描敏感文件
         run: dart run tool/check_sensitive_files.dart
@@ -69,6 +72,7 @@ jobs:
         shell: bash
         run: |
           flutter build apk --debug --target-platform android-arm64 --no-pub \
+            --dart-define=cronetHttpNoPlay=true \
             --dart-define=FLULE34_FLUTTER_VERSION="$FLUTTER_VERSION" \
             --dart-define=GIT_COMMIT="$GITHUB_SHA" \
             --dart-define=BUILD_TIME="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
@@ -77,7 +81,7 @@ jobs:
       - name: 上传 Debug 构建
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: flule34-debug-${{ github.sha }}
+          name: haru-debug-${{ github.sha }}
           path: |
             build/app/outputs/flutter-apk/app-debug.apk
             build/app/outputs/flutter-apk/SHA256SUMS.txt

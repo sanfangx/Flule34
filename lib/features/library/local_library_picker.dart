@@ -31,7 +31,10 @@ Future<String?> manageVideoLocalLibraries({
     return '已加入“${library.name}”。';
   }
 
-  final containedIds = await repository.libraryIdsForVideo(video.id);
+  final containedIds = repository is SourceAwareLocalLibraryRepository
+      ? await (repository as SourceAwareLocalLibraryRepository)
+            .libraryIdsForVideoItem(video)
+      : await repository.libraryIdsForVideo(video.id);
   if (!context.mounted) {
     return null;
   }
@@ -90,7 +93,14 @@ Future<String?> manageVideoLocalLibraries({
   }
   final library = libraries.firstWhere((item) => item.id == selected);
   if (containedIds.contains(library.id)) {
-    await repository.removeVideo(libraryId: library.id, videoId: video.id);
+    if (repository is SourceAwareLocalLibraryRepository) {
+      await (repository as SourceAwareLocalLibraryRepository).removeVideoItem(
+        libraryId: library.id,
+        video: video,
+      );
+    } else {
+      await repository.removeVideo(libraryId: library.id, videoId: video.id);
+    }
     return '已从“${library.name}”移出。';
   }
   await repository.addVideo(libraryId: library.id, video: video);

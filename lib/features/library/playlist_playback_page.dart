@@ -99,7 +99,7 @@ class _PlaylistPlaybackPageState extends State<PlaylistPlaybackPage> {
       if (!mounted) {
         return;
       }
-      _detailsCache[_video.id] = details;
+      _detailsCache[_video.contentKey] = details;
       setState(() {
         _details = details;
         _detailsError = null;
@@ -136,7 +136,7 @@ class _PlaylistPlaybackPageState extends State<PlaylistPlaybackPage> {
       if (!mounted || operation != _preloadOperation) {
         return;
       }
-      _detailsCache[_videos[next].id] = details;
+      _detailsCache[_videos[next].contentKey] = details;
       unawaited(_preloadLookAheadDetails(next, operation));
       await _playerHandle.preCache(details, aggressive: true);
     } on Object {
@@ -153,13 +153,13 @@ class _PlaylistPlaybackPageState extends State<PlaylistPlaybackPage> {
     }
     if (lookAhead >= _videos.length ||
         lookAhead == _index ||
-        _detailsCache.containsKey(_videos[lookAhead].id)) {
+        _detailsCache.containsKey(_videos[lookAhead].contentKey)) {
       return;
     }
     try {
       final details = await widget.api.loadVideoDetails(_videos[lookAhead]);
       if (mounted && operation == _preloadOperation) {
-        _detailsCache[_videos[lookAhead].id] = details;
+        _detailsCache[_videos[lookAhead].contentKey] = details;
       }
     } on Object {
       // 再下一条只预取详情，失败不影响播放。
@@ -248,11 +248,12 @@ class _PlaylistPlaybackPageState extends State<PlaylistPlaybackPage> {
     try {
       final target = _videos[value];
       final details =
-          _detailsCache[target.id] ?? await widget.api.loadVideoDetails(target);
+          _detailsCache[target.contentKey] ??
+          await widget.api.loadVideoDetails(target);
       if (!mounted || operation != _switchOperation) {
         return;
       }
-      _detailsCache[target.id] = details;
+      _detailsCache[target.contentKey] = details;
       setState(() {
         _index = value;
         _details = details;
@@ -286,6 +287,7 @@ class _PlaylistPlaybackPageState extends State<PlaylistPlaybackPage> {
         widget.translationService.shouldAutoTranslateTitle(
           details.video.id,
           details.video.title,
+          siteId: details.video.siteId,
         )) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         unawaited(
@@ -293,6 +295,7 @@ class _PlaylistPlaybackPageState extends State<PlaylistPlaybackPage> {
             videoId: details.video.id,
             raw: details.video.title,
             videoSlug: details.video.slug,
+            siteId: details.video.siteId,
           ),
         );
       });
@@ -348,6 +351,7 @@ class _PlaylistPlaybackPageState extends State<PlaylistPlaybackPage> {
                           value: widget.translationService.resolveTitle(
                             details.video.id,
                             details.video.title,
+                            siteId: details.video.siteId,
                           ),
                           style: Theme.of(context).textTheme.titleMedium,
                         ),

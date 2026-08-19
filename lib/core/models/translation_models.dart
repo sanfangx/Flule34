@@ -269,6 +269,7 @@ final class TranslatedTitleSuggestion {
   const TranslatedTitleSuggestion({
     required this.videoId,
     required this.slug,
+    this.siteId = 'rule34video',
     required this.english,
     required this.displayChinese,
     required this.aliasSource,
@@ -277,6 +278,7 @@ final class TranslatedTitleSuggestion {
 
   final String videoId;
   final String slug;
+  final String siteId;
   final String english;
   final String displayChinese;
   final TranslationAliasSource aliasSource;

@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:drift/native.dart';
 
 import 'package:flule34/core/database/app_database.dart';
+import 'package:flule34/core/models/content_source.dart';
 import 'package:flule34/core/models/translation_models.dart';
 import 'package:flule34/core/models/video_models.dart';
 import 'package:flule34/core/services/translation_service.dart';
@@ -33,6 +34,31 @@ void main() {
     expect(
       service.lookupChinese('Hi-Fi Rush', kind: DiscoveryKind.category),
       '完美音浪',
+    );
+  });
+
+  test('显式 Rule34Video 内容不受当前 Hanime 首页站点影响', () async {
+    final settings = AppSettingsRepository(_MemorySettingsStore());
+    addTearDown(settings.dispose);
+    await settings.load();
+    final service = TranslationService.fromDictionary(
+      settingsRepository: settings,
+      dictionary: const {'footjob': '足交'},
+    );
+
+    await settings.setActiveSite(ContentSite.hanime1);
+
+    expect(
+      service.renderMetadata(
+        DiscoveryKind.tag,
+        'footjob',
+        siteId: ContentSite.rule34video.id,
+      ),
+      'footjob | 足交',
+    );
+    expect(
+      service.lookupChinese('footjob', siteId: ContentSite.hanime1.id),
+      isNull,
     );
   });
 
@@ -137,6 +163,128 @@ void main() {
     await restored.removeOverride(DiscoveryKind.tag, 'footjob');
     expect(restored.lookupChinese('footjob'), '足交');
     expect(await database.loadTranslationOverrides(), isEmpty);
+  });
+
+  test('相同视频 ID 和元数据原文的译文按站点隔离', () async {
+    final database = AppDatabase(NativeDatabase.memory());
+    addTearDown(database.close);
+    final settings = AppSettingsRepository(_MemorySettingsStore());
+    addTearDown(settings.dispose);
+    await settings.load();
+    final service = TranslationService.fromDictionary(
+      settingsRepository: settings,
+      database: database,
+      dictionary: const {},
+    );
+    addTearDown(service.dispose);
+    await service.initialize();
+
+    await service.setTitleOverride(
+      'same-id',
+      'Rule34 标题',
+      sourceText: 'Same title',
+      siteId: 'rule34video',
+    );
+    await service.setTitleOverride(
+      'same-id',
+      'Hanime 标题',
+      sourceText: 'Same title',
+      siteId: 'hanime1',
+    );
+    await service.setOverride(
+      DiscoveryKind.tag,
+      'shared tag',
+      'Rule34 标签',
+      siteId: 'rule34video',
+    );
+    await service.setOverride(
+      DiscoveryKind.tag,
+      'shared tag',
+      'Hanime 标签',
+      siteId: 'hanime1',
+    );
+
+    expect(
+      service.lookupTitleChinese(
+        'same-id',
+        raw: 'Same title',
+        siteId: 'rule34video',
+      ),
+      'Rule34 标题',
+    );
+    expect(
+      service.lookupTitleChinese(
+        'same-id',
+        raw: 'Same title',
+        siteId: 'hanime1',
+      ),
+      'Hanime 标题',
+    );
+    expect(
+      service.lookupChinese(
+        'shared tag',
+        kind: DiscoveryKind.tag,
+        siteId: 'rule34video',
+      ),
+      'Rule34 标签',
+    );
+    expect(
+      service.lookupChinese(
+        'shared tag',
+        kind: DiscoveryKind.tag,
+        siteId: 'hanime1',
+      ),
+      'Hanime 标签',
+    );
+  });
+
+  test('hanime1 标题翻译按视频 ID 生效，不受列表与详情标题文本差异影响', () async {
+    // hanime1 列表卡片标题与详情页标题文本可能不同（同一 videoId），
+    // 译文必须继续生效，否则会在列表/详情间反复触发自动翻译。
+    final database = AppDatabase(NativeDatabase.memory());
+    addTearDown(database.close);
+    final settings = AppSettingsRepository(_MemorySettingsStore());
+    addTearDown(settings.dispose);
+    await settings.load();
+    final service = TranslationService.fromDictionary(
+      settingsRepository: settings,
+      database: database,
+      dictionary: const {},
+    );
+    addTearDown(service.dispose);
+    await service.initialize();
+
+    await service.setTitleOverride(
+      '407591',
+      '小女拉姆内 第7话',
+      sourceText: '列表卡片标题文本',
+      siteId: 'hanime1',
+    );
+
+    // 详情页标题与列表标题不同，hanime1 下仍应命中同一译文。
+    expect(
+      service.lookupTitleChinese(
+        '407591',
+        raw: '小女ラムネ 第7話 コマコとエッチなお約束 [中字後補]',
+        siteId: 'hanime1',
+      ),
+      '小女拉姆内 第7话',
+    );
+    expect(
+      service.hasLearnedTitle('407591', raw: '详情页标题文本', siteId: 'hanime1'),
+      isFalse,
+    );
+    // rule34video 仍按源文本校验，不一致时不命中。
+    await service.setTitleOverride(
+      '407591',
+      'Rule34 标题',
+      sourceText: '原始标题',
+      siteId: 'rule34video',
+    );
+    expect(
+      service.lookupTitleChinese('407591', raw: '另一个标题', siteId: 'rule34video'),
+      isNull,
+    );
   });
 
   test('反查同时支持内置译名和用户译名', () async {

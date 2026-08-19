@@ -59,7 +59,7 @@ final class AppUpdateService {
                receiveTimeout: const Duration(seconds: 20),
                headers: const {
                  'Accept': 'application/vnd.github+json',
-                 'User-Agent': 'Flule34 Android update checker',
+                 'User-Agent': 'HaRu Android update checker',
                },
              ),
            ),

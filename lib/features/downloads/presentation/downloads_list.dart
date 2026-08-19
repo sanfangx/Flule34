@@ -12,9 +12,14 @@ import '../domain/download_models.dart';
 import '../../../shared/transient_focus.dart';
 
 class DownloadManagementPage extends StatefulWidget {
-  const DownloadManagementPage({super.key, required this.repository});
+  const DownloadManagementPage({
+    super.key,
+    required this.repository,
+    this.embedded = false,
+  });
 
   final DownloadRepository repository;
+  final bool embedded;
 
   @override
   State<DownloadManagementPage> createState() => _DownloadManagementPageState();
@@ -25,36 +30,52 @@ class _DownloadManagementPageState extends State<DownloadManagementPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const AppText('下载'),
-        actions: [
-          if (_bulkDeleting)
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 14),
-              child: Center(
-                child: SizedBox.square(
-                  dimension: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
+    if (widget.embedded) {
+      return Column(
+        children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: _actions(context),
               ),
-            )
-          else
-            IconButton(
-              tooltip: context.uiText('批量删除'),
-              onPressed: _showBulkDelete,
-              icon: const Icon(Icons.delete_sweep_outlined),
             ),
-          IconButton(
-            tooltip: context.uiText('下载设置'),
-            onPressed: () => context.pushNamed(AppRouteNames.downloadSettings),
-            icon: const Icon(Icons.settings_outlined),
           ),
+          Expanded(child: DownloadsList(repository: widget.repository)),
         ],
-      ),
+      );
+    }
+    return Scaffold(
+      appBar: AppBar(title: const AppText('下载'), actions: _actions(context)),
       body: DownloadsList(repository: widget.repository),
     );
   }
+
+  List<Widget> _actions(BuildContext context) => [
+    if (_bulkDeleting)
+      const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 14),
+        child: Center(
+          child: SizedBox.square(
+            dimension: 20,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+        ),
+      )
+    else
+      IconButton(
+        tooltip: context.uiText('批量删除'),
+        onPressed: _showBulkDelete,
+        icon: const Icon(Icons.delete_sweep_outlined),
+      ),
+    IconButton(
+      tooltip: context.uiText('下载设置'),
+      onPressed: () => context.pushNamed(AppRouteNames.downloadSettings),
+      icon: const Icon(Icons.settings_outlined),
+    ),
+  ];
 
   Future<void> _showBulkDelete() async {
     final mode = await runWithoutRestoringInputFocus(

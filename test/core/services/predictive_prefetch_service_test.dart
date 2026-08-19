@@ -4,9 +4,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:flule34/core/api/rule34video_api.dart';
+import 'package:flule34/core/models/content_source.dart';
 import 'package:flule34/core/models/video_models.dart';
 import 'package:flule34/core/session/session_store.dart';
 import 'package:flule34/core/services/predictive_prefetch_service.dart';
+import 'package:flule34/features/settings/data/app_settings_repository.dart';
+import 'package:flule34/features/settings/data/app_settings_store.dart';
 
 import '../../helpers/test_session_harness.dart';
 
@@ -37,8 +40,11 @@ void main() {
 
     foreground.complete();
     await foregroundFuture;
+    // 启动预取把 hanime 首页预热插到最前（CF 验证优先），随后才是登录态队列。
+    await api.hanimeHomeStarted.future.timeout(const Duration(seconds: 1));
+    expect(api.calls.first, 'hanime-home');
     await api.favoritesStarted.future.timeout(const Duration(seconds: 1));
-    expect(api.calls.first, 'favorites');
+    expect(api.calls, contains('favorites'));
     final firstToken = api.favoritesTokens.single;
     expect(firstToken.isCancelled, isFalse);
 
@@ -48,6 +54,8 @@ void main() {
     );
 
     expect(firstToken.isCancelled, isTrue);
+    await Future<void>.delayed(const Duration(milliseconds: 30));
+    expect(api.favoritesTokens, hasLength(1));
   });
 
   test('首页候选视频会按照可见顺序逐个预测加载详情', () async {
@@ -73,6 +81,31 @@ void main() {
 
     expect(api.calls, ['video:1', 'video:2', 'video:3']);
   });
+
+  test('使用过 Hanime 后启动预加载会在后台预热其首页', () async {
+    final harness = TestSessionHarness.create();
+    addTearDown(harness.dispose);
+    await harness.sessionStore.load();
+    final settings = AppSettingsRepository(_MemorySettingsStore());
+    addTearDown(settings.dispose);
+    await settings.load();
+    await settings.setActiveSite(ContentSite.hanime1);
+    await settings.setActiveSite(ContentSite.rule34video);
+    final api = _PrefetchApi(harness.sessionStore);
+    final service = PredictivePrefetchService(
+      api: api,
+      sessionStore: harness.sessionStore,
+      settingsRepository: settings,
+      idleDelay: const Duration(milliseconds: 1),
+      interJobDelay: const Duration(milliseconds: 1),
+    );
+    addTearDown(service.dispose);
+
+    service.scheduleStartup();
+    await api.hanimeHomeStarted.future.timeout(const Duration(seconds: 1));
+
+    expect(api.calls, ['hanime-home']);
+  });
 }
 
 final class _PrefetchApi extends Rule34VideoApi {
@@ -80,6 +113,7 @@ final class _PrefetchApi extends Rule34VideoApi {
 
   final List<String> calls = [];
   final Completer<void> favoritesStarted = Completer<void>();
+  final Completer<void> hanimeHomeStarted = Completer<void>();
   final List<CancelToken> favoritesTokens = [];
 
   @override
@@ -122,5 +156,31 @@ final class _PrefetchApi extends Rule34VideoApi {
   }
 
   @override
+  Future<void> prewarmHanimeHome() async {
+    calls.add('hanime-home');
+    if (!hanimeHomeStarted.isCompleted) hanimeHomeStarted.complete();
+  }
+
+  @override
   void close() {}
+}
+
+final class _MemorySettingsStore implements AppSettingsStore {
+  final Map<String, Object> _values = {};
+
+  @override
+  Future<bool?> readBool(String key) async => _values[key] as bool?;
+
+  @override
+  Future<String?> readString(String key) async => _values[key] as String?;
+
+  @override
+  Future<void> remove(String key) async => _values.remove(key);
+
+  @override
+  Future<void> writeBool(String key, bool value) async => _values[key] = value;
+
+  @override
+  Future<void> writeString(String key, String value) async =>
+      _values[key] = value;
 }

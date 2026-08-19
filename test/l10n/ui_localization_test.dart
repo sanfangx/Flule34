@@ -5,10 +5,10 @@ import 'package:flule34/l10n/ui_localization.dart';
 
 void main() {
   test('四种界面语言使用各自文案', () {
-    expect(localizeUiText(const Locale('zh'), '首页'), '首页');
-    expect(localizeUiText(const Locale('en'), '首页'), 'Home');
-    expect(localizeUiText(const Locale('ja'), '首页'), 'ホーム');
-    expect(localizeUiText(const Locale('ko'), '首页'), '홈');
+    expect(localizeUiText(const Locale('zh'), '媒体库'), '媒体库');
+    expect(localizeUiText(const Locale('en'), '媒体库'), 'Library');
+    expect(localizeUiText(const Locale('ja'), '媒体库'), 'ライブラリ');
+    expect(localizeUiText(const Locale('ko'), '媒体库'), '라이브러리');
   });
 
   test('不支持的系统语言回退到简体中文', () {

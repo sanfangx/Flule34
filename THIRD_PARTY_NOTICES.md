@@ -40,3 +40,13 @@
 `65a05094f4d86c8021c66d06717133e9994b7478` 中的 CSV 清洗生成。源仓库沿用
 Flule34 的 MIT 许可证与 Hanestl 版权声明。生成过程和质量统计见
 `docs/translation_catalog.md`。
+
+## Hanime1 搜索筛选选项
+
+`tool/data/hanime_search_options/*.json` 与生成的
+`lib/core/api/hanime1_search_options.g.dart` 搬运自
+`daisukiKaffuChino/Han1meViewer`（Apache-2.0）的
+`app/src/main/assets/search_options/` 数据：`genre.json`、`sort_option.json`、
+`duration.json`、`release_date.json`、`brands.json`、`tags.json`。
+`search_key` 与多语言显示名原样保留（仅 `sort_option.json` 的 `zh-rCN`
+两处繁体错字已顺手修正）。分组显示名中的日文文案由本项目补充。

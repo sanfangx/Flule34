@@ -9,7 +9,19 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
+  String get ui45be8e30 => '(\\d+)\\s*(秒|分钟|分鐘|小时|小時|天|周|週|个月|個月|月|年)\\s*前';
+
+  @override
+  String get ui7b86fa60 => '2.5D動畫';
+
+  @override
   String get ui0aedf15f => '20–60 分钟';
+
+  @override
+  String get ui4a1b4e68 => '2D动画';
+
+  @override
+  String get ui31e98877 => '2D動畫';
 
   @override
   String get ui4ebe1e15 => '5 分钟以内';
@@ -27,16 +39,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui2e77e7e1 => '===== 诊断信息 =====';
 
   @override
+  String get ui43396a35 => 'AI生成';
+
+  @override
   String get ui186386f2 => 'App 设置';
 
   @override
+  String ui1bb6cf0e(String p0) {
+    return 'Cookie 名称=$p0';
+  }
+
+  @override
   String get ui14d5d228 => 'DeepL 套餐与端点';
-
-  @override
-  String get ui5532d8d0 => 'Flule34 本地诊断日志';
-
-  @override
-  String get ui514d16fd => 'Flule34 翻译库';
 
   @override
   String get ui57e4db6c => 'Git 提交';
@@ -48,7 +62,78 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui1bcd541a => 'GitHub 源代码';
 
   @override
+  String get ui20b6ac2f => 'HaRu 本地诊断日志';
+
+  @override
+  String get ui18362f38 => 'HaRu 翻译库';
+
+  @override
+  String ui2cd06f4c(String p0) {
+    return 'Hanime landing 选择分类；genre=$p0';
+  }
+
+  @override
+  String get ui3fd23b15 => 'Hanime 播放列表';
+
+  @override
+  String get ui33a113c4 => 'Hanime 点赞';
+
+  @override
+  String ui12696fd4(String p0) {
+    return 'Hanime 筛选 sheet 应用；摘要=$p0';
+  }
+
+  @override
+  String get ui0136f228 => 'Hanime 筛选与排序';
+
+  @override
+  String ui553f848b(String p0) {
+    return 'Hanime 筛选已应用；摘要=$p0';
+  }
+
+  @override
+  String ui3b3b256b(String p0, String p1) {
+    return 'Hanime 订阅作者作品筛选；artist=$p0；page=$p1；';
+  }
+
+  @override
+  String ui3deb27cd(String p0, String p1) {
+    return 'Hanime 评论提交成功；video=$p0；reply=$p1';
+  }
+
+  @override
+  String ui73e7844e(String p0) {
+    return 'Hanime 详情页元数据点击；kind=$p0；';
+  }
+
+  @override
+  String get ui27638fa8 => 'Hanime 账号';
+
+  @override
+  String ui081c5de6(String p0, String p1, String p2) {
+    return 'Hanime 首页切换频道；频道=$p0；索引=$p1；种子=$p2';
+  }
+
+  @override
+  String get ui77cbd28c => 'Hanime 验证';
+
+  @override
+  String ui4a1461a3(String p0, String p1) {
+    return 'Hanime=$p0；当前范围=$p1';
+  }
+
+  @override
+  String ui042e6d42(String p0) {
+    return 'Hanime登录=$p0';
+  }
+
+  @override
   String get ui103930a8 => 'MyMemory 可用邮箱标识提高免费额度。';
+
+  @override
+  String ui35377097(String p0) {
+    return 'R34V登录=$p0；';
+  }
 
   @override
   String get ui2c98e3c6 => 'Rule34Video 账号';
@@ -58,6 +143,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ui34eda443 => 'Wi-Fi 最高 720p，移动网络最高 360p';
+
+  @override
+  String ui0fed973b(String p0, String p1) {
+    return 'attempt=$p0；耗时=${p1}ms';
+  }
 
   @override
   String ui3bebb943(String p0) {
@@ -85,6 +175,11 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String ui6aad5282(String p0) {
+    return '$p0 位订阅者';
+  }
+
+  @override
   String ui4e278fff(String p0) {
     return '$p0 已加入下载队列。';
   }
@@ -92,6 +187,16 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String ui5e77ec72(String p0) {
     return '$p0 已在下载管理中。';
+  }
+
+  @override
+  String ui4cc52a83(String p0) {
+    return '$p0 年';
+  }
+
+  @override
+  String ui196d3c87(String p0) {
+    return '$p0 月';
   }
 
   @override
@@ -115,6 +220,11 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String ui2f3746eb(String p0) {
+    return '$p0 部影片';
+  }
+
+  @override
   String ui44f14c54(String p0, String p1) {
     return '$p0% · $p1 票';
   }
@@ -122,6 +232,11 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String ui278d8aed(String p0, String p1, String p2, String p3) {
     return '$p0$p1；译文：$p2$p3';
+  }
+
+  @override
+  String ui5d9cbb2c(String p0, String p1) {
+    return '$p0失败：$p1';
   }
 
   @override
@@ -140,6 +255,11 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String ui3e04ce6a(String p0) {
+    return '“$p0”及其列表关系将被删除，视频本身不受影响。';
+  }
+
+  @override
   String get ui2046553b => '一列';
 
   @override
@@ -151,6 +271,11 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String ui772dc31b(String p0) {
     return '上传者资料加载失败：$p0';
+  }
+
+  @override
+  String ui29700171(String p0) {
+    return '上传者：$p0';
   }
 
   @override
@@ -181,6 +306,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui7fc5cfeb => '下载文件已失效或没有可播放此 MP4 的应用。';
 
   @override
+  String get ui5cade6e1 => '下载服务暂不可用。';
+
+  @override
   String get ui180a6fbf => '下载清晰度';
 
   @override
@@ -208,10 +336,30 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui7447788f => '两列';
 
   @override
+  String get ui5fde6c76 => '两次输入的新密码不一致。';
+
+  @override
+  String get ui7d332b29 => '个月';
+
+  @override
   String get ui557a9537 => '主题';
 
   @override
   String get ui7b7ae9f2 => '主题模式';
+
+  @override
+  String get ui754aed9c => '举报';
+
+  @override
+  String ui099fb842(String p0) {
+    return '举报失败：$p0';
+  }
+
+  @override
+  String get ui0d483756 => '举报已提交。';
+
+  @override
+  String get ui72607f99 => '举报评论';
 
   @override
   String get ui11b84182 => '仅 Wi-Fi 下载';
@@ -237,7 +385,29 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui51418311 => '仅登录后按账号保存；关闭后不再记录新搜索。';
 
   @override
+  String get ui42cab9da => '今天';
+
+  @override
   String get ui44ac200e => '从头连续播放';
+
+  @override
+  String ui6d8b62f1(String p0) {
+    return '从媒体库请求登录；范围=hanime1；section=$p0';
+  }
+
+  @override
+  String ui4aca9b31(String p0, String p1) {
+    return '从媒体库请求登录；范围=$p0；section=$p1';
+  }
+
+  @override
+  String get ui794510bf => '从播放列表移除';
+
+  @override
+  String get ui4da21b44 => '他们在看';
+
+  @override
+  String get ui1c2804ab => '他們在看';
 
   @override
   String get ui4a42f091 => '你可以只删除下载记录并保留视频，也可以同时删除公共目录中的视频。';
@@ -281,10 +451,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui4f586a83 => '保留已经下载到公共目录的视频';
 
   @override
+  String get ui06b0c857 => '修改';
+
+  @override
+  String ui4ee78cab(String p0) {
+    return '修改失败：$p0';
+  }
+
+  @override
   String get ui30350f33 => '修改密码';
 
   @override
+  String get ui3daf2795 => '修改显示名称与邮箱';
+
+  @override
   String get ui043de786 => '修改邮箱';
+
+  @override
+  String get ui1d0485f9 => '個月';
 
   @override
   String get ui4fcf2a14 => '全屏';
@@ -309,16 +493,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get ui166298c5 => '关于 Flule34';
-
-  @override
-  String get ui13bc9fa5 => '关注';
-
-  @override
-  String get ui54d03562 => '关注的分类、艺术家或用户暂时没有可展示的视频。';
-
-  @override
-  String get ui47de51e1 => '关注频道会汇总你在网站订阅的分类、艺术家、用户和播放列表。';
+  String get ui64efd37a => '关于 HaRu';
 
   @override
   String get ui29c40c72 => '关闭后将清除全部本地播放进度。';
@@ -330,6 +505,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui08354b81 => '关闭记忆播放进度？';
 
   @override
+  String get ui19d54932 => '其他举报理由';
+
+  @override
+  String get ui25e3dc9e => '其他檢舉理由';
+
+  @override
   String get ui2bbc0423 => '内容取向';
 
   @override
@@ -339,16 +520,35 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui38d59e4d => '内置';
 
   @override
+  String ui4d75ae49(String p0, String p1) {
+    return '准备下载；站点=$p0；视频=$p1；';
+  }
+
+  @override
   String get ui2f5fd7d1 => '分享';
 
   @override
   String get ui55599ffb => '分类';
 
   @override
+  String ui685042ae(String p0) {
+    return '分类：$p0';
+  }
+
+  @override
+  String get ui748ee6f9 => '分鐘';
+
+  @override
+  String get ui75929c3a => '分钟';
+
+  @override
   String get ui38fe9b1d => '列表循环';
 
   @override
   String get ui309e167e => '列表顺序';
+
+  @override
+  String get ui542b3ce5 => '创建';
 
   @override
   String get ui0c2c660a => '创建自定义分类后，可以从任意视频的“本地分类库”按钮保存到这里。';
@@ -383,7 +583,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui7622d7c4 => '删除全部已经找不到严格对应文件的下载记录，不会触碰外部文件。';
 
   @override
+  String get ui7a6fcf0e => '删除历史记录';
+
+  @override
   String get ui42079bac => '删除所选 API 译文？';
+
+  @override
+  String get ui16040b00 => '删除播放列表？';
 
   @override
   String get ui6882566e => '删除文件和记录';
@@ -458,15 +664,29 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui54ec6c15 => '双语';
 
   @override
-  String get ui2e2d0cb3 => '发布时间';
+  String get ui6c687b2d => '发一条评论...';
 
   @override
-  String get ui0ccf8adf => '发现';
+  String get ui2d79226f => '发布日期';
+
+  @override
+  String get ui2e2d0cb3 => '发布时间';
 
   @override
   String ui0e705d18(String p0) {
     return '发现新版本 $p0。';
   }
+
+  @override
+  String get ui7d443475 => '发表';
+
+  @override
+  String ui057b0ee1(String p0) {
+    return '发表失败：$p0';
+  }
+
+  @override
+  String get ui7a5d619c => '发送';
 
   @override
   String ui07cfc2d2(String p0) {
@@ -477,7 +697,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui1cdb9be3 => '取消';
 
   @override
+  String get ui4c580a79 => '取消回复';
+
+  @override
   String get ui0d684dfd => '取消收藏';
+
+  @override
+  String get ui20eeb984 => '取消点赞';
 
   @override
   String get ui5eb70fab => '取消订阅';
@@ -522,10 +748,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui09e67cd1 => '同时删除公共目录中仍能对应上的视频';
 
   @override
+  String ui30e251a0(String p0) {
+    return '同步失败，已恢复原状态：$p0';
+  }
+
+  @override
   String get ui3898538c => '同类条件和不同类型条件均取交集，每类最多选择 5 项。';
 
   @override
   String get ui73f2614f => '名称';
+
+  @override
+  String get ui06e91ae0 => '后台/前台';
 
   @override
   String get ui3a38a6d4 => '后台任务进行中';
@@ -537,16 +771,47 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui4763b5c2 => '否';
 
   @override
+  String get ui2f676191 => '周';
+
+  @override
   String get ui63f37124 => '命中任一排除条件的视频不会显示';
 
   @override
+  String get ui7ff6d3a0 => '品牌';
+
+  @override
   String get ui3791c2b8 => '回到顶部';
+
+  @override
+  String get ui2c3700bb => '回复';
+
+  @override
+  String ui452cfc99(String p0) {
+    return '回复 $p0';
+  }
+
+  @override
+  String get ui1b8fd367 => '回复...';
+
+  @override
+  String ui24039614(String p0) {
+    return '回复加载失败：$p0';
+  }
+
+  @override
+  String get ui54c6440e => '回复已发表。';
+
+  @override
+  String get ui649f8b36 => '图片';
 
   @override
   String get ui03a2a222 => '图片缓存已清除。';
 
   @override
   String get ui796e3b4c => '在本机保存，与登录账号无关';
+
+  @override
+  String get ui164112a2 => '在线观看历史暂时为空。';
 
   @override
   String get ui12562321 => '在网站中修改头像、名称和公开资料';
@@ -587,10 +852,64 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui3be928a0 => '外部文件当前无法读取。';
 
   @override
+  String get ui31f6973f => '天';
+
+  @override
+  String get ui281b9ca1 => '头像已更新。';
+
+  @override
+  String ui5ea25aa8(String p0) {
+    return '头像更新失败：$p0';
+  }
+
+  @override
   String get ui158640ea => '始终使用默认清晰度';
 
   @override
   String get ui17588e00 => '媒体库';
+
+  @override
+  String ui38869fe7(String p0) {
+    return '媒体库二级页切换；范围=hanime1；section=$p0';
+  }
+
+  @override
+  String ui7a3a4547(String p0) {
+    return '媒体库二级页切换；范围=local；section=$p0';
+  }
+
+  @override
+  String ui1c3a6602(String p0) {
+    return '媒体库二级页切换；范围=rule34video；section=$p0';
+  }
+
+  @override
+  String ui0ee3985f(String p0) {
+    return '媒体库列表请求完成；范围=rule34video；section=$p0；';
+  }
+
+  @override
+  String ui1e113600(String p0) {
+    return '媒体库列表请求开始；范围=rule34video；section=$p0；';
+  }
+
+  @override
+  String ui14cdfa21(String p0) {
+    return '媒体库打开；范围=$p0；';
+  }
+
+  @override
+  String ui5e9a8d3f(String p0) {
+    return '媒体库登录状态变化；R34V=$p0；';
+  }
+
+  @override
+  String ui21db214e(String p0, String p1) {
+    return '媒体库范围切换；from=$p0；to=$p1';
+  }
+
+  @override
+  String get ui2a120a57 => '媒体库范围顺序';
 
   @override
   String get ui344971fc => '存在';
@@ -599,7 +918,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui60514b78 => '安全合并';
 
   @override
+  String get ui2cfae1da => '宽泛搜索';
+
+  @override
   String get ui5baf4155 => '密码';
+
+  @override
+  String get ui0a68072d => '密码已更新。';
 
   @override
   String ui65cceef6(String p0) {
@@ -641,6 +966,9 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get ui410820fb => '将删除本机保存的 Hanime 账号、密码和登录会话。';
+
+  @override
   String get ui5116cc17 => '将删除本机保存的账号、密码和登录会话；设备下载与本地分类库不会受影响。';
 
   @override
@@ -652,6 +980,12 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get ui1ba660cc => '小时';
+
+  @override
+  String get ui17aba12e => '小時';
+
+  @override
   String get ui2d851aa0 => '尚未登录';
 
   @override
@@ -661,6 +995,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ui7d437796 => '尚未配置翻译服务。内置词表和用户手动译文仍可正常使用。';
+
+  @override
+  String get ui59bc6fa1 => '展开';
 
   @override
   String get ui0543d520 => '已下载';
@@ -708,13 +1045,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui670889d8 => '已加入收藏。';
 
   @override
+  String get ui0b279e7e => '已加入稍后观看。';
+
+  @override
   String get ui37453e63 => '已取消';
 
   @override
   String get ui7bbd0e24 => '已取消收藏。';
 
   @override
+  String get ui5cbef487 => '已取消点赞。';
+
+  @override
   String get ui34a0e3be => '已取消订阅。';
+
+  @override
+  String get ui67f81f43 => '已取消订阅艺术家。';
 
   @override
   String ui1db0bde1(String p0) {
@@ -741,6 +1087,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui1a7827b1 => '已暂停';
 
   @override
+  String get ui24c8bd29 => '已点赞。';
+
+  @override
+  String get ui76ec3129 => '已移出稍后观看。';
+
+  @override
+  String get ui7acf6891 => '已稍后观看';
+
+  @override
   String get ui49531ef1 => '已经到底了';
 
   @override
@@ -759,6 +1114,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui59a2ec21 => '已订阅上传者。';
 
   @override
+  String get ui7bf7bdc9 => '已订阅艺术家。';
+
+  @override
+  String ui1d63803b(String p0) {
+    return '已选 $p0 个';
+  }
+
+  @override
   String ui21a8fcc4(String p0) {
     return '已选择 $p0 项';
   }
@@ -774,6 +1137,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ui62a81a58 => '平台';
+
+  @override
+  String get ui4b2a99fd => '年';
+
+  @override
+  String get ui25461fa7 => '年份';
+
+  @override
+  String get ui1fb0206d => '广告内容或垃圾内容';
 
   @override
   String get ui70131201 => '库名称';
@@ -802,7 +1174,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui390d6cf3 => '应用（不限）';
 
   @override
+  String get ui37fc4085 => '底部导航顺序';
+
+  @override
+  String get ui68701249 => '廣告內容或垃圾內容';
+
+  @override
   String get ui0a663237 => '开启后，切换应用或关闭屏幕时继续播放声音。';
+
+  @override
+  String ui08cdac2b(String p0, String p1) {
+    return '开始视频预览；site=$p0；video=$p1；';
+  }
 
   @override
   String get ui13034753 => '开源许可';
@@ -812,6 +1195,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ui573acdd9 => '当前任务会先被取消。你可以只删除记录，也可以同时清理未完成文件。';
+
+  @override
+  String get ui2073fb01 => '当前密码';
 
   @override
   String get ui3c131161 => '当前已加载内容没有匹配项。';
@@ -860,6 +1246,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui608e380c => '恢复已学习翻译';
 
   @override
+  String ui351ef4b1(String p0) {
+    return '恢复播放，开始自动展开播放器；video=$p0；';
+  }
+
+  @override
   String get ui67d3b06d => '我的';
 
   @override
@@ -894,6 +1285,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui0fb6d05e => '打开网站消息中心';
 
   @override
+  String get ui2d1cd088 => '打开艺术家视频';
+
+  @override
   String get ui5c30a6ab => '扶她';
 
   @override
@@ -910,6 +1304,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ui7d6a579d => '拉取模型列表';
+
+  @override
+  String get ui1a86336b => '拖动调整；冷启动时默认进入第一项。';
+
+  @override
+  String get ui4c4f7a5b => '指定月份…';
 
   @override
   String get ui65af3a45 => '按原文排序';
@@ -965,6 +1365,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui4aa4bf66 => '描述（可选）';
 
   @override
+  String get ui1d31a7a0 => '提交';
+
+  @override
   String ui0c0bc8f8(String p0) {
     return '提交后台下载任务失败：$p0';
   }
@@ -998,6 +1401,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui358b0b68 => '搜索原文、译文或翻译服务';
 
   @override
+  String get ui7e4e2643 => '搜索在线观看历史';
+
+  @override
   String get ui6e169d07 => '搜索已加载的视频';
 
   @override
@@ -1020,6 +1426,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ui6cb88a74 => '搜索此订阅中的视频';
+
+  @override
+  String get ui6a8599b3 => '搜索点赞的视频';
+
+  @override
+  String get ui43f9c5a0 => '搜索稍后观看';
 
   @override
   String get ui35231688 => '搜索观看历史';
@@ -1051,7 +1463,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui264bb7d8 => '播放列表会从网站账号中删除。';
 
   @override
+  String ui766b41bc(String p0) {
+    return '播放列表加载失败：$p0';
+  }
+
+  @override
   String get ui1f1bcb06 => '播放列表已创建。';
+
+  @override
+  String get ui74ffe4ad => '播放列表已创建并加入当前视频。';
 
   @override
   String get ui32c513bd => '播放列表已创建，但未能读取新列表。';
@@ -1066,7 +1486,63 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui5ba71ce6 => '播放列表播放参数无效。';
 
   @override
+  String get ui201d2aa4 => '播放列表操作';
+
+  @override
   String get ui7e8be483 => '播放器初始化后未提供视频时长。';
+
+  @override
+  String ui536e06b3(String p0) {
+    return '播放器开始自动恢复；attempt=$p0；';
+  }
+
+  @override
+  String ui7479d54b(String p0) {
+    return '播放器折叠权限更新；video=$p0；';
+  }
+
+  @override
+  String ui5b401ab2(String p0) {
+    return '播放器报告异常：$p0；';
+  }
+
+  @override
+  String ui5a50b4ab(String p0) {
+    return '播放器自动展开完成；video=$p0；';
+  }
+
+  @override
+  String get ui78522c85 => '播放器自动恢复失败；reason=no-alternate-source；';
+
+  @override
+  String ui0dd3d83f(String p0) {
+    return '播放器自动恢复异常；$p0；';
+  }
+
+  @override
+  String ui19faffc9(String p0, String p1) {
+    return '播放器自动恢复成功；$p0；耗时=${p1}ms';
+  }
+
+  @override
+  String ui0146f5aa(String p0) {
+    return '播放器自动恢复装载失败；$p0；';
+  }
+
+  @override
+  String ui4e45686b(String p0) {
+    return '播放器自动恢复选择备用源；from=$p0；';
+  }
+
+  @override
+  String ui4cee68a6(String p0) {
+    return '播放器装载失败：$p0；';
+  }
+
+  @override
+  String ui09679598(String p0) {
+    return '播放态详情滚动触发边界反馈，已禁用视觉拉伸；video=$p0；';
+  }
 
   @override
   String get ui206c2436 => '播放文件';
@@ -1091,6 +1567,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui21658def => '播放问题';
 
   @override
+  String ui1c251464(String p0) {
+    return '操作失败：$p0';
+  }
+
+  @override
   String get ui31d7af87 => '操作未能完成，请稍后重试。';
 
   @override
@@ -1103,6 +1584,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui00b01c4f => '收藏状态读取失败，点击重试';
 
   @override
+  String get ui453d0751 => '收起';
+
+  @override
+  String get ui0b53ee0f => '收起回复';
+
+  @override
+  String get ui7d902f31 => '放宽匹配规则，可能返回标题仅部分匹配的结果。';
+
+  @override
   String get ui053602da => '数据库结构';
 
   @override
@@ -1112,6 +1602,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String ui37efec5c(String p0) {
     return '文件包含 API 译文 $p0 条、';
   }
+
+  @override
+  String get ui27d4d033 => '新密码';
+
+  @override
+  String get ui59623fdc => '新密码至少需要 8 个字符。';
 
   @override
   String get ui17e77337 => '新建';
@@ -1147,7 +1643,13 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get ui2dfcd562 => '无法读取网页内容，可以点重试。';
+
+  @override
   String get ui0b6ddbbb => '无法连接 GitHub，请检查网络后重试。';
+
+  @override
+  String get ui22636da6 => '日本 IP 可能无法通过验证';
 
   @override
   String get ui005f5ce7 => '日本語';
@@ -1162,7 +1664,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui194644ca => '时长最长';
 
   @override
+  String ui7b627dbe(String p0) {
+    return '时长：$p0';
+  }
+
+  @override
+  String get ui3ba0d1c3 => '昨天';
+
+  @override
   String get ui16b646f4 => '是';
+
+  @override
+  String get ui5a80d5b4 => '显示名称';
 
   @override
   String get ui6a379702 => '显示密码';
@@ -1183,7 +1696,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui2effb403 => '暂时没有可展示的热门标签。';
 
   @override
+  String get ui64683360 => '暴力或令人反感的內容';
+
+  @override
+  String get ui6b06a5db => '暴力或令人反感的内容';
+
+  @override
+  String get ui1902e077 => '更多';
+
+  @override
   String get ui38e45090 => '更多操作';
+
+  @override
+  String get ui2d102f6b => '更换头像';
+
+  @override
+  String ui2bef8164(String p0) {
+    return '更新失败：$p0';
+  }
 
   @override
   String get ui2ec2c481 => '更新检查已完成。';
@@ -1218,10 +1748,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui347c998f => '最新';
 
   @override
+  String get ui6c3fd091 => '最新上传';
+
+  @override
+  String get ui7a46e769 => '最新上傳';
+
+  @override
+  String get ui21368744 => '最新上市';
+
+  @override
   String get ui222ba90b => '最新创建';
 
   @override
   String get ui368db057 => '最新订阅';
+
+  @override
+  String get ui4778e5e1 => '最早';
+
+  @override
+  String get ui4124f57e => '最热';
 
   @override
   String get ui23dfffd1 => '最近修改';
@@ -1233,6 +1778,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui5891390e => '最近添加';
 
   @override
+  String get ui73804ab0 => '最近观看';
+
+  @override
   String get ui3f66748c => '最长';
 
   @override
@@ -1242,7 +1790,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui646cc4af => '最高评分';
 
   @override
+  String get ui7dbfe375 => '月';
+
+  @override
+  String get ui625d464f => '月份';
+
+  @override
   String get ui7ee4b38a => '服务名称';
+
+  @override
+  String get ui0b0f8079 => '未挂载';
 
   @override
   String ui5801f5b9(String p0, String p1) {
@@ -1255,19 +1812,22 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get ui6c16defb => '未登录 Hanime';
+
+  @override
   String get ui73b71caa => '未配置';
 
   @override
   String get ui593a76ae => '本地分类库';
 
   @override
-  String get ui7afe5844 => '本地分类库无需登录；登录后还可查看网站收藏、历史和订阅。';
-
-  @override
   String get ui0760582c => '本地库';
 
   @override
   String get ui5af2b9c7 => '本地诊断日志';
+
+  @override
+  String get ui42457eeb => '本机';
 
   @override
   String get ui609a0e8a => '本机下载';
@@ -1288,16 +1848,27 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui3a3a5f44 => '查找艺术家页面';
 
   @override
-  String get ui32e834c8 => '查看 Flule34 与第三方 Flutter 依赖许可';
+  String get ui29d7c1b1 => '查看 HaRu 与第三方 Flutter 依赖许可';
+
+  @override
+  String ui2489fa87(String p0) {
+    return '查看 $p0 则回复';
+  }
 
   @override
   String get ui3c5ed424 => '查看公开资料、上传内容和公开收藏';
+
+  @override
+  String get ui39fa84e7 => '查看公开资料、订阅和上传内容';
 
   @override
   String get ui682b70e0 => '查看并复制不含凭据的运行环境摘要';
 
   @override
   String get ui37042e79 => '查看诊断信息';
+
+  @override
+  String get ui7f5af178 => '标准视频列表布局';
 
   @override
   String get ui3d8dc836 => '标签';
@@ -1348,9 +1919,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui1e85b6dc => '正在播放媒体';
 
   @override
-  String ui01c66e0e(String p0, String p1) {
-    return '正在整理关注内容 $p0/$p1';
+  String ui0e786c06(String p0, String p1) {
+    return '正在整理订阅内容 $p0/$p1';
   }
+
+  @override
+  String get ui3dcae6c0 => '正在等待验证结果…如果长时间无反应，请点重试。';
 
   @override
   String get ui37674019 => '正在读取全部视频…';
@@ -1373,10 +1947,19 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get ui23a76939 => '正在读取点赞状态';
+
+  @override
   String get ui3016a852 => '正在读取版本…';
 
   @override
+  String get ui0c4e429a => '正在读取稍后观看状态';
+
+  @override
   String get ui3de0c840 => '正在连接';
+
+  @override
+  String get ui7629ef8e => '正在通过浏览器连接 Hanime…';
 
   @override
   String get ui108cc700 => '此构建未配置 GitHub Releases 更新源。';
@@ -1400,10 +1983,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui68fbffba => '没有保存完成文件的位置。';
 
   @override
+  String get ui129bcb21 => '没有匹配的品牌。';
+
+  @override
   String get ui13ed4ac5 => '没有匹配的已加载内容。';
 
   @override
+  String get ui26ec4dbb => '没有匹配的标签。';
+
+  @override
   String get ui5198af87 => '没有可导出的日志。\n';
+
+  @override
+  String get ui29c894b2 => '没有可用的备用清晰度，请稍后重试。';
 
   @override
   String ui61fe8d4a(String p0, String p1) {
@@ -1451,6 +2043,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui1408d9d3 => '没有符合条件的译文。';
 
   @override
+  String get ui522cef73 => '泡面番';
+
+  @override
+  String get ui0edc6509 => '泡麵番';
+
+  @override
   String get ui0e0207cc => '注册账号';
 
   @override
@@ -1461,6 +2059,34 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ui06cf3f13 => '测试连接';
+
+  @override
+  String ui1d96670f(String p0) {
+    return '浏览器主页面加载失败；错误码=$p0；';
+  }
+
+  @override
+  String get ui33fbe6ce => '浏览器挑战界面已消失，正在等待 cf_clearance；';
+
+  @override
+  String ui129ae59c(String p0) {
+    return '浏览器检测到 Cloudflare 挑战；路径=$p0；';
+  }
+
+  @override
+  String ui67cd734f(String p0, String p1) {
+    return '浏览器辅助验证完成；触发=$p0；路径=$p1；';
+  }
+
+  @override
+  String ui2c065af1(String p0) {
+    return '浏览器辅助验证弹窗已显示；路径=$p0';
+  }
+
+  @override
+  String ui521398c6(String p0) {
+    return '浏览器页面开始加载；路径=$p0';
+  }
 
   @override
   String get ui2bce8045 => '浏览站点内容分类';
@@ -1476,6 +2102,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ui28b4fe80 => '清晰度';
+
+  @override
+  String ui57e9c7ab(String p0) {
+    return '清晰度=$p0';
+  }
 
   @override
   String get ui1226aec8 => '清空';
@@ -1529,6 +2160,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui21697b99 => '点击返回应用';
 
   @override
+  String get ui3273204a => '点赞';
+
+  @override
+  String get ui6356f887 => '点赞列表暂时为空。';
+
+  @override
+  String get ui6dfa7544 => '点赞状态读取失败，点击重试';
+
+  @override
   String ui26b5101f(String p0) {
     return '点赞率 ≥ $p0%';
   }
@@ -1552,6 +2192,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui5137980d => '热门视频、高评分视频和艺术家排行';
 
   @override
+  String get ui0ac00f7c => '煽动仇恨或恶意内容';
+
+  @override
+  String get ui173de99c => '煽動仇恨或惡意內容';
+
+  @override
   String ui326c0193(String p0, String p1) {
     return '版本 $p0+$p1';
   }
@@ -1570,6 +2216,11 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String ui2ff2035d(String p0) {
     return '用户 ID：$p0';
+  }
+
+  @override
+  String ui19930fad(String p0) {
+    return '用户手动重试刷新验证页面；路径=$p0；';
   }
 
   @override
@@ -1593,10 +2244,36 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui3ad2af27 => '登录';
 
   @override
+  String get ui720f5c51 => '登录 Hanime';
+
+  @override
+  String get ui5d9071a1 => '登录 Hanime 后参与评论';
+
+  @override
+  String get ui1cb8175c => '登录 R34V 后参与评论';
+
+  @override
+  String get ui633ad687 => '登录 Rule34Video';
+
+  @override
+  String ui7b669835(String p0) {
+    return '登录 $p0';
+  }
+
+  @override
+  String get ui50edd253 => '登录后即可查看收藏、历史、播放列表和订阅。';
+
+  @override
+  String get ui0b18f11a => '登录后即可查看点赞、稍后观看、历史、播放列表和订阅。';
+
+  @override
   String get ui6ddcc3eb => '登录后同步网站收藏、历史记录和订阅。';
 
   @override
-  String get ui03ac75d2 => '登录后查看关注内容';
+  String get ui47765d07 => '登录后同步网站点赞、稍后观看、播放列表和评论。';
+
+  @override
+  String get ui18ff18c2 => '登录后查看订阅内容';
 
   @override
   String get ui4bd42f4c => '登录后，搜索历史会按账号安全保存。';
@@ -1625,10 +2302,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui23a1a099 => '确认批量删除？';
 
   @override
+  String get ui79c740c7 => '确认新密码';
+
+  @override
   String get ui22d867a3 => '票';
 
   @override
   String get ui3e2a2939 => '票数最多';
+
+  @override
+  String get ui2cd19db3 => '秒';
 
   @override
   String get ui07f3e573 => '移出此库';
@@ -1637,10 +2320,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui332d29c7 => '移出此播放列表';
 
   @override
+  String get ui3898a44a => '移出稍后观看';
+
+  @override
   String get ui3890123e => '移除失效记录';
 
   @override
   String get ui43f4c9b6 => '移除失效记录？';
+
+  @override
+  String get ui73f2e211 => '稍后观看';
+
+  @override
+  String get ui5d12e72e => '稍后观看列表暂时为空。';
+
+  @override
+  String get ui6e62f819 => '稍后观看状态读取失败，点击重试';
 
   @override
   String get ui3250d80e => '稳定版';
@@ -1649,10 +2344,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui68bc4e82 => '站内消息';
 
   @override
+  String get ui6fe1719c => '等不到 cookie → 重刷 → 再挑战';
+
+  @override
   String get ui2ced8087 => '等待下载';
 
   @override
   String get ui106c1db7 => '等待重试';
+
+  @override
+  String get ui50c5f340 => '等待验证结果已超 10 秒，提示用户可手动重试；';
 
   @override
   String get ui373ece32 => '筛选';
@@ -1684,7 +2385,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui36e4a35c => '简体中文';
 
   @override
+  String get ui2f406a3c => '管理播放列表';
+
+  @override
   String get ui7aa38d36 => '类型';
+
+  @override
+  String ui6107c243(String p0, String p1) {
+    return '类型=$p0；耗时=${p1}ms';
+  }
 
   @override
   String ui0dbe3ac7(String p0) {
@@ -1756,6 +2465,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui0faaeb98 => '编辑译文';
 
   @override
+  String get ui4232bd82 => '编辑账号资料';
+
+  @override
   String get ui7d44f8fd => '编辑资料';
 
   @override
@@ -1800,6 +2512,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui7312260a => '翻译设置';
 
   @override
+  String ui56a4f7ec(String p0) {
+    return '耗时=${p0}ms';
+  }
+
+  @override
+  String ui0cfe710c(String p0) {
+    return '耗时=${p0}ms；';
+  }
+
+  @override
   String get ui42682f0b => '自动';
 
   @override
@@ -1819,19 +2541,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui296bcd5e => '节省流量';
 
   @override
+  String get ui5c249ba5 => '裏番';
+
+  @override
   String get ui7f179fc8 => '视频';
 
   @override
   String get ui4fbae4c2 => '视频保存路径：Download/Flule34';
 
   @override
-  String get ui276089b3 => '视频地址刷新后仍不可用，请稍后重试。';
-
-  @override
   String get ui538cdd02 => '视频地址已连续刷新多次仍无法播放，请稍后手动重试。';
-
-  @override
-  String get ui6ad9c53c => '视频布局';
 
   @override
   String get ui37bdf9f3 => '视频操作';
@@ -1856,13 +2575,27 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui6fbc2348 => '视频预览';
 
   @override
+  String ui2d82e410(String p0, String p1) {
+    return '视频预览失败；site=$p0；video=$p1';
+  }
+
+  @override
   String get ui7b8f2379 => '解锁控件';
 
   @override
   String get ui6e7502fd => '订阅';
 
   @override
+  String get ui7d39567a => '订阅的分类、艺术家或用户暂时没有可展示的视频。';
+
+  @override
+  String get ui42e78a20 => '订阅的艺术家暂时没有新视频。';
+
+  @override
   String get ui4c54789e => '订阅页布局';
+
+  @override
+  String get ui40acc969 => '订阅频道会汇总你在网站订阅的分类、艺术家、用户和播放列表。';
 
   @override
   String get ui3c79fc19 => '记忆播放进度';
@@ -1875,6 +2608,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ui11313487 => '评分最高';
+
+  @override
+  String get ui491e642c => '评论';
+
+  @override
+  String get ui7d9b7107 => '评论加载失败，点击重试';
+
+  @override
+  String get ui005f2e8d => '评论已发表。';
+
+  @override
+  String get ui761f4205 => '评论已提交，审核通过后展示。';
 
   @override
   String get ui3ce65beb => '诊断信息';
@@ -1892,7 +2637,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui52575ad3 => '语言显示模式';
 
   @override
+  String get ui16d86fec => '说明';
+
+  @override
   String get ui7894fed1 => '请先填写有效基址。';
+
+  @override
+  String get ui19e258a9 => '请先登录 Hanime';
+
+  @override
+  String get ui7ce74a5f => '请在网页中完成验证，成功后会自动返回。';
 
   @override
   String get ui190ff633 => '请完整填写名称、基址、模型和密钥。';
@@ -1907,16 +2661,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui196453a1 => '请输入注册邮箱。';
 
   @override
+  String get ui742d2222 => '请返回“我的”页面登录 Hanime 账号。';
+
+  @override
   String get ui77044f29 => '请返回“我的”页面登录后查看账号信息。';
+
+  @override
+  String get ui4af5a957 => '调整本机、R34V 与 Hanime 的显示顺序。';
 
   @override
   String get ui6447b2e3 => '账号与媒体库';
 
   @override
-  String get ui730cbb68 => '账号与安全';
+  String get ui6527aff1 => '账号中还没有播放列表。';
 
   @override
-  String get ui6527aff1 => '账号中还没有播放列表。';
+  String get ui04e867ba => '账号资料已更新。';
 
   @override
   String get ui4f0bb3b1 => '质量条件';
@@ -1931,9 +2691,17 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui1c47ee05 => '跟随系统';
 
   @override
+  String ui58ccc0dc(String p0, String p1) {
+    return '路径=$p0；进度=$p1；';
+  }
+
+  @override
   String ui76da0fc0(String p0) {
     return '跳过 $p0，';
   }
+
+  @override
+  String get ui6c5a7de5 => '轮询';
 
   @override
   String get ui739c6fd6 => '过去 1 周';
@@ -1954,6 +2722,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui0a322b08 => '过去 3 月';
 
   @override
+  String get ui1c3504bd => '过滤品牌…';
+
+  @override
+  String get ui1863f57b => '过滤标签…';
+
+  @override
   String get ui58a37252 => '返回';
 
   @override
@@ -1963,13 +2737,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui6e7397b9 => '还没有搜索记录。';
 
   @override
+  String get ui5c800f01 => '还没有播放列表。';
+
+  @override
+  String get ui58052679 => '还没有播放列表，可先新建一个。';
+
+  @override
   String get ui71607183 => '还没有本地库';
 
   @override
   String get ui7a38235f => '还没有订阅内容。';
 
   @override
+  String get ui460dc5ac => '还没有评论。';
+
+  @override
   String get ui2f767daa => '这个上传者还没有公开视频。';
+
+  @override
+  String get ui4d146290 => '这个播放列表暂时没有视频。';
 
   @override
   String get ui3d2b959e => '这个播放列表里还没有视频。';
@@ -1984,7 +2770,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui0432dab5 => '这个集合里暂时没有视频。';
 
   @override
+  String get ui6ad274d1 => '这个频道暂时没有视频。';
+
+  @override
   String get ui6c1512dd => '进入全屏时横屏';
+
+  @override
+  String get ui231a13c4 => '进度';
 
   @override
   String ui340178b5(String p0) {
@@ -1993,6 +2785,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ui15cf6bb2 => '退出';
+
+  @override
+  String get ui0fc3c7d8 => '退出 Hanime 登录？';
 
   @override
   String get ui61f69587 => '退出全屏';
@@ -2005,6 +2800,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ui0c4a5e14 => '退出登录？';
+
+  @override
+  String get ui2b4f5fd9 => '适用于 R34V、Hanime 首页和普通视频列表，以及搜索结果和本地分类库。';
+
+  @override
+  String get ui736d6f73 => '选择一个分类开始浏览，也可以直接在上方输入关键词搜索。';
 
   @override
   String get ui1d37ed9d => '选择下载清晰度';
@@ -2025,10 +2826,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui5b975d06 => '通过配置的 GitHub Releases 源检查';
 
   @override
+  String get ui650c8807 => '週';
+
+  @override
+  String get ui441fd1bc => '邮箱';
+
+  @override
   String get ui359a4400 => '邮箱（可选）';
 
   @override
   String get ui273538ab => '部分自动补全暂时不可用。';
+
+  @override
+  String get ui40cbba27 => '里番';
 
   @override
   String get ui37f64133 => '重命名';
@@ -2090,6 +2900,12 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get ui7746148e => '页面加载失败，可以点重试。';
+
+  @override
+  String get ui17a3b28f => '页面完成';
+
+  @override
   String get ui7f532d14 => '顺序播放';
 
   @override
@@ -2097,9 +2913,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ui17cde1d0 => '频道';
-
-  @override
-  String get ui4bb87ce1 => '首页';
 
   @override
   String get ui75c36c5d => '首页、搜索和媒体库的视频卡片会模糊显示封面。';
@@ -2112,6 +2925,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ui1773f316 => '高评分视频';
+
+  @override
+  String get ui669c4c11 => '默认排序';
 
   @override
   String get ui349affc5 => '默认播放清晰度';

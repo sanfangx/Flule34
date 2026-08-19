@@ -145,7 +145,9 @@ void main() {
       ),
       'https://example.com/old.mp4',
     );
-    await resolver.invalidate('4');
+    await resolver.invalidate(
+      const VideoItem(id: '4', title: '旧预览', slug: 'old-preview'),
+    );
     final refreshed = await resolver.resolve(
       const VideoItem(id: '4', title: '刷新', slug: 'refresh'),
       forceRefresh: true,

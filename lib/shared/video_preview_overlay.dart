@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:video_player/video_player.dart';
 
 import '../app/providers.dart';
+import '../core/logging/app_log_service.dart';
+import '../core/models/content_source.dart';
 import '../core/models/video_models.dart';
 import '../core/services/video_preview_service.dart';
 
@@ -120,7 +122,7 @@ class _VideoPreviewOverlayState extends ConsumerState<VideoPreviewOverlay>
   }
 }
 
-class _VideoPreviewPanel extends StatefulWidget {
+class _VideoPreviewPanel extends ConsumerStatefulWidget {
   const _VideoPreviewPanel({
     super.key,
     required this.video,
@@ -131,16 +133,12 @@ class _VideoPreviewPanel extends StatefulWidget {
   final VideoPreviewResolver resolver;
 
   @override
-  State<_VideoPreviewPanel> createState() => _VideoPreviewPanelState();
+  ConsumerState<_VideoPreviewPanel> createState() => _VideoPreviewPanelState();
 }
 
-class _VideoPreviewPanelState extends State<_VideoPreviewPanel> {
-  static const _headers = <String, String>{
-    'Referer': 'https://rule34video.com/',
-    'User-Agent': 'Flule34 Android/1.4.5',
-  };
-
+class _VideoPreviewPanelState extends ConsumerState<_VideoPreviewPanel> {
   VideoPlayerController? _player;
+  Map<String, String> _headers = const {};
   bool _loading = true;
   String? _error;
   int _loadSerial = 0;
@@ -168,24 +166,30 @@ class _VideoPreviewPanelState extends State<_VideoPreviewPanel> {
       });
     }
     try {
-      var previewUrl = await widget.resolver.resolve(widget.video);
+      _headers = widget.video.site == ContentSite.hanime1
+          ? await ref.read(rule34VideoApiProvider).mediaHeadersFor(widget.video)
+          : widget.video.site.mediaHeaders();
+      var previewUrl = await _resolvePreviewUrl();
       if (previewUrl == null) {
         throw const _PreviewUnavailableException();
       }
+      unawaited(
+        AppLogService.instance.info(
+          '开始视频预览；site=${widget.video.siteId}；video=${widget.video.id}；'
+          'source=${widget.video.site == ContentSite.hanime1 ? 'lowest-quality' : 'preview'}',
+          component: 'video_preview',
+        ),
+      );
       try {
         await _initialize(previewUrl, serial);
       } catch (_) {
-        await widget.resolver.invalidate(widget.video.id);
-        previewUrl = await widget.resolver.resolve(
-          widget.video.copyWith(previewUrl: null),
-          forceRefresh: true,
-        );
+        previewUrl = await _resolvePreviewUrl(forceRefresh: true);
         if (previewUrl == null) {
           throw const _PreviewUnavailableException();
         }
         await _initialize(previewUrl, serial);
       }
-    } catch (_) {
+    } catch (error, stackTrace) {
       if (!mounted || serial != _loadSerial) {
         return;
       }
@@ -193,7 +197,47 @@ class _VideoPreviewPanelState extends State<_VideoPreviewPanel> {
         _loading = false;
         _error = '暂时无法预览';
       });
+      unawaited(
+        AppLogService.instance.info(
+          '视频预览失败；site=${widget.video.siteId}；video=${widget.video.id}',
+          component: 'video_preview',
+        ),
+      );
+      unawaited(
+        AppLogService.instance.error(
+          error,
+          stackTrace,
+          component: 'video_preview',
+        ),
+      );
     }
+  }
+
+  Future<String?> _resolvePreviewUrl({bool forceRefresh = false}) async {
+    if (widget.video.site == ContentSite.hanime1) {
+      final api = ref.read(rule34VideoApiProvider);
+      final details = forceRefresh
+          ? await api.refreshVideoDetails(widget.video)
+          : await api.loadVideoDetails(widget.video);
+      if (details.sources.isEmpty) return null;
+      return details.sources.reduce((current, candidate) {
+        final currentQuality = _qualityValue(current.label);
+        final candidateQuality = _qualityValue(candidate.label);
+        return candidateQuality < currentQuality ? candidate : current;
+      }).url;
+    }
+    if (forceRefresh) {
+      await widget.resolver.invalidate(widget.video);
+    }
+    return widget.resolver.resolve(
+      forceRefresh ? widget.video.copyWith(previewUrl: null) : widget.video,
+      forceRefresh: forceRefresh,
+    );
+  }
+
+  int _qualityValue(String label) {
+    return int.tryParse(RegExp(r'\d+').firstMatch(label)?.group(0) ?? '') ??
+        1 << 30;
   }
 
   Future<void> _initialize(String url, int serial) async {
