@@ -66,6 +66,7 @@ dependencies:
   wakelock_plus: ^1.7.0
   webview_flutter: ^4.14.1
   native_dio_adapter: 1.8.0
+  google_mlkit_commons: ^0.13.0
 
 dev_dependencies:
   flutter_test:
